@@ -61,6 +61,15 @@ docker compose -f infra/docker-compose.yml up --build
 
 Copy `infra/.env.example` to `infra/.env` and replace all secrets before running a shared or production-like environment.
 
+For HTTPS deployment, place TLS files at:
+
+```text
+infra/certs/fullchain.pem
+infra/certs/privkey.pem
+```
+
+The default Nginx deployment redirects HTTP to HTTPS and will not start without mounted certificates.
+
 Create a local PostgreSQL backup from the Compose stack:
 
 ```bash

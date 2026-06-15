@@ -10,7 +10,6 @@ config/icon="res://icon.svg"
 
 [autoload]
 ApiClient="*res://autoload/api_client.gd"
-ContentCache="*res://autoload/content_cache.gd"
 
 [display]
 window/size/viewport_width=1280

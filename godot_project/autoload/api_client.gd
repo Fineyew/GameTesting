@@ -2,17 +2,24 @@ extends Node
 
 signal request_failed(endpoint: String, status_code: int, message: String)
 
-var base_url := "http://127.0.0.1/api/v1"
+var base_url := ""
 var access_token := ""
 var request_timeout_seconds := 15.0
 
 
 func set_session(new_base_url: String, token: String) -> void:
+    if not _is_allowed_base_url(new_base_url):
+        request_failed.emit("session", 0, "API base URL must use HTTPS outside editor-local testing")
+        return
     base_url = new_base_url.trim_suffix("/")
     access_token = token
 
 
 func get_json(endpoint: String) -> Dictionary:
+    if base_url.is_empty():
+        request_failed.emit(endpoint, 0, "API base URL is not configured")
+        return {}
+
     var request := HTTPRequest.new()
     request.timeout = request_timeout_seconds
     add_child(request)
@@ -30,6 +37,10 @@ func get_json(endpoint: String) -> Dictionary:
 
 
 func post_json(endpoint: String, payload: Dictionary, idempotency_key := "") -> Dictionary:
+    if base_url.is_empty():
+        request_failed.emit(endpoint, 0, "API base URL is not configured")
+        return {}
+
     var request := HTTPRequest.new()
     request.timeout = request_timeout_seconds
     add_child(request)
@@ -62,6 +73,14 @@ func _normalize_endpoint(endpoint: String) -> String:
     if endpoint.begins_with("/"):
         return endpoint
     return "/%s" % endpoint
+
+
+func _is_allowed_base_url(candidate_url: String) -> bool:
+    if candidate_url.begins_with("https://"):
+        return true
+    if OS.has_feature("editor"):
+        return candidate_url.begins_with("http://127.0.0.1") or candidate_url.begins_with("http://localhost")
+    return false
 
 
 func _parse_response(endpoint: String, result: Array) -> Dictionary:

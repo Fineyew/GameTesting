@@ -3,8 +3,6 @@ uvicorn[standard]
 sqlalchemy
 asyncpg
 psycopg[binary]
-pydantic-settings
-python-jose[cryptography]
 passlib[bcrypt]
 python-multipart
 alembic

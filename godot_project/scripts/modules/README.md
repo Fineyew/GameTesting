@@ -9,4 +9,4 @@ Client modules should mirror backend module boundaries:
 - `ShopClient`
 - `CraftingClient`
 
-Each module should call `ApiClient` and consume definitions through `ContentCache`. Avoid hardcoding gameplay content, quest objectives, spell math, shop listings, or loot rules in GDScript.
+Each module should receive explicit dependencies such as `ApiClient` or `ContentRepository` during construction. Avoid calling autoloads directly from UI/gameplay modules, and avoid hardcoding gameplay content, quest objectives, spell math, shop listings, or loot rules in GDScript.
