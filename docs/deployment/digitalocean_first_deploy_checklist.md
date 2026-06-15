@@ -6,6 +6,8 @@ Goal: first-time deployment of the current vertical slice.
 
 Use this checklist from the repository root unless a command explicitly says otherwise.
 
+If you are starting from your desktop or cleaning a droplet that already has another project on it, read [Desktop Setup and Droplet Fresh-Start Runbook](desktop_and_droplet_fresh_start_runbook.md) first.
+
 ## 0. Current deployment constraints
 
 - The stack expects TLS certificates before Nginx can start.
