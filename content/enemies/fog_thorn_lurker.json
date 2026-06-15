@@ -1,0 +1,25 @@
+{
+  "type": "enemies",
+  "key": "fog_thorn_lurker",
+  "version": 1,
+  "display": {
+    "name": "Fog-Thorn Lurker",
+    "summary": "A thorny mist-dweller that nests near damp lantern stone.",
+    "description": "Fog-thorn lurkers are original reef creatures that hide beneath pale bramble mats and lash out when startled."
+  },
+  "tags": ["dawnreef", "beast", "starter"],
+  "assets": {
+    "model": "res://assets/creatures/fog_thorn_lurker.tscn"
+  },
+  "rules": {
+    "level": 1,
+    "stats": {"vigor": 24, "guard": 2, "speed": 4},
+    "actions": [
+      {"spell_key": "glimmer_spark", "weight": 1}
+    ],
+    "loot_table_key": "dawnreef_lurker_cache"
+  },
+  "localization": {
+    "en": {"name": "Fog-Thorn Lurker"}
+  }
+}

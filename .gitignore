@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+.env
+
+godot_project/.godot/
+godot_project/.import/
+*.tmp
+
+*.log

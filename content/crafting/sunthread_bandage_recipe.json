@@ -1,0 +1,25 @@
+{
+  "type": "crafting",
+  "key": "sunthread_bandage_recipe",
+  "version": 1,
+  "display": {
+    "name": "Weave Sunthread Bandage",
+    "summary": "Craft a simple restorative bandage.",
+    "description": "A starter recipe using gathered sunthread fiber and clean reed cloth."
+  },
+  "tags": ["starter", "healing"],
+  "assets": {
+    "icon": "res://assets/icons/crafting/sunthread_bandage_recipe.png"
+  },
+  "rules": {
+    "inputs": [
+      {"item_key": "sunthread_fiber", "quantity": 2},
+      {"item_key": "clean_reed_cloth", "quantity": 1}
+    ],
+    "outputs": [{"item_key": "sunthread_bandage", "quantity": 1}],
+    "craft_seconds": 0
+  },
+  "localization": {
+    "en": {"name": "Weave Sunthread Bandage"}
+  }
+}

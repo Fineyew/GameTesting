@@ -1,0 +1,29 @@
+{
+  "type": "quests",
+  "key": "lantern_well_first_light",
+  "version": 1,
+  "display": {
+    "name": "First Light at the Lantern Well",
+    "summary": "Help Dawnreef restore a dimming stabilizer well.",
+    "description": "Mara Lanternwright asks the Wayfarer to gather sunthread and clear fog-thorn growth near the old well."
+  },
+  "tags": ["mvp", "dawnreef", "tutorial"],
+  "assets": {
+    "quest_icon": "res://assets/icons/quests/lantern_well.png"
+  },
+  "rules": {
+    "giver_npc_key": "mara_lanternwright",
+    "start_conditions": [{"type": "character_level_at_least", "value": 1}],
+    "objectives": [
+      {"key": "collect_sunthread", "type": "collect_item", "item_key": "sunthread_bandage", "quantity": 1},
+      {"key": "defeat_lurkers", "type": "defeat_enemy", "enemy_key": "fog_thorn_lurker", "quantity": 2}
+    ],
+    "rewards": [
+      {"type": "grant_experience", "amount": 75},
+      {"type": "grant_currency", "currency_key": "shell_chits", "amount": 12}
+    ]
+  },
+  "localization": {
+    "en": {"name": "First Light at the Lantern Well"}
+  }
+}

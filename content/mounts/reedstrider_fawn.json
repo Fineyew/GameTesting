@@ -1,0 +1,22 @@
+{
+  "type": "mounts",
+  "key": "reedstrider_fawn",
+  "version": 1,
+  "display": {
+    "name": "Reedstrider Fawn",
+    "summary": "A nimble marsh companion for short-distance travel.",
+    "description": "Reedstriders are gentle, long-legged animals bred by Dawnreef scouts to cross shallow mist channels."
+  },
+  "tags": ["dawnreef", "starter", "ground"],
+  "assets": {
+    "model": "res://assets/mounts/reedstrider_fawn.tscn",
+    "icon": "res://assets/icons/mounts/reedstrider_fawn.png"
+  },
+  "rules": {
+    "movement_modifier": {"type": "ground_speed_multiplier", "value": 1.15},
+    "unlock_conditions": [{"type": "quest_completed", "quest_key": "lantern_well_first_light"}]
+  },
+  "localization": {
+    "en": {"name": "Reedstrider Fawn"}
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "shops",
+  "key": "dawnreef_supply_cart",
+  "version": 1,
+  "display": {
+    "name": "Dawnreef Supply Cart",
+    "summary": "A compact field shop stocked for new Wayfarers.",
+    "description": "Mara keeps spare supplies in a wheeled cart beside the Lantern Well."
+  },
+  "tags": ["dawnreef", "starter"],
+  "assets": {
+    "icon": "res://assets/icons/shops/dawnreef_supply_cart.png"
+  },
+  "rules": {
+    "listings": [
+      {
+        "key": "buy_sunthread_bandage",
+        "item_key": "sunthread_bandage",
+        "quantity": 1,
+        "price": [{"currency_key": "shell_chits", "amount": 5}]
+      }
+    ]
+  },
+  "localization": {
+    "en": {"name": "Dawnreef Supply Cart"}
+  }
+}

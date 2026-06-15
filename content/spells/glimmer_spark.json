@@ -1,0 +1,23 @@
+{
+  "type": "spells",
+  "key": "glimmer_spark",
+  "version": 1,
+  "display": {
+    "name": "Glimmer Spark",
+    "summary": "A small arc of lantern-light that pressures a single foe.",
+    "description": "Wayfarers learn to focus harmless reef-glow into a precise flash used in turn-based combat."
+  },
+  "tags": ["starter", "combat", "luminous"],
+  "assets": {
+    "icon": "res://assets/icons/spells/glimmer_spark.png",
+    "vfx": "res://assets/vfx/glimmer_spark.tscn"
+  },
+  "rules": {
+    "targeting": {"team": "enemy", "count": 1},
+    "costs": [{"resource": "focus", "amount": 1}],
+    "effects": [{"type": "deal_damage", "element": "luminous", "power": 8}]
+  },
+  "localization": {
+    "en": {"name": "Glimmer Spark"}
+  }
+}

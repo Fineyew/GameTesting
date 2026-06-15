@@ -1,0 +1,21 @@
+{
+  "type": "achievements",
+  "key": "first_lantern_aid",
+  "version": 1,
+  "display": {
+    "name": "First Lantern Aid",
+    "summary": "Help restore a Dawnreef Lantern Well.",
+    "description": "Awarded for completing the first Dawnreef tutorial quest."
+  },
+  "tags": ["dawnreef", "quest"],
+  "assets": {
+    "icon": "res://assets/icons/achievements/first_lantern_aid.png"
+  },
+  "rules": {
+    "trigger": {"event_type": "quest.completed", "quest_key": "lantern_well_first_light"},
+    "rewards": [{"type": "grant_currency", "currency_key": "shell_chits", "amount": 10}]
+  },
+  "localization": {
+    "en": {"name": "First Lantern Aid"}
+  }
+}

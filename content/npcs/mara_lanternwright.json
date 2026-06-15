@@ -1,0 +1,23 @@
+{
+  "type": "npcs",
+  "key": "mara_lanternwright",
+  "version": 1,
+  "display": {
+    "name": "Mara Lanternwright",
+    "summary": "Caretaker of Dawnreef's stabilizer wells.",
+    "description": "Mara repairs lantern-stone housings and teaches new Wayfarers how to read the reef's changing light."
+  },
+  "tags": ["dawnreef", "quest_giver", "artisan"],
+  "assets": {
+    "portrait": "res://assets/portraits/mara_lanternwright.png",
+    "scene": "res://assets/npcs/mara_lanternwright.tscn"
+  },
+  "rules": {
+    "dialogue_key": "mara_first_meeting",
+    "available_quests": ["lantern_well_first_light"],
+    "shop_key": "dawnreef_supply_cart"
+  },
+  "localization": {
+    "en": {"name": "Mara Lanternwright"}
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "items",
+  "key": "sunthread_bandage",
+  "version": 1,
+  "display": {
+    "name": "Sunthread Bandage",
+    "summary": "A warm woven wrap used by Dawnreef scouts.",
+    "description": "Sunthread fibers hold a little stored daylight and are commonly carried by careful Wayfarers."
+  },
+  "tags": ["consumable", "healing", "crafted"],
+  "assets": {
+    "icon": "res://assets/icons/items/sunthread_bandage.png"
+  },
+  "rules": {
+    "stack_limit": 20,
+    "use_effects": [{"type": "restore_vigor", "amount": 12}],
+    "sell_value": [{"currency_key": "shell_chits", "amount": 3}]
+  },
+  "localization": {
+    "en": {"name": "Sunthread Bandage"}
+  }
+}

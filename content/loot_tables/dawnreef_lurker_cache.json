@@ -1,0 +1,22 @@
+{
+  "type": "loot_tables",
+  "key": "dawnreef_lurker_cache",
+  "version": 1,
+  "display": {
+    "name": "Dawnreef Lurker Cache",
+    "summary": "Small starter rewards from fog-thorn nests.",
+    "description": "A data-driven loot table for early Dawnreef encounters."
+  },
+  "tags": ["dawnreef", "starter"],
+  "assets": {},
+  "rules": {
+    "rolls": 1,
+    "entries": [
+      {"type": "currency", "currency_key": "shell_chits", "min": 1, "max": 4, "weight": 10},
+      {"type": "item", "item_key": "sunthread_bandage", "quantity": 1, "weight": 2}
+    ]
+  },
+  "localization": {
+    "en": {"name": "Dawnreef Lurker Cache"}
+  }
+}

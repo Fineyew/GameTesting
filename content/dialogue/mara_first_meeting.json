@@ -1,0 +1,33 @@
+{
+  "type": "dialogue",
+  "key": "mara_first_meeting",
+  "version": 1,
+  "display": {
+    "name": "Mara First Meeting",
+    "summary": "Introductory conversation at Dawnreef.",
+    "description": "A branching dialogue graph introducing the Lantern Well problem."
+  },
+  "tags": ["dawnreef", "tutorial"],
+  "assets": {},
+  "rules": {
+    "start_node": "greeting",
+    "nodes": {
+      "greeting": {
+        "text": "You feel that dim pulse under your boots? The well is asking for help.",
+        "options": [
+          {"key": "ask_well", "text": "What is the Lantern Well?", "next_node": "explain_well"},
+          {"key": "offer_help", "text": "I can help.", "effects": [{"type": "offer_quest", "quest_key": "lantern_well_first_light"}]}
+        ]
+      },
+      "explain_well": {
+        "text": "It keeps this reef steady when the Glimmerdeep storms turn restless.",
+        "options": [
+          {"key": "offer_help", "text": "Then let's mend it.", "effects": [{"type": "offer_quest", "quest_key": "lantern_well_first_light"}]}
+        ]
+      }
+    }
+  },
+  "localization": {
+    "en": {"name": "Mara First Meeting"}
+  }
+}
