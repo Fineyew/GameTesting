@@ -1,6 +1,7 @@
 {
   "type": "achievements",
   "key": "first_lantern_aid",
+  "schema_version": 1,
   "version": 1,
   "display": {
     "name": "First Lantern Aid",

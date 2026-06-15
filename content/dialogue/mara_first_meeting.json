@@ -1,6 +1,7 @@
 {
   "type": "dialogue",
   "key": "mara_first_meeting",
+  "schema_version": 1,
   "version": 1,
   "display": {
     "name": "Mara First Meeting",

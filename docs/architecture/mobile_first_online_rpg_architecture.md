@@ -4,6 +4,8 @@ This document defines a complete, original, mobile-first online 3D fantasy RPG a
 
 The game universe, systems, content names, factions, races, creatures, locations, story, and progression ideas below are original to this project. They are inspired only by broadly appealing qualities of classic online fantasy RPGs: approachable progression, exploration, social play, accessibility, and turn-based strategic combat.
 
+> **5-year survival note:** The initial architecture is intentionally broad. The stricter corrective rules in [Brutal Architecture Review: 5-Year Solo Developer Survival](brutal_architecture_review.md) supersede this document anywhere there is tension. In particular, the MVP should be treated as a narrow vertical slice, not a commitment to ship every eventual social/economy/dungeon system at once.
+
 ## 1. Executive architecture overview
 
 ### Product concept
@@ -192,6 +194,7 @@ No module may reach into another module's tables directly. If a quest needs to g
 │   ├── items/
 │   ├── equipment/
 │   ├── loot_tables/
+│   ├── gathering/
 │   ├── shops/
 │   ├── dialogue/
 │   ├── achievements/

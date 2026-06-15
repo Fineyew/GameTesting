@@ -1,6 +1,7 @@
 {
   "type": "dungeons",
   "key": "saltglass_cistern",
+  "schema_version": 1,
   "version": 1,
   "display": {
     "name": "Saltglass Cistern",

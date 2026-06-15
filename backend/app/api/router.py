@@ -6,6 +6,7 @@ from backend.app.modules.combat.router import router as combat_router
 from backend.app.modules.content.router import router as content_router
 from backend.app.modules.inventory.router import router as inventory_router
 from backend.app.modules.quests.router import router as quests_router
+from backend.app.modules.registry import module_registry
 from backend.app.modules.social.router import router as social_router
 
 api_router = APIRouter()
@@ -19,6 +20,11 @@ async def server_info() -> dict[str, str]:
         "minimum_client_version": settings.minimum_client_version,
         "content_manifest_version": settings.content_manifest_version,
     }
+
+
+@api_router.get("/modules", tags=["server"])
+async def modules() -> list[dict[str, object]]:
+    return module_registry()
 
 
 api_router.include_router(content_router, prefix="/content", tags=["content"])

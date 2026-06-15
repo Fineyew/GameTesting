@@ -1,6 +1,7 @@
 {
   "type": "mounts",
   "key": "reedstrider_fawn",
+  "schema_version": 1,
   "version": 1,
   "display": {
     "name": "Reedstrider Fawn",

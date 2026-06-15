@@ -11,3 +11,4 @@ godot_project/.import/
 *.tmp
 
 *.log
+backups/

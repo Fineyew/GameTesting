@@ -1,6 +1,7 @@
 {
   "type": "zones",
   "key": "dawnreef_atoll",
+  "schema_version": 1,
   "version": 1,
   "display": {
     "name": "Dawnreef Atoll",

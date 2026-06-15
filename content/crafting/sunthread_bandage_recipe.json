@@ -1,6 +1,7 @@
 {
   "type": "crafting",
   "key": "sunthread_bandage_recipe",
+  "schema_version": 1,
   "version": 1,
   "display": {
     "name": "Weave Sunthread Bandage",

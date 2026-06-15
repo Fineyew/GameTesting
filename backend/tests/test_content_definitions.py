@@ -2,30 +2,19 @@ import json
 import unittest
 from pathlib import Path
 
+from backend.app.modules.content.validation import REQUIRED_CONTENT_CATEGORIES, validate_content_tree
+
 
 CONTENT_ROOT = Path(__file__).resolve().parents[2] / "content"
-
-REQUIRED_CATEGORIES = {
-    "achievements",
-    "crafting",
-    "dialogue",
-    "dungeons",
-    "enemies",
-    "equipment",
-    "items",
-    "loot_tables",
-    "mounts",
-    "npcs",
-    "quests",
-    "shops",
-    "spells",
-    "zones",
-}
 
 
 class ContentDefinitionTests(unittest.TestCase):
     def test_required_content_categories_exist(self) -> None:
-        missing = [category for category in REQUIRED_CATEGORIES if not (CONTENT_ROOT / category).is_dir()]
+        missing = [
+            category
+            for category in REQUIRED_CONTENT_CATEGORIES
+            if not (CONTENT_ROOT / category).is_dir()
+        ]
         self.assertEqual([], missing)
 
     def test_content_files_have_required_shape(self) -> None:
@@ -39,6 +28,7 @@ class ContentDefinitionTests(unittest.TestCase):
 
                 self.assertEqual(path.parent.name, payload.get("type"))
                 self.assertEqual(path.stem, payload.get("key"))
+                self.assertEqual(1, payload.get("schema_version"))
                 self.assertIsInstance(payload.get("version"), int)
                 self.assertGreaterEqual(payload["version"], 1)
 
@@ -54,6 +44,10 @@ class ContentDefinitionTests(unittest.TestCase):
                 unique_key = (payload["type"], payload["key"], payload["version"])
                 self.assertNotIn(unique_key, seen_keys)
                 seen_keys.add(unique_key)
+
+    def test_content_reference_graph_is_valid(self) -> None:
+        report = validate_content_tree(CONTENT_ROOT)
+        self.assertEqual([], report.errors)
 
 
 if __name__ == "__main__":

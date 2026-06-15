@@ -1,11 +1,12 @@
 from fastapi import FastAPI
 
 from backend.app.api.router import api_router
-from backend.app.core.config import get_settings
+from backend.app.core.config import get_settings, validate_runtime_settings
 
 
 def create_app() -> FastAPI:
     settings = get_settings()
+    validate_runtime_settings(settings)
     app = FastAPI(
         title=settings.project_name,
         version=settings.api_version,

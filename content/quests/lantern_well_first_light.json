@@ -1,6 +1,7 @@
 {
   "type": "quests",
   "key": "lantern_well_first_light",
+  "schema_version": 1,
   "version": 1,
   "display": {
     "name": "First Light at the Lantern Well",

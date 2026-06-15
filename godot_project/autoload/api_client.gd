@@ -4,6 +4,7 @@ signal request_failed(endpoint: String, status_code: int, message: String)
 
 var base_url := "http://127.0.0.1/api/v1"
 var access_token := ""
+var request_timeout_seconds := 15.0
 
 
 func set_session(new_base_url: String, token: String) -> void:
@@ -13,10 +14,11 @@ func set_session(new_base_url: String, token: String) -> void:
 
 func get_json(endpoint: String) -> Dictionary:
     var request := HTTPRequest.new()
+    request.timeout = request_timeout_seconds
     add_child(request)
 
     var headers := _auth_headers()
-    var err := request.request("%s%s" % [base_url, endpoint], headers, HTTPClient.METHOD_GET)
+    var err := request.request("%s%s" % [base_url, _normalize_endpoint(endpoint)], headers, HTTPClient.METHOD_GET)
     if err != OK:
         request.queue_free()
         request_failed.emit(endpoint, 0, "Unable to start request")
@@ -29,6 +31,7 @@ func get_json(endpoint: String) -> Dictionary:
 
 func post_json(endpoint: String, payload: Dictionary, idempotency_key := "") -> Dictionary:
     var request := HTTPRequest.new()
+    request.timeout = request_timeout_seconds
     add_child(request)
 
     var headers := _auth_headers()
@@ -37,7 +40,7 @@ func post_json(endpoint: String, payload: Dictionary, idempotency_key := "") -> 
         headers.append("Idempotency-Key: %s" % idempotency_key)
 
     var body := JSON.stringify(payload)
-    var err := request.request("%s%s" % [base_url, endpoint], headers, HTTPClient.METHOD_POST, body)
+    var err := request.request("%s%s" % [base_url, _normalize_endpoint(endpoint)], headers, HTTPClient.METHOD_POST, body)
     if err != OK:
         request.queue_free()
         request_failed.emit(endpoint, 0, "Unable to start request")
@@ -53,6 +56,12 @@ func _auth_headers() -> PackedStringArray:
     if not access_token.is_empty():
         headers.append("Authorization: Bearer %s" % access_token)
     return headers
+
+
+func _normalize_endpoint(endpoint: String) -> String:
+    if endpoint.begins_with("/"):
+        return endpoint
+    return "/%s" % endpoint
 
 
 func _parse_response(endpoint: String, result: Array) -> Dictionary:

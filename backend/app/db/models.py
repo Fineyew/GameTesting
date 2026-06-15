@@ -1,7 +1,19 @@
 from datetime import datetime
+from uuid import UUID as PyUUID
 from uuid import uuid4
 
-from sqlalchemy import BigInteger, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint, func
+from sqlalchemy import (
+    BigInteger,
+    CheckConstraint,
+    DateTime,
+    ForeignKey,
+    Index,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+    func,
+)
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -25,7 +37,7 @@ class TimestampMixin:
 class Account(TimestampMixin, Base):
     __tablename__ = "accounts"
 
-    id: Mapped[str] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    id: Mapped[PyUUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     email: Mapped[str] = mapped_column(String(320), unique=True, nullable=False)
     display_name: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(Text, nullable=False)
@@ -34,9 +46,14 @@ class Account(TimestampMixin, Base):
 
 class Character(TimestampMixin, Base):
     __tablename__ = "characters"
+    __table_args__ = (
+        CheckConstraint("level >= 1", name="ck_characters_level_min"),
+        CheckConstraint("experience >= 0", name="ck_characters_experience_min"),
+        Index("idx_characters_account_id", "account_id"),
+    )
 
-    id: Mapped[str] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    account_id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey("accounts.id"), nullable=False)
+    id: Mapped[PyUUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    account_id: Mapped[PyUUID] = mapped_column(UUID(as_uuid=True), ForeignKey("accounts.id"), nullable=False)
     name: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
     ancestry_key: Mapped[str] = mapped_column(String(128), nullable=False)
     origin_key: Mapped[str] = mapped_column(String(128), nullable=False)
@@ -52,9 +69,11 @@ class ContentDefinition(TimestampMixin, Base):
     __tablename__ = "content_definitions"
     __table_args__ = (
         UniqueConstraint("type", "key", "version", "locale", name="uq_content_definition_version"),
+        CheckConstraint("version >= 1", name="ck_content_definitions_version_min"),
+        Index("idx_content_definitions_lookup", "type", "key", "status", "version"),
     )
 
-    id: Mapped[str] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    id: Mapped[PyUUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     type: Mapped[str] = mapped_column(String(64), nullable=False)
     key: Mapped[str] = mapped_column(String(128), nullable=False)
     version: Mapped[int] = mapped_column(Integer, nullable=False)
@@ -66,9 +85,13 @@ class ContentDefinition(TimestampMixin, Base):
 
 class ItemInstance(TimestampMixin, Base):
     __tablename__ = "item_instances"
+    __table_args__ = (
+        CheckConstraint("quantity >= 0", name="ck_item_instances_quantity_min"),
+        Index("idx_item_instances_character_id", "character_id"),
+    )
 
-    id: Mapped[str] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    character_id: Mapped[str] = mapped_column(
+    id: Mapped[PyUUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    character_id: Mapped[PyUUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("characters.id"),
         nullable=False,
@@ -83,7 +106,7 @@ class ItemInstance(TimestampMixin, Base):
 class CharacterQuest(Base):
     __tablename__ = "character_quests"
 
-    character_id: Mapped[str] = mapped_column(
+    character_id: Mapped[PyUUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("characters.id"),
         primary_key=True,
@@ -101,10 +124,14 @@ class CharacterQuest(Base):
 
 class CombatSession(TimestampMixin, Base):
     __tablename__ = "combat_sessions"
+    __table_args__ = (
+        CheckConstraint("round_number >= 1", name="ck_combat_sessions_round_min"),
+        Index("idx_combat_sessions_owner_state", "owner_character_id", "state"),
+    )
 
-    id: Mapped[str] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    owner_character_id: Mapped[str | None] = mapped_column(UUID(as_uuid=True), ForeignKey("characters.id"))
-    party_id: Mapped[str | None] = mapped_column(UUID(as_uuid=True))
+    id: Mapped[PyUUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    owner_character_id: Mapped[PyUUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("characters.id"))
+    party_id: Mapped[PyUUID | None] = mapped_column(UUID(as_uuid=True))
     encounter_key: Mapped[str] = mapped_column(String(128), nullable=False)
     state: Mapped[str] = mapped_column(String(32), nullable=False)
     round_number: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
@@ -115,11 +142,14 @@ class CombatSession(TimestampMixin, Base):
 
 class ChatMessage(Base):
     __tablename__ = "chat_messages"
+    __table_args__ = (
+        Index("idx_chat_messages_channel_created", "channel_type", "channel_id", "created_at"),
+    )
 
-    id: Mapped[str] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    id: Mapped[PyUUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     channel_type: Mapped[str] = mapped_column(String(32), nullable=False)
     channel_id: Mapped[str] = mapped_column(String(128), nullable=False)
-    sender_character_id: Mapped[str | None] = mapped_column(UUID(as_uuid=True), ForeignKey("characters.id"))
+    sender_character_id: Mapped[PyUUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("characters.id"))
     body: Mapped[str] = mapped_column(String(500), nullable=False)
     moderation_state: Mapped[str] = mapped_column(String(32), default="visible", nullable=False)
     created_at: Mapped[datetime] = mapped_column(

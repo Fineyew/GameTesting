@@ -1,6 +1,7 @@
 {
   "type": "shops",
   "key": "dawnreef_supply_cart",
+  "schema_version": 1,
   "version": 1,
   "display": {
     "name": "Dawnreef Supply Cart",

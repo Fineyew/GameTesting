@@ -12,6 +12,7 @@ class ContentDisplay(BaseModel):
 class ContentDefinition(BaseModel):
     type: str = Field(min_length=1)
     key: str = Field(min_length=1)
+    schema_version: int = Field(ge=1)
     version: int = Field(ge=1)
     display: ContentDisplay
     tags: list[str] = Field(default_factory=list)

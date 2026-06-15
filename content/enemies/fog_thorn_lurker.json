@@ -1,6 +1,7 @@
 {
   "type": "enemies",
   "key": "fog_thorn_lurker",
+  "schema_version": 1,
   "version": 1,
   "display": {
     "name": "Fog-Thorn Lurker",

@@ -1,6 +1,7 @@
 {
   "type": "loot_tables",
   "key": "dawnreef_lurker_cache",
+  "schema_version": 1,
   "version": 1,
   "display": {
     "name": "Dawnreef Lurker Cache",

@@ -1,6 +1,7 @@
 {
   "type": "items",
   "key": "sunthread_bandage",
+  "schema_version": 1,
   "version": 1,
   "display": {
     "name": "Sunthread Bandage",

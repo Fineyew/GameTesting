@@ -1,0 +1,24 @@
+{
+  "type": "gathering",
+  "key": "sunthread_reeds",
+  "schema_version": 1,
+  "version": 1,
+  "display": {
+    "name": "Sunthread Reeds",
+    "summary": "Reeds that store Dawnreef's morning light in fine fibers.",
+    "description": "A starter gathering node that yields sunthread fiber without requiring custom gathering code."
+  },
+  "tags": ["dawnreef", "starter", "fiber"],
+  "assets": {
+    "scene": "res://assets/gathering/sunthread_reeds.tscn",
+    "icon": "res://assets/icons/gathering/sunthread_reeds.png"
+  },
+  "rules": {
+    "respawn_seconds": 180,
+    "gather_seconds": 2,
+    "rewards": [{"type": "grant_item", "item_key": "sunthread_fiber", "quantity": 1}]
+  },
+  "localization": {
+    "en": {"name": "Sunthread Reeds"}
+  }
+}
