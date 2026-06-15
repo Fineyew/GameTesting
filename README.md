@@ -15,6 +15,7 @@ The design prioritizes modular systems, low operational cost, self-hosted infras
 
 - [Complete architecture plan](docs/architecture/mobile_first_online_rpg_architecture.md)
 - [Brutal 5-year architecture review](docs/architecture/brutal_architecture_review.md)
+- [DigitalOcean first deployment checklist](docs/deployment/digitalocean_first_deploy_checklist.md)
 
 ## Repository layout
 
