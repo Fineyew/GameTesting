@@ -8,6 +8,7 @@ from backend.app.modules.inventory.router import router as inventory_router
 from backend.app.modules.quests.router import router as quests_router
 from backend.app.modules.registry import module_registry
 from backend.app.modules.social.router import router as social_router
+from backend.app.modules.vertical_slice.router import router as vertical_slice_router
 
 api_router = APIRouter()
 
@@ -28,6 +29,7 @@ async def modules() -> list[dict[str, object]]:
 
 
 api_router.include_router(content_router, prefix="/content", tags=["content"])
+api_router.include_router(vertical_slice_router)
 api_router.include_router(characters_router, prefix="/characters", tags=["characters"])
 api_router.include_router(inventory_router, prefix="/inventory", tags=["inventory"])
 api_router.include_router(quests_router, prefix="/quests", tags=["quests"])

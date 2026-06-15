@@ -61,6 +61,13 @@ MODULES: tuple[ModuleDescriptor, ...] = (
         owns=("friends", "parties", "guilds", "chat", "trades", "mail"),
         allowed_dependencies=("characters", "inventory", "events"),
     ),
+    ModuleDescriptor(
+        key="vertical_slice",
+        owner="vertical_slice",
+        status="implemented",
+        owns=("starter_account_loop", "starter_character_loop", "starter_world_progress"),
+        allowed_dependencies=("content",),
+    ),
 )
 
 

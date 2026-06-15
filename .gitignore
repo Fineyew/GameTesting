@@ -13,3 +13,4 @@ godot_project/.import/
 *.log
 backups/
 infra/certs/
+var/

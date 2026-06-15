@@ -7,6 +7,8 @@ from backend.app.api.router import api_router
 from backend.app.core.config import get_settings, validate_runtime_settings
 from backend.app.db.session import create_database_provider
 from backend.app.modules.content.service import ContentCatalog
+from backend.app.modules.vertical_slice.service import VerticalSliceService
+from backend.app.modules.vertical_slice.store import JsonVerticalSliceStore
 
 
 def create_app() -> FastAPI:
@@ -21,6 +23,9 @@ def create_app() -> FastAPI:
         )
         database_provider = create_database_provider(settings)
         app.state.database_provider = database_provider
+        app.state.vertical_slice_service = VerticalSliceService(
+            JsonVerticalSliceStore(settings.vertical_slice_save_path)
+        )
         try:
             yield
         finally:

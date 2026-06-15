@@ -1,0 +1,24 @@
+{
+  "type": "spells",
+  "key": "tide_mend",
+  "schema_version": 1,
+  "version": 1,
+  "display": {
+    "name": "Tide Mend",
+    "summary": "A gentle restorative spell for surviving a dangerous turn.",
+    "description": "The Wayfarer gathers cool mist from the Glimmerdeep and restores a small amount of vigor."
+  },
+  "tags": ["starter", "combat", "healing"],
+  "assets": {
+    "icon": "res://assets/icons/spells/tide_mend.png",
+    "vfx": "res://assets/vfx/tide_mend.tscn"
+  },
+  "rules": {
+    "targeting": {"team": "ally", "count": 1},
+    "costs": [{"resource": "focus", "amount": 1}],
+    "effects": [{"type": "restore_vigor", "amount": 8}]
+  },
+  "localization": {
+    "en": {"name": "Tide Mend"}
+  }
+}

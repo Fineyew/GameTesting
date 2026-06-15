@@ -14,9 +14,9 @@
   },
   "rules": {
     "level": 1,
-    "stats": {"vigor": 24, "guard": 2, "speed": 4},
+    "stats": {"vigor": 12, "guard": 2, "speed": 4},
     "actions": [
-      {"spell_key": "glimmer_spark", "weight": 1}
+      {"spell_key": "root_snare", "weight": 1}
     ],
     "loot_table_key": "dawnreef_lurker_cache"
   },

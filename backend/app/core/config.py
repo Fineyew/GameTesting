@@ -31,6 +31,7 @@ class Settings:
     database_pool_size: int = 5
     database_max_overflow: int = 5
     content_root: Path = Path(__file__).resolve().parents[3] / "content"
+    vertical_slice_save_path: Path = Path(__file__).resolve().parents[3] / "var" / "vertical_slice_save.json"
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -61,6 +62,9 @@ class Settings:
                 cls.database_max_overflow,
             ),
             content_root=Path(_env_str("VT_CONTENT_ROOT", str(cls.content_root))),
+            vertical_slice_save_path=Path(
+                _env_str("VT_VERTICAL_SLICE_SAVE_PATH", str(cls.vertical_slice_save_path))
+            ),
         )
 
 

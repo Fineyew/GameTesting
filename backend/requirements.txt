@@ -3,6 +3,4 @@ uvicorn[standard]
 sqlalchemy
 asyncpg
 psycopg[binary]
-passlib[bcrypt]
-python-multipart
 alembic

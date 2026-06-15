@@ -16,11 +16,11 @@
     "giver_npc_key": "mara_lanternwright",
     "start_conditions": [{"type": "character_level_at_least", "value": 1}],
     "objectives": [
-      {"key": "collect_sunthread", "type": "collect_item", "item_key": "sunthread_bandage", "quantity": 1},
-      {"key": "defeat_lurkers", "type": "defeat_enemy", "enemy_key": "fog_thorn_lurker", "quantity": 2}
+      {"key": "defeat_fog_thorn_lurker", "type": "defeat_enemy", "enemy_key": "fog_thorn_lurker", "quantity": 1}
     ],
     "rewards": [
       {"type": "grant_experience", "amount": 75},
+      {"type": "grant_item", "item_key": "sunthread_bandage", "quantity": 1},
       {"type": "grant_currency", "currency_key": "shell_chits", "amount": 12}
     ]
   },

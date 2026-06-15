@@ -81,3 +81,21 @@ infra/scripts/backup_postgres.sh
 Gameplay content such as spells, quests, NPCs, enemies, items, equipment, shops, loot tables, achievements, crafting recipes, gathering nodes, mounts, dungeons, and zones belongs in `content/` and should be validated before import. Runtime systems should consume content through the content catalog instead of hardcoding gameplay definitions.
 
 Every content file must include `schema_version`, and references between content files must pass `backend/tests/test_content_definitions.py`.
+
+## Playable vertical slice
+
+The current playable loop is intentionally small:
+
+1. `POST /api/v1/auth/register`
+2. `POST /api/v1/characters`
+3. `GET /api/v1/world/characters/{character_id}`
+4. `POST /api/v1/world/characters/{character_id}/quests/lantern_well_first_light/accept`
+5. `POST /api/v1/world/characters/{character_id}/combat/fight`
+6. `POST /api/v1/world/characters/{character_id}/save`
+7. `POST /api/v1/auth/logout`
+8. `POST /api/v1/auth/login`
+9. `GET /api/v1/world/characters/{character_id}`
+
+This loop supports one account, one playable character, one starting zone, one NPC, one quest, one enemy, three starter spells, XP gain, leveling, inventory rewards, save/load, logout, and persisted login.
+
+Local vertical-slice save data is written to `var/vertical_slice_save.json` by default and is ignored by Git.
