@@ -11,8 +11,9 @@ Use this checklist from the repository root unless a command explicitly says oth
 - The stack expects TLS certificates before Nginx can start.
 - Use `--env-file infra/.env` with Docker Compose commands from the repo root.
 - The backend health check currently verifies liveness via `/health`; it does not yet verify database migration revision.
-- The vertical-slice save file defaults to `var/vertical_slice_save.json` inside the backend container unless `VT_VERTICAL_SLICE_SAVE_PATH` is set.
+- The vertical-slice save file is stored at `/app/var/vertical_slice_save.json` inside the backend container.
 - PostgreSQL data is persisted in the Docker volume `postgres_data`.
+- Vertical-slice JSON save data is persisted in the Docker volume `vertical_slice_saves`.
 
 ## 1. Droplet prerequisites
 
@@ -147,11 +148,13 @@ HTTP_PORT=80
 HTTPS_PORT=443
 ```
 
-Optional production value if you want vertical-slice saves on a bind mount later:
+The Docker Compose file sets the vertical-slice save path automatically:
 
 ```dotenv
 VT_VERTICAL_SLICE_SAVE_PATH=/app/var/vertical_slice_save.json
 ```
+
+You normally do not need to add this to `infra/.env` unless you are overriding the Compose defaults.
 
 Generate secrets:
 
@@ -244,6 +247,7 @@ Expected:
 - Services: `postgres`, `backend`, `nginx`.
 - Ports include `80:80` and `443:443`.
 - Nginx cert volume maps `./certs` to `/etc/nginx/certs`.
+- Backend mounts the named volume `vertical_slice_saves` at `/app/var`.
 
 ### 6.2 Build backend image
 
@@ -329,6 +333,13 @@ Expected:
 - `postgres` is healthy.
 - `backend` is healthy.
 - `nginx` is running.
+- Docker volumes include `postgres_data` and `vertical_slice_saves`.
+
+Verify volumes:
+
+```bash
+docker volume ls | grep -E 'postgres_data|vertical_slice_saves'
+```
 
 ## 9. Service verification
 
@@ -479,6 +490,13 @@ chmod 700 backups
 
 ### 11.2 Run backup
 
+The backup script writes:
+
+- A PostgreSQL dump: `postgres-YYYYMMDDTHHMMSSZ.dump`
+- A vertical-slice JSON save copy: `vertical-slice-save-YYYYMMDDTHHMMSSZ.json`
+
+The JSON save backup is skipped if no player save file exists yet.
+
 The backup script reads `POSTGRES_USER` and `POSTGRES_DB` from the shell, so export env first:
 
 ```bash
@@ -498,6 +516,7 @@ Expected:
 
 - A file named like `postgres-YYYYMMDDTHHMMSSZ.dump`.
 - File size is greater than zero.
+- After the vertical-slice smoke test has created progress, a file named like `vertical-slice-save-YYYYMMDDTHHMMSSZ.json`.
 
 ### 11.3 Verify backup integrity
 
@@ -505,6 +524,14 @@ Expected:
 docker compose --env-file infra/.env -f infra/docker-compose.yml exec -T postgres \
   pg_restore --list < "$(ls -t backups/postgres-*.dump | head -n 1)" >/tmp/latest-backup-list.txt
 test -s /tmp/latest-backup-list.txt
+```
+
+After the vertical-slice smoke test, verify the JSON save backup:
+
+```bash
+latest_save="$(ls -t backups/vertical-slice-save-*.json | head -n 1)"
+test -s "$latest_save"
+python3 -m json.tool "$latest_save" >/tmp/latest-save-check.json
 ```
 
 ### 11.4 Schedule backups
@@ -580,4 +607,5 @@ docker compose --env-file infra/.env -f infra/docker-compose.yml up -d backend n
 - [ ] Vertical-slice smoke test passes.
 - [ ] Backup file is created.
 - [ ] Backup dump can be listed with `pg_restore --list`.
+- [ ] Vertical-slice JSON save backup is created after smoke-test progress exists.
 - [ ] Backup schedule is configured.

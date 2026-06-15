@@ -27,6 +27,9 @@ services:
       VT_DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-game}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in infra/.env}@postgres:5432/${POSTGRES_DB:-game}
       VT_DEBUG: ${VT_DEBUG:-false}
       VT_JWT_SECRET: ${VT_JWT_SECRET:?Set VT_JWT_SECRET in infra/.env}
+      VT_VERTICAL_SLICE_SAVE_PATH: /app/var/vertical_slice_save.json
+    volumes:
+      - vertical_slice_saves:/app/var
     depends_on:
       postgres:
         condition: service_healthy
@@ -68,3 +71,4 @@ services:
 
 volumes:
   postgres_data:
+  vertical_slice_saves:

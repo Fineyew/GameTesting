@@ -99,4 +99,4 @@ The current playable loop is intentionally small:
 
 This loop supports one account, one playable character, one starting zone, one NPC, one quest, one enemy, three starter spells, XP gain, leveling, inventory rewards, save/load, logout, and persisted login.
 
-Local vertical-slice save data is written to `var/vertical_slice_save.json` by default and is ignored by Git.
+Local vertical-slice save data is written to `var/vertical_slice_save.json` by default and is ignored by Git. Docker deployments mount `/app/var` to the `vertical_slice_saves` named volume so the JSON save survives backend container recreation.
