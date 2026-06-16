@@ -12,8 +12,8 @@ COPY backend /app/backend
 COPY content /app/content
 
 RUN adduser --disabled-password --gecos "" appuser && chown -R appuser:appuser /app
-USER appuser
 
 EXPOSE 8000
 
+ENTRYPOINT ["python", "/app/backend/entrypoint.py"]
 CMD ["uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8000"]
