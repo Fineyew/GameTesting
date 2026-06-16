@@ -14,8 +14,12 @@ docker compose -f "${COMPOSE_FILE}" exec -T postgres pg_dump \
   -U "${POSTGRES_USER:-game}" \
   -d "${POSTGRES_DB:-game}" \
   --format=custom \
-  --no-owner \
-  --file=- > "${POSTGRES_OUTPUT}"
+  --no-owner > "${POSTGRES_OUTPUT}"
+
+if [ ! -s "${POSTGRES_OUTPUT}" ]; then
+  echo "PostgreSQL backup is empty: ${POSTGRES_OUTPUT}" >&2
+  exit 1
+fi
 
 if docker compose -f "${COMPOSE_FILE}" exec -T backend test -s "${VERTICAL_SLICE_SAVE_PATH}"; then
   docker compose -f "${COMPOSE_FILE}" exec -T backend \
