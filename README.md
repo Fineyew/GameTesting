@@ -104,10 +104,10 @@ Local vertical-slice save data is written to `var/vertical_slice_save.json` by d
 
 ## Godot vertical-slice client
 
-Open `godot_project/project.godot` in Godot 4.x and press Play. The current main scene is a simple debug UI for the deployed backend at:
+Open `godot_project/project.godot` in Godot 4.x and press Play. The current main scene is a simple vertical-slice client for the deployed backend at:
 
 ```text
 https://game.surveyroute.work/api/v1
 ```
 
-The screen can register/login, create a character, enter the world, accept the starter quest, fight the starter enemy, save, logout, and display the returned character state.
+The client has an auth screen, character creation screen, readable character/quest/inventory HUD, and a placeholder 3D Dawnreef field with player, NPC, and enemy markers. It can register/login, create a character, enter the world, accept the starter quest, fight the starter enemy, save, logout, and display the current character state.
