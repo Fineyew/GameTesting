@@ -4,21 +4,31 @@ const DEFAULT_API_URL := "https://game.surveyroute.work/api/v1"
 const STARTER_QUEST_KEY := "lantern_well_first_light"
 const STARTER_ENEMY_KEY := "fog_thorn_lurker"
 const STARTER_SPELL_KEY := "root_snare"
+const PLAYER_SPEED := 4.0
+const INTERACTION_RANGE := 1.5
+const NPC_POSITION := Vector3(-3, 0.5, -1.6)
+const ENEMY_POSITION := Vector3(3, 0.5, -1.8)
 
 var account := {}
 var character := {}
 var access_token := ""
+var world_active := false
 
 var root: VBoxContainer
 var auth_screen: VBoxContainer
 var character_screen: VBoxContainer
 var world_screen: HSplitContainer
+var player_marker: MeshInstance3D
+var camera: Camera3D
 var api_url_input: LineEdit
 var email_input: LineEdit
 var password_input: LineEdit
 var display_name_input: LineEdit
 var character_name_input: LineEdit
 var status_label: Label
+var interaction_label: Label
+var talk_button: Button
+var fight_button: Button
 var character_summary: RichTextLabel
 var quest_summary: RichTextLabel
 var inventory_summary: RichTextLabel
@@ -29,6 +39,13 @@ func _ready() -> void:
     ApiClient.request_failed.connect(_on_request_failed)
     _build_ui()
     _set_status("Ready. Register or login to begin.")
+
+
+func _process(delta: float) -> void:
+    if not world_active or player_marker == null:
+        return
+    _move_player(delta)
+    _update_interaction_prompt()
 
 
 func _build_ui() -> void:
@@ -128,6 +145,10 @@ func _build_world_screen() -> void:
     hud_title.add_theme_font_size_override("font_size", 22)
     hud.add_child(hud_title)
 
+    interaction_label = Label.new()
+    interaction_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    hud.add_child(interaction_label)
+
     character_summary = _rich_panel()
     quest_summary = _rich_panel()
     inventory_summary = _rich_panel()
@@ -138,13 +159,22 @@ func _build_world_screen() -> void:
     hud.add_child(quest_summary)
     hud.add_child(inventory_summary)
 
-    hud.add_child(_button_row([
+    var action_row := _button_row([
         ["Refresh World", Callable(self, "_on_enter_world_pressed")],
-        ["Accept Quest", Callable(self, "_on_accept_quest_pressed")],
-        ["Fight Enemy", Callable(self, "_on_fight_enemy_pressed")],
         ["Save", Callable(self, "_on_save_pressed")],
         ["Logout", Callable(self, "_on_logout_pressed")],
-    ]))
+    ])
+    hud.add_child(action_row)
+
+    talk_button = Button.new()
+    talk_button.text = "Talk to Mara"
+    talk_button.pressed.connect(Callable(self, "_on_accept_quest_pressed"))
+    hud.add_child(talk_button)
+
+    fight_button = Button.new()
+    fight_button.text = "Fight Fog-Thorn"
+    fight_button.pressed.connect(Callable(self, "_on_fight_enemy_pressed"))
+    hud.add_child(fight_button)
 
     hud.add_child(event_log)
 
@@ -158,7 +188,7 @@ func _build_placeholder_world(viewport: SubViewport) -> void:
     light.light_energy = 2.0
     world.add_child(light)
 
-    var camera := Camera3D.new()
+    camera = Camera3D.new()
     camera.position = Vector3(0, 7, 9)
     camera.rotation_degrees = Vector3(-38, 0, 0)
     camera.current = true
@@ -171,12 +201,13 @@ func _build_placeholder_world(viewport: SubViewport) -> void:
     ground.material_override = _material(Color(0.24, 0.45, 0.34))
     world.add_child(ground)
 
-    _add_marker(world, "Player", Vector3(0, 0.7, 0), Color(0.3, 0.65, 1.0), CapsuleMesh.new())
-    _add_marker(world, "Mara NPC", Vector3(-3, 0.5, -1.6), Color(1.0, 0.78, 0.25), SphereMesh.new())
-    _add_marker(world, "Fog-Thorn Enemy", Vector3(3, 0.5, -1.8), Color(0.8, 0.25, 0.25), BoxMesh.new())
+    player_marker = _add_marker(world, "Player", Vector3(0, 0.7, 0), Color(0.3, 0.65, 1.0), CapsuleMesh.new())
+    _add_marker(world, "Mara NPC", NPC_POSITION, Color(1.0, 0.78, 0.25), SphereMesh.new())
+    _add_marker(world, "Fog-Thorn Enemy", ENEMY_POSITION, Color(0.8, 0.25, 0.25), BoxMesh.new())
+    _update_interaction_prompt()
 
 
-func _add_marker(world: Node3D, label_text: String, position: Vector3, color: Color, mesh: Mesh) -> void:
+func _add_marker(world: Node3D, label_text: String, position: Vector3, color: Color, mesh: Mesh) -> MeshInstance3D:
     var marker := MeshInstance3D.new()
     marker.name = label_text
     marker.position = position
@@ -190,6 +221,7 @@ func _add_marker(world: Node3D, label_text: String, position: Vector3, color: Co
     label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
     label.modulate = Color.WHITE
     world.add_child(label)
+    return marker
 
 
 func _material(color: Color) -> StandardMaterial3D:
@@ -226,6 +258,51 @@ func _button_row(buttons: Array) -> HBoxContainer:
         button.pressed.connect(button_data[1])
         row.add_child(button)
     return row
+
+
+func _move_player(delta: float) -> void:
+    var direction := Vector3.ZERO
+    if Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP):
+        direction.z -= 1.0
+    if Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN):
+        direction.z += 1.0
+    if Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT):
+        direction.x -= 1.0
+    if Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT):
+        direction.x += 1.0
+
+    if direction == Vector3.ZERO:
+        return
+
+    direction = direction.normalized()
+    player_marker.position += direction * PLAYER_SPEED * delta
+    player_marker.position.x = clamp(player_marker.position.x, -5.5, 5.5)
+    player_marker.position.z = clamp(player_marker.position.z, -5.5, 5.5)
+    camera.position.x = player_marker.position.x
+    camera.position.z = player_marker.position.z + 9.0
+
+
+func _update_interaction_prompt() -> void:
+    if interaction_label == null or player_marker == null:
+        return
+
+    var near_npc := _is_player_near(NPC_POSITION)
+    var near_enemy := _is_player_near(ENEMY_POSITION)
+    talk_button.visible = near_npc
+    fight_button.visible = near_enemy
+
+    if near_npc:
+        interaction_label.text = "Near Mara Lanternwright. Press Talk to accept the starter quest."
+    elif near_enemy:
+        interaction_label.text = "Near Fog-Thorn Lurker. Press Fight to resolve combat."
+    else:
+        interaction_label.text = "Move with WASD or arrow keys. Walk to Mara or the Fog-Thorn marker."
+
+
+func _is_player_near(target: Vector3) -> bool:
+    var player_position := Vector2(player_marker.position.x, player_marker.position.z)
+    var target_position := Vector2(target.x, target.z)
+    return player_position.distance_to(target_position) <= INTERACTION_RANGE
 
 
 func _rich_panel() -> RichTextLabel:
@@ -385,12 +462,14 @@ func _require_character() -> bool:
 
 
 func _show_auth_screen() -> void:
+    world_active = false
     auth_screen.visible = true
     character_screen.visible = false
     world_screen.visible = false
 
 
 func _show_character_screen() -> void:
+    world_active = false
     auth_screen.visible = false
     character_screen.visible = true
     world_screen.visible = false
@@ -400,6 +479,8 @@ func _show_world_screen() -> void:
     auth_screen.visible = false
     character_screen.visible = false
     world_screen.visible = true
+    world_active = true
+    _update_interaction_prompt()
 
 
 func _show_character_state(message: String) -> void:
