@@ -101,3 +101,13 @@ The current playable loop is intentionally small:
 This loop supports one account, one playable character, one starting zone, one NPC, one quest, one enemy, three starter spells, XP gain, leveling, inventory rewards, save/load, logout, and persisted login.
 
 Local vertical-slice save data is written to `var/vertical_slice_save.json` by default and is ignored by Git. Docker deployments mount `/app/var` to the `vertical_slice_saves` named volume so the JSON save survives backend container recreation.
+
+## Godot vertical-slice client
+
+Open `godot_project/project.godot` in Godot 4.x and press Play. The current main scene is a simple debug UI for the deployed backend at:
+
+```text
+https://game.surveyroute.work/api/v1
+```
+
+The screen can register/login, create a character, enter the world, accept the starter quest, fight the starter enemy, save, logout, and display the returned character state.
