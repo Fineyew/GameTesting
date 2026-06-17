@@ -4,6 +4,9 @@ const DEFAULT_API_URL := "https://game.surveyroute.work/api/v1"
 const STARTER_QUEST_KEY := "lantern_well_first_light"
 const STARTER_ENEMY_KEY := "fog_thorn_lurker"
 const STARTER_SPELL_KEY := "root_snare"
+const SPELL_GLIMMER_SPARK := "glimmer_spark"
+const SPELL_ROOT_SNARE := "root_snare"
+const SPELL_TIDE_MEND := "tide_mend"
 const PLAYER_SPEED := 4.0
 const INTERACTION_RANGE := 1.5
 const NPC_POSITION := Vector3(-3, 0.5, -1.6)
@@ -19,6 +22,7 @@ var auth_screen: VBoxContainer
 var character_screen: VBoxContainer
 var world_screen: HSplitContainer
 var player_marker: MeshInstance3D
+var enemy_marker: MeshInstance3D
 var camera: Camera3D
 var api_url_input: LineEdit
 var email_input: LineEdit
@@ -29,6 +33,10 @@ var status_label: Label
 var interaction_label: Label
 var talk_button: Button
 var fight_button: Button
+var dialogue_panel: PanelContainer
+var dialogue_text: RichTextLabel
+var combat_panel: PanelContainer
+var combat_text: RichTextLabel
 var character_summary: RichTextLabel
 var quest_summary: RichTextLabel
 var inventory_summary: RichTextLabel
@@ -168,15 +176,43 @@ func _build_world_screen() -> void:
 
     talk_button = Button.new()
     talk_button.text = "Talk to Mara"
-    talk_button.pressed.connect(Callable(self, "_on_accept_quest_pressed"))
+    talk_button.pressed.connect(Callable(self, "_open_dialogue_panel"))
     hud.add_child(talk_button)
 
     fight_button = Button.new()
     fight_button.text = "Fight Fog-Thorn"
-    fight_button.pressed.connect(Callable(self, "_on_fight_enemy_pressed"))
+    fight_button.pressed.connect(Callable(self, "_open_combat_panel"))
     hud.add_child(fight_button)
 
+    dialogue_panel = _panel_box()
+    var dialogue_layout := VBoxContainer.new()
+    dialogue_layout.add_theme_constant_override("separation", 8)
+    dialogue_panel.add_child(dialogue_layout)
+    dialogue_text = _rich_panel()
+    dialogue_layout.add_child(dialogue_text)
+    dialogue_layout.add_child(_button_row([
+        ["Accept Quest", Callable(self, "_on_accept_quest_pressed")],
+        ["Close", Callable(self, "_close_dialogue_panel")],
+    ]))
+    hud.add_child(dialogue_panel)
+
+    combat_panel = _panel_box()
+    var combat_layout := VBoxContainer.new()
+    combat_layout.add_theme_constant_override("separation", 8)
+    combat_panel.add_child(combat_layout)
+    combat_text = _rich_panel()
+    combat_layout.add_child(combat_text)
+    combat_layout.add_child(_button_row([
+        ["Glimmer Spark", Callable(self, "_on_cast_glimmer_spark")],
+        ["Root Snare", Callable(self, "_on_cast_root_snare")],
+        ["Tide Mend", Callable(self, "_on_cast_tide_mend")],
+        ["Close", Callable(self, "_close_combat_panel")],
+    ]))
+    hud.add_child(combat_panel)
+
     hud.add_child(event_log)
+    _close_dialogue_panel()
+    _close_combat_panel()
 
 
 func _build_placeholder_world(viewport: SubViewport) -> void:
@@ -203,7 +239,7 @@ func _build_placeholder_world(viewport: SubViewport) -> void:
 
     player_marker = _add_marker(world, "Player", Vector3(0, 0.7, 0), Color(0.3, 0.65, 1.0), CapsuleMesh.new())
     _add_marker(world, "Mara NPC", NPC_POSITION, Color(1.0, 0.78, 0.25), SphereMesh.new())
-    _add_marker(world, "Fog-Thorn Enemy", ENEMY_POSITION, Color(0.8, 0.25, 0.25), BoxMesh.new())
+    enemy_marker = _add_marker(world, "Fog-Thorn Enemy", ENEMY_POSITION, Color(0.8, 0.25, 0.25), BoxMesh.new())
     _update_interaction_prompt()
 
 
@@ -260,6 +296,12 @@ func _button_row(buttons: Array) -> HBoxContainer:
     return row
 
 
+func _panel_box() -> PanelContainer:
+    var panel := PanelContainer.new()
+    panel.visible = false
+    return panel
+
+
 func _move_player(delta: float) -> void:
     var direction := Vector3.ZERO
     if Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP):
@@ -283,7 +325,7 @@ func _move_player(delta: float) -> void:
 
 
 func _update_interaction_prompt() -> void:
-    if interaction_label == null or player_marker == null:
+    if interaction_label == null or player_marker == null or talk_button == null or fight_button == null:
         return
 
     var near_npc := _is_player_near(NPC_POSITION)
@@ -292,11 +334,13 @@ func _update_interaction_prompt() -> void:
     fight_button.visible = near_enemy
 
     if near_npc:
-        interaction_label.text = "Near Mara Lanternwright. Press Talk to accept the starter quest."
+        interaction_label.text = "Near Mara Lanternwright. Press Talk to open dialogue."
     elif near_enemy:
-        interaction_label.text = "Near Fog-Thorn Lurker. Press Fight to resolve combat."
+        interaction_label.text = "Near Fog-Thorn Lurker. Press Fight to choose a spell."
     else:
         interaction_label.text = "Move with WASD or arrow keys. Walk to Mara or the Fog-Thorn marker."
+        _close_dialogue_panel()
+        _close_combat_panel()
 
 
 func _is_player_near(target: Vector3) -> bool:
@@ -365,6 +409,7 @@ func _on_accept_quest_pressed() -> void:
     if not _require_character():
         return
     _set_status("Accepting quest...")
+    _close_dialogue_panel()
     var response := await ApiClient.post_json(
         "/world/characters/%s/quests/%s/accept" % [character["id"], STARTER_QUEST_KEY],
         {}
@@ -376,22 +421,40 @@ func _on_accept_quest_pressed() -> void:
 
 
 func _on_fight_enemy_pressed() -> void:
+    await _fight_with_spell(STARTER_SPELL_KEY)
+
+
+func _on_cast_glimmer_spark() -> void:
+    await _fight_with_spell(SPELL_GLIMMER_SPARK)
+
+
+func _on_cast_root_snare() -> void:
+    await _fight_with_spell(SPELL_ROOT_SNARE)
+
+
+func _on_cast_tide_mend() -> void:
+    await _fight_with_spell(SPELL_TIDE_MEND)
+
+
+func _fight_with_spell(spell_key: String) -> void:
     if not _require_character():
         return
-    _set_status("Fighting enemy...")
+    _set_status("Casting %s..." % _spell_name(spell_key))
     var response := await ApiClient.post_json(
         "/world/characters/%s/combat/fight" % character["id"],
         {
             "enemy_key": STARTER_ENEMY_KEY,
-            "spell_key": STARTER_SPELL_KEY,
+            "spell_key": spell_key,
         }
     )
     if response.is_empty():
         return
     if response.has("character"):
         character = response["character"]
-    _show_character_state("Fight complete.")
+    _show_character_state("%s resolved." % _spell_name(spell_key))
+    combat_text.text = "[b]Combat Result[/b]\n%s" % _fight_summary(response)
     _set_event_log(_fight_summary(response))
+    await _pulse_enemy_marker()
 
 
 func _on_save_pressed() -> void:
@@ -414,6 +477,8 @@ func _on_logout_pressed() -> void:
     account = {}
     character = {}
     ApiClient.set_session(api_url_input.text, "")
+    _close_dialogue_panel()
+    _close_combat_panel()
     _show_auth_screen()
     _set_event_log(JSON.stringify(response, "\t"))
 
@@ -483,6 +548,41 @@ func _show_world_screen() -> void:
     _update_interaction_prompt()
 
 
+func _open_dialogue_panel() -> void:
+    _close_combat_panel()
+    dialogue_panel.visible = true
+    dialogue_text.text = (
+        "[b]Mara Lanternwright[/b]\n"
+        + "\"The Lantern Well is fading. If you can drive off the fog-thorn lurker, "
+        + "Dawnreef gets one more safe night.\"\n\n"
+        + "Quest: First Light at the Lantern Well"
+    )
+    _set_status("Talking with Mara.")
+
+
+func _close_dialogue_panel() -> void:
+    if dialogue_panel != null:
+        dialogue_panel.visible = false
+
+
+func _open_combat_panel() -> void:
+    _close_dialogue_panel()
+    combat_panel.visible = true
+    combat_text.text = (
+        "[b]Fog-Thorn Lurker[/b]\n"
+        + "Choose a spell.\n\n"
+        + "Glimmer Spark: direct luminous strike.\n"
+        + "Root Snare: reliable starter attack.\n"
+        + "Tide Mend: restore vigor, then counterattack."
+    )
+    _set_status("Choose a combat action.")
+
+
+func _close_combat_panel() -> void:
+    if combat_panel != null:
+        combat_panel.visible = false
+
+
 func _show_character_state(message: String) -> void:
     _set_status(message)
     _refresh_hud()
@@ -545,6 +645,28 @@ func _fight_summary(response: Dictionary) -> String:
         response.get("quest_completed", "-"),
         response.get("rewards", {}),
     ]
+
+
+func _spell_name(spell_key: String) -> String:
+    match spell_key:
+        SPELL_GLIMMER_SPARK:
+            return "Glimmer Spark"
+        SPELL_ROOT_SNARE:
+            return "Root Snare"
+        SPELL_TIDE_MEND:
+            return "Tide Mend"
+        _:
+            return spell_key
+
+
+func _pulse_enemy_marker() -> void:
+    if enemy_marker == null:
+        return
+    var original_scale := enemy_marker.scale
+    enemy_marker.scale = original_scale * 1.35
+    await get_tree().create_timer(0.16).timeout
+    if enemy_marker != null:
+        enemy_marker.scale = original_scale
 
 
 func _format_dict(value: Dictionary) -> String:
