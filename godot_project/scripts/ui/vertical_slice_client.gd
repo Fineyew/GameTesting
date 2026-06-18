@@ -16,6 +16,7 @@ var account := {}
 var character := {}
 var access_token := ""
 var world_active := false
+var touch_move := Vector2.ZERO
 
 var root: VBoxContainer
 var auth_screen: VBoxContainer
@@ -33,6 +34,7 @@ var status_label: Label
 var interaction_label: Label
 var talk_button: Button
 var fight_button: Button
+var dialogue_accept_button: Button
 var dialogue_panel: PanelContainer
 var dialogue_text: RichTextLabel
 var combat_panel: PanelContainer
@@ -167,6 +169,13 @@ func _build_world_screen() -> void:
     hud.add_child(quest_summary)
     hud.add_child(inventory_summary)
 
+    var movement_hint := Label.new()
+    movement_hint.text = "Move: WASD, arrow keys, or the on-screen controls."
+    movement_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    hud.add_child(movement_hint)
+
+    hud.add_child(_movement_pad())
+
     var action_row := _button_row([
         ["Refresh World", Callable(self, "_on_enter_world_pressed")],
         ["Save", Callable(self, "_on_save_pressed")],
@@ -190,10 +199,17 @@ func _build_world_screen() -> void:
     dialogue_panel.add_child(dialogue_layout)
     dialogue_text = _rich_panel()
     dialogue_layout.add_child(dialogue_text)
-    dialogue_layout.add_child(_button_row([
-        ["Accept Quest", Callable(self, "_on_accept_quest_pressed")],
-        ["Close", Callable(self, "_close_dialogue_panel")],
-    ]))
+    var dialogue_actions := HBoxContainer.new()
+    dialogue_actions.add_theme_constant_override("separation", 8)
+    dialogue_accept_button = Button.new()
+    dialogue_accept_button.text = "Accept Quest"
+    dialogue_accept_button.pressed.connect(Callable(self, "_on_accept_quest_pressed"))
+    dialogue_actions.add_child(dialogue_accept_button)
+    var close_dialogue_button := Button.new()
+    close_dialogue_button.text = "Close"
+    close_dialogue_button.pressed.connect(Callable(self, "_close_dialogue_panel"))
+    dialogue_actions.add_child(close_dialogue_button)
+    dialogue_layout.add_child(dialogue_actions)
     hud.add_child(dialogue_panel)
 
     combat_panel = _panel_box()
@@ -296,6 +312,45 @@ func _button_row(buttons: Array) -> HBoxContainer:
     return row
 
 
+func _movement_pad() -> GridContainer:
+    var pad := GridContainer.new()
+    pad.columns = 3
+
+    pad.add_child(_pad_spacer())
+    pad.add_child(_movement_button("Up", Vector2(0, -1)))
+    pad.add_child(_pad_spacer())
+    pad.add_child(_movement_button("Left", Vector2(-1, 0)))
+    pad.add_child(_pad_spacer())
+    pad.add_child(_movement_button("Right", Vector2(1, 0)))
+    pad.add_child(_pad_spacer())
+    pad.add_child(_movement_button("Down", Vector2(0, 1)))
+    pad.add_child(_pad_spacer())
+    return pad
+
+
+func _movement_button(label_text: String, direction: Vector2) -> Button:
+    var button := Button.new()
+    button.text = label_text
+    button.custom_minimum_size = Vector2(84, 42)
+    button.button_down.connect(func() -> void:
+        touch_move = _clamp_touch_move(touch_move + direction)
+    )
+    button.button_up.connect(func() -> void:
+        touch_move = _clamp_touch_move(touch_move - direction)
+    )
+    return button
+
+
+func _pad_spacer() -> Control:
+    var spacer := Control.new()
+    spacer.custom_minimum_size = Vector2(84, 42)
+    return spacer
+
+
+func _clamp_touch_move(value: Vector2) -> Vector2:
+    return Vector2(clamp(value.x, -1.0, 1.0), clamp(value.y, -1.0, 1.0))
+
+
 func _panel_box() -> PanelContainer:
     var panel := PanelContainer.new()
     panel.visible = false
@@ -312,6 +367,8 @@ func _move_player(delta: float) -> void:
         direction.x -= 1.0
     if Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT):
         direction.x += 1.0
+    direction.x += touch_move.x
+    direction.z += touch_move.y
 
     if direction == Vector3.ZERO:
         return
@@ -528,6 +585,7 @@ func _require_character() -> bool:
 
 func _show_auth_screen() -> void:
     world_active = false
+    touch_move = Vector2.ZERO
     auth_screen.visible = true
     character_screen.visible = false
     world_screen.visible = false
@@ -535,6 +593,7 @@ func _show_auth_screen() -> void:
 
 func _show_character_screen() -> void:
     world_active = false
+    touch_move = Vector2.ZERO
     auth_screen.visible = false
     character_screen.visible = true
     world_screen.visible = false
@@ -551,12 +610,29 @@ func _show_world_screen() -> void:
 func _open_dialogue_panel() -> void:
     _close_combat_panel()
     dialogue_panel.visible = true
-    dialogue_text.text = (
-        "[b]Mara Lanternwright[/b]\n"
-        + "\"The Lantern Well is fading. If you can drive off the fog-thorn lurker, "
-        + "Dawnreef gets one more safe night.\"\n\n"
-        + "Quest: First Light at the Lantern Well"
-    )
+    var quest_state := _starter_quest_state()
+    if quest_state == "completed":
+        dialogue_text.text = (
+            "[b]Mara Lanternwright[/b]\n"
+            + "\"The well is steady again. Dawnreef owes you a lantern kept burning.\"\n\n"
+            + "Quest complete."
+        )
+        dialogue_accept_button.visible = false
+    elif quest_state == "accepted":
+        dialogue_text.text = (
+            "[b]Mara Lanternwright[/b]\n"
+            + "\"The fog-thorn lurker still nests by the reeds. Drive it away and return safe.\"\n\n"
+            + "Quest in progress."
+        )
+        dialogue_accept_button.visible = false
+    else:
+        dialogue_text.text = (
+            "[b]Mara Lanternwright[/b]\n"
+            + "\"The Lantern Well is fading. If you can drive off the fog-thorn lurker, "
+            + "Dawnreef gets one more safe night.\"\n\n"
+            + "Quest: First Light at the Lantern Well"
+        )
+        dialogue_accept_button.visible = true
     _set_status("Talking with Mara.")
 
 
@@ -568,13 +644,20 @@ func _close_dialogue_panel() -> void:
 func _open_combat_panel() -> void:
     _close_dialogue_panel()
     combat_panel.visible = true
-    combat_text.text = (
-        "[b]Fog-Thorn Lurker[/b]\n"
-        + "Choose a spell.\n\n"
-        + "Glimmer Spark: direct luminous strike.\n"
-        + "Root Snare: reliable starter attack.\n"
-        + "Tide Mend: restore vigor, then counterattack."
-    )
+    if _starter_quest_state() == "completed":
+        combat_text.text = (
+            "[b]Fog-Thorn Lurker[/b]\n"
+            + "This threat has already been pushed back. You can still test spells, "
+            + "but the starter quest reward has already been claimed."
+        )
+    else:
+        combat_text.text = (
+            "[b]Fog-Thorn Lurker[/b]\n"
+            + "Choose a spell.\n\n"
+            + "Glimmer Spark: direct luminous strike.\n"
+            + "Root Snare: reliable starter attack.\n"
+            + "Tide Mend: restore vigor, then counterattack."
+        )
     _set_status("Choose a combat action.")
 
 
@@ -593,6 +676,15 @@ func _refresh_hud() -> void:
     character_summary.text = _character_summary()
     quest_summary.text = _quest_summary()
     inventory_summary.text = _inventory_summary()
+    _refresh_world_feedback()
+
+
+func _refresh_world_feedback() -> void:
+    if enemy_marker != null:
+        if _starter_quest_state() == "completed":
+            enemy_marker.material_override = _material(Color(0.35, 0.35, 0.35))
+        else:
+            enemy_marker.material_override = _material(Color(0.8, 0.25, 0.25))
 
 
 func _character_summary() -> String:
@@ -616,6 +708,14 @@ func _quest_summary() -> String:
         quest.get("state", "unknown"),
         objectives.get("defeat_fog_thorn_lurker", 0),
     ]
+
+
+func _starter_quest_state() -> String:
+    var quests: Dictionary = character.get("quest_state", {}) as Dictionary
+    if not quests.has(STARTER_QUEST_KEY):
+        return "not_accepted"
+    var quest: Dictionary = quests[STARTER_QUEST_KEY] as Dictionary
+    return str(quest.get("state", "unknown"))
 
 
 func _inventory_summary() -> String:
