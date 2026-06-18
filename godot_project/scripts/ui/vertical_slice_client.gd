@@ -11,6 +11,13 @@ const PLAYER_SPEED := 4.0
 const INTERACTION_RANGE := 1.5
 const NPC_POSITION := Vector3(-3, 0.5, -1.6)
 const ENEMY_POSITION := Vector3(3, 0.5, -1.8)
+const COLOR_BG := Color(0.08, 0.10, 0.16)
+const COLOR_PANEL := Color(0.12, 0.14, 0.22, 0.94)
+const COLOR_PANEL_ACCENT := Color(0.21, 0.18, 0.32, 0.96)
+const COLOR_GOLD := Color(1.0, 0.76, 0.32)
+const COLOR_TEXT := Color(0.93, 0.90, 0.82)
+const COLOR_BUTTON := Color(0.25, 0.22, 0.38)
+const COLOR_BUTTON_HOVER := Color(0.36, 0.30, 0.52)
 
 var account := {}
 var character := {}
@@ -59,6 +66,11 @@ func _process(delta: float) -> void:
 
 
 func _build_ui() -> void:
+    var background := ColorRect.new()
+    background.color = COLOR_BG
+    background.set_anchors_preset(Control.PRESET_FULL_RECT)
+    add_child(background)
+
     root = VBoxContainer.new()
     root.set_anchors_preset(Control.PRESET_FULL_RECT)
     root.offset_left = 24
@@ -69,12 +81,14 @@ func _build_ui() -> void:
     add_child(root)
 
     var title := Label.new()
-    title.text = "Veilbound Tides - Vertical Slice Client"
+    title.text = "Veilbound Tides - Dawnreef Atoll"
     title.add_theme_font_size_override("font_size", 28)
+    title.add_theme_color_override("font_color", COLOR_GOLD)
     root.add_child(title)
 
     status_label = Label.new()
     status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    status_label.add_theme_color_override("font_color", COLOR_TEXT)
     root.add_child(status_label)
 
     _build_auth_screen()
@@ -90,6 +104,7 @@ func _build_auth_screen() -> void:
 
     var description := Label.new()
     description.text = "Connect to the deployed backend, then register or login."
+    description.add_theme_color_override("font_color", COLOR_TEXT)
     auth_screen.add_child(description)
 
     api_url_input = _line_edit(DEFAULT_API_URL, "API base URL")
@@ -118,6 +133,7 @@ func _build_character_screen() -> void:
 
     var description := Label.new()
     description.text = "Create the first playable character for this account."
+    description.add_theme_color_override("font_color", COLOR_TEXT)
     character_screen.add_child(description)
 
     character_name_input = _line_edit("Ari%s" % Time.get_unix_time_from_system(), "Character name")
@@ -138,6 +154,7 @@ func _build_world_screen() -> void:
     viewport_container.stretch = true
     viewport_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     viewport_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
+    viewport_container.add_theme_stylebox_override("panel", _style_box(Color(0.05, 0.07, 0.12), 10))
     world_screen.add_child(viewport_container)
 
     var viewport := SubViewport.new()
@@ -153,10 +170,12 @@ func _build_world_screen() -> void:
     var hud_title := Label.new()
     hud_title.text = "Dawnreef Field HUD"
     hud_title.add_theme_font_size_override("font_size", 22)
+    hud_title.add_theme_color_override("font_color", COLOR_GOLD)
     hud.add_child(hud_title)
 
     interaction_label = Label.new()
     interaction_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    interaction_label.add_theme_color_override("font_color", COLOR_TEXT)
     hud.add_child(interaction_label)
 
     character_summary = _rich_panel()
@@ -172,6 +191,7 @@ func _build_world_screen() -> void:
     var movement_hint := Label.new()
     movement_hint.text = "Move: WASD, arrow keys, or the on-screen controls."
     movement_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    movement_hint.add_theme_color_override("font_color", COLOR_TEXT)
     hud.add_child(movement_hint)
 
     hud.add_child(_movement_pad())
@@ -235,6 +255,16 @@ func _build_placeholder_world(viewport: SubViewport) -> void:
     var world := Node3D.new()
     viewport.add_child(world)
 
+    var environment := WorldEnvironment.new()
+    var env := Environment.new()
+    env.background_mode = Environment.BG_COLOR
+    env.background_color = Color(0.12, 0.18, 0.28)
+    env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+    env.ambient_light_color = Color(0.55, 0.62, 0.78)
+    env.ambient_light_energy = 0.7
+    environment.environment = env
+    world.add_child(environment)
+
     var light := DirectionalLight3D.new()
     light.rotation_degrees = Vector3(-55, 35, 0)
     light.light_energy = 2.0
@@ -252,6 +282,17 @@ func _build_placeholder_world(viewport: SubViewport) -> void:
     ground.mesh = plane
     ground.material_override = _material(Color(0.24, 0.45, 0.34))
     world.add_child(ground)
+
+    _add_box_prop(world, "Glimmerdeep Water", Vector3(0, -0.04, 0), Vector3(13.0, 0.04, 13.0), Color(0.05, 0.20, 0.32))
+    _add_box_prop(world, "Dawnreef Walkway", Vector3(0, 0.02, -1.65), Vector3(7.2, 0.05, 0.8), Color(0.78, 0.64, 0.42))
+    _add_box_prop(world, "Lantern Well Base", Vector3(0, 0.18, -1.65), Vector3(1.2, 0.34, 1.2), Color(0.32, 0.30, 0.38))
+    _add_box_prop(world, "Lantern Well Light", Vector3(0, 0.85, -1.65), Vector3(0.42, 0.9, 0.42), Color(1.0, 0.78, 0.25))
+
+    for offset in [-4.8, -4.1, 4.1, 4.8]:
+        _add_box_prop(world, "Sunthread Reeds", Vector3(offset, 0.35, 1.7), Vector3(0.16, 0.7, 0.16), Color(0.86, 0.68, 0.30))
+
+    _add_box_prop(world, "Blue Veil Crystal", Vector3(-2.2, 0.55, 2.4), Vector3(0.32, 1.1, 0.32), Color(0.32, 0.75, 1.0))
+    _add_box_prop(world, "Violet Veil Crystal", Vector3(2.2, 0.45, 2.1), Vector3(0.28, 0.9, 0.28), Color(0.72, 0.44, 1.0))
 
     player_marker = _add_marker(world, "Player", Vector3(0, 0.7, 0), Color(0.3, 0.65, 1.0), CapsuleMesh.new())
     _add_marker(world, "Mara NPC", NPC_POSITION, Color(1.0, 0.78, 0.25), SphereMesh.new())
@@ -276,6 +317,17 @@ func _add_marker(world: Node3D, label_text: String, position: Vector3, color: Co
     return marker
 
 
+func _add_box_prop(world: Node3D, prop_name: String, position: Vector3, scale_value: Vector3, color: Color) -> MeshInstance3D:
+    var prop := MeshInstance3D.new()
+    prop.name = prop_name
+    prop.position = position
+    prop.scale = scale_value
+    prop.mesh = BoxMesh.new()
+    prop.material_override = _material(color)
+    world.add_child(prop)
+    return prop
+
+
 func _material(color: Color) -> StandardMaterial3D:
     var material := StandardMaterial3D.new()
     material.albedo_color = color
@@ -288,6 +340,10 @@ func _line_edit(text: String, placeholder: String) -> LineEdit:
     input.text = text
     input.placeholder_text = placeholder
     input.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    input.add_theme_stylebox_override("normal", _style_box(Color(0.06, 0.07, 0.11), 6))
+    input.add_theme_stylebox_override("focus", _style_box(Color(0.10, 0.11, 0.18), 6))
+    input.add_theme_color_override("font_color", COLOR_TEXT)
+    input.add_theme_color_override("font_placeholder_color", Color(0.65, 0.62, 0.58))
     return input
 
 
@@ -296,6 +352,7 @@ func _labeled_row(label_text: String, input: Control) -> HBoxContainer:
     var label := Label.new()
     label.text = label_text
     label.custom_minimum_size = Vector2(110, 0)
+    label.add_theme_color_override("font_color", COLOR_TEXT)
     row.add_child(label)
     row.add_child(input)
     return row
@@ -307,9 +364,31 @@ func _button_row(buttons: Array) -> HBoxContainer:
     for button_data in buttons:
         var button := Button.new()
         button.text = button_data[0]
+        _style_button(button)
         button.pressed.connect(button_data[1])
         row.add_child(button)
     return row
+
+
+func _style_button(button: Button) -> void:
+    button.add_theme_stylebox_override("normal", _style_box(COLOR_BUTTON, 8))
+    button.add_theme_stylebox_override("hover", _style_box(COLOR_BUTTON_HOVER, 8))
+    button.add_theme_stylebox_override("pressed", _style_box(Color(0.18, 0.16, 0.28), 8))
+    button.add_theme_color_override("font_color", COLOR_TEXT)
+    button.add_theme_color_override("font_hover_color", Color.WHITE)
+
+
+func _style_box(color: Color, radius: int) -> StyleBoxFlat:
+    var box := StyleBoxFlat.new()
+    box.bg_color = color
+    box.border_color = Color(0.75, 0.58, 0.28, 0.65)
+    box.set_border_width_all(1)
+    box.set_corner_radius_all(radius)
+    box.set_content_margin(SIDE_LEFT, 10)
+    box.set_content_margin(SIDE_RIGHT, 10)
+    box.set_content_margin(SIDE_TOP, 8)
+    box.set_content_margin(SIDE_BOTTOM, 8)
+    return box
 
 
 func _movement_pad() -> GridContainer:
@@ -332,6 +411,7 @@ func _movement_button(label_text: String, direction: Vector2) -> Button:
     var button := Button.new()
     button.text = label_text
     button.custom_minimum_size = Vector2(84, 42)
+    _style_button(button)
     button.button_down.connect(func() -> void:
         touch_move = _clamp_touch_move(touch_move + direction)
     )
@@ -354,6 +434,7 @@ func _clamp_touch_move(value: Vector2) -> Vector2:
 func _panel_box() -> PanelContainer:
     var panel := PanelContainer.new()
     panel.visible = false
+    panel.add_theme_stylebox_override("panel", _style_box(COLOR_PANEL_ACCENT, 10))
     return panel
 
 
@@ -412,6 +493,8 @@ func _rich_panel() -> RichTextLabel:
     panel.fit_content = true
     panel.scroll_active = true
     panel.custom_minimum_size = Vector2(0, 90)
+    panel.add_theme_stylebox_override("normal", _style_box(COLOR_PANEL, 10))
+    panel.add_theme_color_override("default_color", COLOR_TEXT)
     return panel
 
 
