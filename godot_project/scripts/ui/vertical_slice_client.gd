@@ -37,6 +37,10 @@ var email_input: LineEdit
 var password_input: LineEdit
 var display_name_input: LineEdit
 var character_name_input: LineEdit
+var ancestry_option: OptionButton
+var origin_option: OptionButton
+var character_card: RichTextLabel
+var enter_world_button: Button
 var status_label: Label
 var interaction_label: Label
 var talk_button: Button
@@ -81,7 +85,7 @@ func _build_ui() -> void:
     add_child(root)
 
     var title := Label.new()
-    title.text = "Veilbound Tides - Dawnreef Atoll"
+    title.text = "Veilbound Tides"
     title.add_theme_font_size_override("font_size", 28)
     title.add_theme_color_override("font_color", COLOR_GOLD)
     root.add_child(title)
@@ -102,8 +106,14 @@ func _build_auth_screen() -> void:
     auth_screen.add_theme_constant_override("separation", 10)
     root.add_child(auth_screen)
 
+    var gateway_title := Label.new()
+    gateway_title.text = "Wayfarer Account Gateway"
+    gateway_title.add_theme_font_size_override("font_size", 22)
+    gateway_title.add_theme_color_override("font_color", COLOR_GOLD)
+    auth_screen.add_child(gateway_title)
+
     var description := Label.new()
-    description.text = "Connect to the deployed backend, then register or login."
+    description.text = "Enter Auralis through a live account. New Wayfarers register; returning players login to continue saved progress."
     description.add_theme_color_override("font_color", COLOR_TEXT)
     auth_screen.add_child(description)
 
@@ -131,16 +141,53 @@ func _build_character_screen() -> void:
     character_screen.add_theme_constant_override("separation", 10)
     root.add_child(character_screen)
 
+    var lobby_title := Label.new()
+    lobby_title.text = "Wayfarer Hall"
+    lobby_title.add_theme_font_size_override("font_size", 22)
+    lobby_title.add_theme_color_override("font_color", COLOR_GOLD)
+    character_screen.add_child(lobby_title)
+
     var description := Label.new()
-    description.text = "Create the first playable character for this account."
+    description.text = "Choose a saved Wayfarer or create the first character for this account."
     description.add_theme_color_override("font_color", COLOR_TEXT)
     character_screen.add_child(description)
+
+    character_card = _rich_panel()
+    character_screen.add_child(character_card)
 
     character_name_input = _line_edit("Ari%s" % Time.get_unix_time_from_system(), "Character name")
     character_screen.add_child(_labeled_row("Character", character_name_input))
 
+    ancestry_option = OptionButton.new()
+    ancestry_option.add_item("Lumenfolk", 0)
+    ancestry_option.set_item_metadata(0, "lumenfolk")
+    ancestry_option.add_item("Brindlekin", 1)
+    ancestry_option.set_item_metadata(1, "brindlekin")
+    ancestry_option.add_item("Orran", 2)
+    ancestry_option.set_item_metadata(2, "orran")
+    ancestry_option.add_item("Tideveiled", 3)
+    ancestry_option.set_item_metadata(3, "tideveiled")
+    _style_option_button(ancestry_option)
+    character_screen.add_child(_labeled_row("People", ancestry_option))
+
+    origin_option = OptionButton.new()
+    origin_option.add_item("Dawnreef Local", 0)
+    origin_option.set_item_metadata(0, "dawnreef_local")
+    origin_option.add_item("Glasswake Apprentice", 1)
+    origin_option.set_item_metadata(1, "glasswake_apprentice")
+    origin_option.add_item("Rootbound Scout", 2)
+    origin_option.set_item_metadata(2, "rootbound_scout")
+    _style_option_button(origin_option)
+    character_screen.add_child(_labeled_row("Origin", origin_option))
+
+    enter_world_button = Button.new()
+    enter_world_button.text = "Enter World"
+    enter_world_button.pressed.connect(Callable(self, "_on_enter_world_pressed"))
+    _style_button(enter_world_button)
+    character_screen.add_child(enter_world_button)
+
     character_screen.add_child(_button_row([
-        ["Create Character", Callable(self, "_on_create_character_pressed")],
+        ["Create New Character", Callable(self, "_on_create_character_pressed")],
         ["Logout", Callable(self, "_on_logout_pressed")],
     ]))
 
@@ -168,7 +215,7 @@ func _build_world_screen() -> void:
     world_screen.add_child(hud)
 
     var hud_title := Label.new()
-    hud_title.text = "Dawnreef Field HUD"
+    hud_title.text = "Dawnreef Commons"
     hud_title.add_theme_font_size_override("font_size", 22)
     hud_title.add_theme_color_override("font_color", COLOR_GOLD)
     hud.add_child(hud_title)
@@ -278,21 +325,33 @@ func _build_placeholder_world(viewport: SubViewport) -> void:
 
     var ground := MeshInstance3D.new()
     var plane := PlaneMesh.new()
-    plane.size = Vector2(12, 12)
+    plane.size = Vector2(22, 22)
     ground.mesh = plane
     ground.material_override = _material(Color(0.24, 0.45, 0.34))
     world.add_child(ground)
 
-    _add_box_prop(world, "Glimmerdeep Water", Vector3(0, -0.04, 0), Vector3(13.0, 0.04, 13.0), Color(0.05, 0.20, 0.32))
-    _add_box_prop(world, "Dawnreef Walkway", Vector3(0, 0.02, -1.65), Vector3(7.2, 0.05, 0.8), Color(0.78, 0.64, 0.42))
+    _add_box_prop(world, "Glimmerdeep Water", Vector3(0, -0.06, 0), Vector3(24.0, 0.04, 24.0), Color(0.05, 0.20, 0.32))
+    _add_box_prop(world, "Dawnreef Main Walkway", Vector3(0, 0.02, -1.65), Vector3(9.2, 0.05, 0.8), Color(0.78, 0.64, 0.42))
+    _add_box_prop(world, "North Reef Path", Vector3(0, 0.025, 2.2), Vector3(1.0, 0.05, 5.6), Color(0.70, 0.58, 0.38))
+    _add_box_prop(world, "West Market Path", Vector3(-4.0, 0.025, 0.6), Vector3(3.6, 0.05, 0.7), Color(0.70, 0.58, 0.38))
+    _add_box_prop(world, "East Training Path", Vector3(4.0, 0.025, 0.6), Vector3(3.6, 0.05, 0.7), Color(0.70, 0.58, 0.38))
     _add_box_prop(world, "Lantern Well Base", Vector3(0, 0.18, -1.65), Vector3(1.2, 0.34, 1.2), Color(0.32, 0.30, 0.38))
     _add_box_prop(world, "Lantern Well Light", Vector3(0, 0.85, -1.65), Vector3(0.42, 0.9, 0.42), Color(1.0, 0.78, 0.25))
 
-    for offset in [-4.8, -4.1, 4.1, 4.8]:
+    _add_box_prop(world, "Welcome Arch Left", Vector3(-1.4, 0.8, -4.6), Vector3(0.24, 1.6, 0.24), Color(0.42, 0.30, 0.48))
+    _add_box_prop(world, "Welcome Arch Right", Vector3(1.4, 0.8, -4.6), Vector3(0.24, 1.6, 0.24), Color(0.42, 0.30, 0.48))
+    _add_box_prop(world, "Welcome Arch Top", Vector3(0, 1.65, -4.6), Vector3(1.65, 0.18, 0.22), Color(0.50, 0.35, 0.58))
+    _add_box_prop(world, "Training Ring", Vector3(5.4, 0.04, 0.6), Vector3(1.2, 0.06, 1.2), Color(0.55, 0.35, 0.28))
+    _add_box_prop(world, "Market Awning", Vector3(-5.4, 0.7, 0.6), Vector3(1.3, 0.18, 0.9), Color(0.82, 0.42, 0.36))
+
+    for offset in [-6.4, -5.7, -4.8, -4.1, 4.1, 4.8, 5.7, 6.4]:
         _add_box_prop(world, "Sunthread Reeds", Vector3(offset, 0.35, 1.7), Vector3(0.16, 0.7, 0.16), Color(0.86, 0.68, 0.30))
 
     _add_box_prop(world, "Blue Veil Crystal", Vector3(-2.2, 0.55, 2.4), Vector3(0.32, 1.1, 0.32), Color(0.32, 0.75, 1.0))
     _add_box_prop(world, "Violet Veil Crystal", Vector3(2.2, 0.45, 2.1), Vector3(0.28, 0.9, 0.28), Color(0.72, 0.44, 1.0))
+    _add_label(world, "Dawnreef Commons", Vector3(0, 1.2, -4.6), COLOR_GOLD)
+    _add_label(world, "Market", Vector3(-5.4, 1.25, 0.6), Color.WHITE)
+    _add_label(world, "Training Ring", Vector3(5.4, 1.15, 0.6), Color.WHITE)
 
     player_marker = _add_marker(world, "Player", Vector3(0, 0.7, 0), Color(0.3, 0.65, 1.0), CapsuleMesh.new())
     _add_marker(world, "Mara NPC", NPC_POSITION, Color(1.0, 0.78, 0.25), SphereMesh.new())
@@ -315,6 +374,16 @@ func _add_marker(world: Node3D, label_text: String, position: Vector3, color: Co
     label.modulate = Color.WHITE
     world.add_child(label)
     return marker
+
+
+func _add_label(world: Node3D, text: String, position: Vector3, color: Color) -> Label3D:
+    var label := Label3D.new()
+    label.text = text
+    label.position = position
+    label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+    label.modulate = color
+    world.add_child(label)
+    return label
 
 
 func _add_box_prop(world: Node3D, prop_name: String, position: Vector3, scale_value: Vector3, color: Color) -> MeshInstance3D:
@@ -376,6 +445,17 @@ func _style_button(button: Button) -> void:
     button.add_theme_stylebox_override("pressed", _style_box(Color(0.18, 0.16, 0.28), 8))
     button.add_theme_color_override("font_color", COLOR_TEXT)
     button.add_theme_color_override("font_hover_color", Color.WHITE)
+
+
+func _style_option_button(option: OptionButton) -> void:
+    option.add_theme_stylebox_override("normal", _style_box(Color(0.06, 0.07, 0.11), 6))
+    option.add_theme_stylebox_override("hover", _style_box(COLOR_BUTTON_HOVER, 6))
+    option.add_theme_color_override("font_color", COLOR_TEXT)
+
+
+func _selected_metadata(option: OptionButton) -> String:
+    var metadata = option.get_item_metadata(option.selected)
+    return str(metadata)
 
 
 func _style_box(color: Color, radius: int) -> StyleBoxFlat:
@@ -456,8 +536,8 @@ func _move_player(delta: float) -> void:
 
     direction = direction.normalized()
     player_marker.position += direction * PLAYER_SPEED * delta
-    player_marker.position.x = clamp(player_marker.position.x, -5.5, 5.5)
-    player_marker.position.z = clamp(player_marker.position.z, -5.5, 5.5)
+    player_marker.position.x = clamp(player_marker.position.x, -9.5, 9.5)
+    player_marker.position.z = clamp(player_marker.position.z, -9.5, 9.5)
     camera.position.x = player_marker.position.x
     camera.position.z = player_marker.position.z + 9.0
 
@@ -525,12 +605,14 @@ func _on_create_character_pressed() -> void:
     _set_status("Creating character...")
     var response := await ApiClient.post_json("/characters", {
         "name": character_name_input.text,
+        "ancestry_key": _selected_metadata(ancestry_option),
+        "origin_key": _selected_metadata(origin_option),
     })
     if response.is_empty():
         return
     character = response
-    _show_world_screen()
-    _show_character_state("Character created.")
+    _show_character_screen()
+    _refresh_character_lobby("Character created. Enter the world when ready.")
 
 
 func _on_enter_world_pressed() -> void:
@@ -640,10 +722,11 @@ func _load_existing_character_or_show_create(message: String) -> void:
         var characters: Array = response["data"]
         if not characters.is_empty():
             character = characters[0]
-            await _on_enter_world_pressed()
+            _show_character_screen()
+            _refresh_character_lobby("%s Character loaded." % message)
             return
     _show_character_screen()
-    _set_status("%s Create a character to enter Dawnreef." % message)
+    _refresh_character_lobby("%s Create a character to enter Dawnreef." % message)
 
 
 func _configure_api(token: String) -> void:
@@ -680,6 +763,7 @@ func _show_character_screen() -> void:
     auth_screen.visible = false
     character_screen.visible = true
     world_screen.visible = false
+    _refresh_character_lobby(status_label.text)
 
 
 func _show_world_screen() -> void:
@@ -688,6 +772,34 @@ func _show_world_screen() -> void:
     world_screen.visible = true
     world_active = true
     _update_interaction_prompt()
+
+
+func _refresh_character_lobby(message: String) -> void:
+    _set_status(message)
+    if character_card == null or enter_world_button == null:
+        return
+
+    var has_character := not character.is_empty() and character.has("id")
+    enter_world_button.visible = has_character
+    if has_character:
+        character_card.text = (
+            "[b]Saved Wayfarer[/b]\n"
+            + "Name: %s\nPeople: %s\nOrigin: %s\nLevel: %s\nXP: %s\nZone: %s\n\n"
+            + "Progress is retained on the server. Press Enter World to continue."
+        ) % [
+            character.get("name", "-"),
+            character.get("ancestry_key", "-"),
+            character.get("origin_key", "-"),
+            character.get("level", "-"),
+            character.get("experience", "-"),
+            character.get("current_zone_key", "-"),
+        ]
+    else:
+        character_card.text = (
+            "[b]No character found[/b]\n"
+            + "Create your first Wayfarer. The art can be replaced later, but this flow "
+            + "is the foundation for public account and character retention."
+        )
 
 
 func _open_dialogue_panel() -> void:
