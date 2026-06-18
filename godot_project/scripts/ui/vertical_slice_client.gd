@@ -11,6 +11,10 @@ const PLAYER_SPEED := 4.0
 const INTERACTION_RANGE := 1.5
 const NPC_POSITION := Vector3(-3, 0.5, -1.6)
 const ENEMY_POSITION := Vector3(3, 0.5, -1.8)
+const TRAVEL_GATE_POSITION := Vector3(0, 0.5, 6.2)
+const MARKET_GUIDE_POSITION := Vector3(-6.2, 0.5, 0.6)
+const TRAINER_POSITION := Vector3(6.2, 0.5, 0.6)
+const DOCK_GUIDE_POSITION := Vector3(0, 0.5, 8.2)
 const COLOR_BG := Color(0.08, 0.10, 0.16)
 const COLOR_PANEL := Color(0.12, 0.14, 0.22, 0.94)
 const COLOR_PANEL_ACCENT := Color(0.21, 0.18, 0.32, 0.96)
@@ -24,14 +28,18 @@ var character := {}
 var access_token := ""
 var world_active := false
 var touch_move := Vector2.ZERO
+var joystick_touching := false
 
 var root: VBoxContainer
+var splash_screen: VBoxContainer
 var auth_screen: VBoxContainer
 var character_screen: VBoxContainer
 var world_screen: VBoxContainer
 var player_marker: MeshInstance3D
 var enemy_marker: MeshInstance3D
 var camera: Camera3D
+var viewport_container: SubViewportContainer
+var joystick_knob: ColorRect
 var api_url_input: LineEdit
 var email_input: LineEdit
 var password_input: LineEdit
@@ -43,6 +51,9 @@ var character_card: RichTextLabel
 var enter_world_button: Button
 var status_label: Label
 var interaction_label: Label
+var profile_label: RichTextLabel
+var minimap_label: RichTextLabel
+var quest_tracker_label: RichTextLabel
 var talk_button: Button
 var fight_button: Button
 var dialogue_accept_button: Button
@@ -50,6 +61,7 @@ var dialogue_panel: PanelContainer
 var dialogue_text: RichTextLabel
 var combat_panel: PanelContainer
 var combat_text: RichTextLabel
+var secondary_tray: GridContainer
 var character_summary: RichTextLabel
 var quest_summary: RichTextLabel
 var inventory_summary: RichTextLabel
@@ -98,7 +110,34 @@ func _build_ui() -> void:
     _build_auth_screen()
     _build_character_screen()
     _build_world_screen()
-    _show_auth_screen()
+    _build_splash_screen()
+    _show_splash_screen()
+
+
+func _build_splash_screen() -> void:
+    splash_screen = VBoxContainer.new()
+    splash_screen.add_theme_constant_override("separation", 14)
+    root.add_child(splash_screen)
+
+    var logo := Label.new()
+    logo.text = "VEILBOUND TIDES"
+    logo.add_theme_font_size_override("font_size", 34)
+    logo.add_theme_color_override("font_color", COLOR_GOLD)
+    splash_screen.add_child(logo)
+
+    var tagline := Label.new()
+    tagline.text = "Auralis awaits beyond the lantern reefs."
+    tagline.add_theme_font_size_override("font_size", 18)
+    tagline.add_theme_color_override("font_color", COLOR_TEXT)
+    tagline.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    splash_screen.add_child(tagline)
+
+    var start_button := Button.new()
+    start_button.text = "Tap to Begin"
+    start_button.custom_minimum_size = Vector2(260, 60)
+    _style_button(start_button)
+    start_button.pressed.connect(Callable(self, "_show_auth_screen"))
+    splash_screen.add_child(start_button)
 
 
 func _build_auth_screen() -> void:
@@ -198,12 +237,30 @@ func _build_world_screen() -> void:
     world_screen.add_theme_constant_override("separation", 8)
     root.add_child(world_screen)
 
-    var viewport_container := SubViewportContainer.new()
+    var top_hud := HBoxContainer.new()
+    top_hud.add_theme_constant_override("separation", 8)
+    world_screen.add_child(top_hud)
+
+    profile_label = _compact_panel()
+    profile_label.custom_minimum_size = Vector2(260, 80)
+    top_hud.add_child(profile_label)
+
+    quest_tracker_label = _compact_panel()
+    quest_tracker_label.custom_minimum_size = Vector2(360, 80)
+    quest_tracker_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    top_hud.add_child(quest_tracker_label)
+
+    minimap_label = _compact_panel()
+    minimap_label.custom_minimum_size = Vector2(180, 80)
+    top_hud.add_child(minimap_label)
+
+    viewport_container = SubViewportContainer.new()
     viewport_container.stretch = true
     viewport_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     viewport_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
     viewport_container.custom_minimum_size = Vector2(0, 320)
     viewport_container.add_theme_stylebox_override("panel", _style_box(Color(0.05, 0.07, 0.12), 10))
+    viewport_container.gui_input.connect(Callable(self, "_on_world_view_input"))
     world_screen.add_child(viewport_container)
 
     var viewport := SubViewport.new()
@@ -251,7 +308,7 @@ func _build_world_screen() -> void:
     movement_hint.add_theme_color_override("font_color", COLOR_TEXT)
     controls_bar.add_child(movement_hint)
 
-    controls_bar.add_child(_movement_pad())
+    controls_bar.add_child(_virtual_joystick())
 
     var action_row := _button_row([
         ["Refresh World", Callable(self, "_on_enter_world_pressed")],
@@ -313,6 +370,11 @@ func _build_world_screen() -> void:
     _close_dialogue_panel()
     _close_combat_panel()
 
+    world_screen.add_child(_bottom_action_bar())
+    secondary_tray = _secondary_tray()
+    secondary_tray.visible = false
+    world_screen.add_child(secondary_tray)
+
 
 func _build_placeholder_world(viewport: SubViewport) -> void:
     var world := Node3D.new()
@@ -365,13 +427,26 @@ func _build_placeholder_world(viewport: SubViewport) -> void:
 
     _add_box_prop(world, "Blue Veil Crystal", Vector3(-2.2, 0.55, 2.4), Vector3(0.32, 1.1, 0.32), Color(0.32, 0.75, 1.0))
     _add_box_prop(world, "Violet Veil Crystal", Vector3(2.2, 0.45, 2.1), Vector3(0.28, 0.9, 0.28), Color(0.72, 0.44, 1.0))
+    _add_box_prop(world, "Travel Gate Pillar A", Vector3(-0.9, 0.95, 6.2), Vector3(0.28, 1.9, 0.28), Color(0.30, 0.62, 0.92))
+    _add_box_prop(world, "Travel Gate Pillar B", Vector3(0.9, 0.95, 6.2), Vector3(0.28, 1.9, 0.28), Color(0.30, 0.62, 0.92))
+    _add_box_prop(world, "Travel Gate Glow", TRAVEL_GATE_POSITION + Vector3(0, 0.85, 0), Vector3(0.75, 1.3, 0.12), Color(0.42, 0.88, 1.0))
+    _add_box_prop(world, "Dock Planks", Vector3(0, 0.03, 8.4), Vector3(2.4, 0.05, 1.2), Color(0.46, 0.34, 0.22))
+    _add_box_prop(world, "Crafting Canopy", Vector3(-2.8, 0.75, 4.0), Vector3(1.2, 0.16, 0.8), Color(0.36, 0.62, 0.42))
+    _add_box_prop(world, "Residential Lantern", Vector3(2.9, 0.8, 4.0), Vector3(0.32, 1.1, 0.32), Color(1.0, 0.66, 0.22))
     _add_label(world, "Dawnreef Commons", Vector3(0, 1.2, -4.6), COLOR_GOLD)
     _add_label(world, "Market", Vector3(-5.4, 1.25, 0.6), Color.WHITE)
     _add_label(world, "Training Ring", Vector3(5.4, 1.15, 0.6), Color.WHITE)
+    _add_label(world, "Travel Gate", TRAVEL_GATE_POSITION + Vector3(0, 1.8, 0), Color(0.58, 0.9, 1.0))
+    _add_label(world, "Docks", DOCK_GUIDE_POSITION + Vector3(0, 1.4, 0), Color.WHITE)
+    _add_label(world, "Crafting Quarter", Vector3(-2.8, 1.3, 4.0), Color.WHITE)
 
     player_marker = _add_marker(world, "Player", Vector3(0, 0.7, 0), Color(0.3, 0.65, 1.0), CapsuleMesh.new())
     _add_marker(world, "Mara NPC", NPC_POSITION, Color(1.0, 0.78, 0.25), SphereMesh.new())
     enemy_marker = _add_marker(world, "Fog-Thorn Enemy", ENEMY_POSITION, Color(0.8, 0.25, 0.25), BoxMesh.new())
+    _add_marker(world, "Tallo Reedcart", MARKET_GUIDE_POSITION, Color(0.95, 0.45, 0.28), SphereMesh.new())
+    _add_marker(world, "Instructor Veyra", TRAINER_POSITION, Color(0.56, 0.42, 1.0), CapsuleMesh.new())
+    _add_marker(world, "Guide Pella", DOCK_GUIDE_POSITION, Color(0.35, 0.85, 0.82), SphereMesh.new())
+    _add_marker(world, "Gatekeeper Orris", TRAVEL_GATE_POSITION, Color(0.42, 0.8, 1.0), CapsuleMesh.new())
     _update_interaction_prompt()
 
 
@@ -454,6 +529,106 @@ func _button_row(buttons: Array) -> HBoxContainer:
         button.pressed.connect(button_data[1])
         row.add_child(button)
     return row
+
+
+func _bottom_action_bar() -> HBoxContainer:
+    var bar := HBoxContainer.new()
+    bar.add_theme_constant_override("separation", 8)
+    bar.add_theme_stylebox_override("panel", _style_box(Color(0.07, 0.08, 0.13, 0.96), 12))
+    var slots := [
+        ["Spark", Callable(self, "_on_cast_glimmer_spark")],
+        ["Snare", Callable(self, "_on_cast_root_snare")],
+        ["Mend", Callable(self, "_on_cast_tide_mend")],
+        ["Quest", Callable(self, "_open_dialogue_panel")],
+        ["Map", Callable(self, "_focus_travel_gate")],
+        ["Menu", Callable(self, "_show_stub_menu")],
+    ]
+    for slot in slots:
+        var button := Button.new()
+        button.text = slot[0]
+        button.custom_minimum_size = Vector2(96, 58)
+        _style_button(button)
+        button.pressed.connect(slot[1])
+        bar.add_child(button)
+    return bar
+
+
+func _secondary_tray() -> GridContainer:
+    var tray := GridContainer.new()
+    tray.columns = 4
+    tray.add_theme_constant_override("h_separation", 8)
+    tray.add_theme_constant_override("v_separation", 8)
+    var entries := [
+        "Inventory",
+        "Character",
+        "Collections",
+        "Mounts",
+        "Friends",
+        "Mail",
+        "Settings",
+        "Nearby",
+    ]
+    for entry in entries:
+        var entry_name: String = entry
+        var button := Button.new()
+        button.text = entry_name
+        button.custom_minimum_size = Vector2(132, 48)
+        _style_button(button)
+        button.pressed.connect(func() -> void:
+            _set_event_log("[b]%s[/b]\nThis mobile MMO menu is reserved for the next backend/client milestone." % entry_name)
+        )
+        tray.add_child(button)
+    return tray
+
+
+func _virtual_joystick() -> PanelContainer:
+    var panel := PanelContainer.new()
+    panel.custom_minimum_size = Vector2(170, 170)
+    panel.add_theme_stylebox_override("panel", _style_box(Color(0.06, 0.08, 0.13, 0.78), 85))
+    panel.gui_input.connect(Callable(self, "_on_joystick_input"))
+
+    var center := CenterContainer.new()
+    panel.add_child(center)
+    joystick_knob = ColorRect.new()
+    joystick_knob.color = Color(0.55, 0.72, 1.0, 0.85)
+    joystick_knob.custom_minimum_size = Vector2(54, 54)
+    center.add_child(joystick_knob)
+    return panel
+
+
+func _on_joystick_input(event: InputEvent) -> void:
+    if event is InputEventMouseButton:
+        joystick_touching = event.pressed
+        if not joystick_touching:
+            touch_move = Vector2.ZERO
+            return
+    if event is InputEventMouseMotion or event is InputEventMouseButton:
+        var local_event = event as InputEvent
+        var event_position := Vector2.ZERO
+        if local_event is InputEventMouseMotion:
+            event_position = (local_event as InputEventMouseMotion).position
+        elif local_event is InputEventMouseButton:
+            event_position = (local_event as InputEventMouseButton).position
+        var center := Vector2(85, 85)
+        var delta := (event_position - center) / 70.0
+        touch_move = _clamp_touch_move(delta)
+
+
+func _on_world_view_input(event: InputEvent) -> void:
+    if not world_active or camera == null:
+        return
+    if event is InputEventMouseButton and event.pressed:
+        var position := (event as InputEventMouseButton).position
+        if position.distance_to(camera.unproject_position(NPC_POSITION)) < 58.0:
+            _open_dialogue_panel()
+        elif position.distance_to(camera.unproject_position(ENEMY_POSITION)) < 58.0:
+            _open_combat_panel()
+        elif position.distance_to(camera.unproject_position(TRAVEL_GATE_POSITION)) < 58.0:
+            _set_event_log("[b]Travel Gate[/b]\nThe gate hums softly. Region travel will unlock in a later milestone.")
+        elif position.distance_to(camera.unproject_position(MARKET_GUIDE_POSITION)) < 58.0:
+            _set_event_log("[b]Tallo Reedcart[/b]\n\"Fresh wraps, reedcloth, and lantern oil. Shops are coming soon.\"")
+        elif position.distance_to(camera.unproject_position(TRAINER_POSITION)) < 58.0:
+            _set_event_log("[b]Instructor Veyra[/b]\n\"Keep your stance loose. Your next ability unlocks after more training.\"")
 
 
 func _style_button(button: Button) -> void:
@@ -874,6 +1049,9 @@ func _show_character_state(message: String) -> void:
 
 
 func _refresh_hud() -> void:
+    profile_label.text = _profile_summary()
+    quest_tracker_label.text = _quest_tracker_summary()
+    minimap_label.text = _minimap_summary()
     character_summary.text = _character_summary()
     quest_summary.text = _quest_summary()
     inventory_summary.text = _inventory_summary()
@@ -896,6 +1074,34 @@ func _character_summary() -> String:
         character.get("current_zone_key", "-"),
         character.get("vigor", "-"),
         _join_values(character.get("known_spells", []) as Array),
+    ]
+
+
+func _profile_summary() -> String:
+    return "[b]%s[/b]\nLv %s Wayfarer\nHP %s/30  Energy 3/3\nXP %s" % [
+        character.get("name", "Wayfarer"),
+        character.get("level", "-"),
+        character.get("vigor", "-"),
+        character.get("experience", "-"),
+    ]
+
+
+func _quest_tracker_summary() -> String:
+    var state := _starter_quest_state()
+    var objective := "Talk to Mara"
+    if state == "accepted":
+        objective = "Defeat Fog-Thorn Lurker"
+    elif state == "completed":
+        objective = "Completed"
+    return "[b]Tracked Quest[/b]\nFirst Light at the Lantern Well\n%s" % objective
+
+
+func _minimap_summary() -> String:
+    if player_marker == null:
+        return "[b]Mini Map[/b]\nDawnreef"
+    return "[b]Mini Map[/b]\nDawnreef Commons\nPlayer %.1f, %.1f\nZoom + / -" % [
+        player_marker.position.x,
+        player_marker.position.z,
     ]
 
 
@@ -977,6 +1183,21 @@ func _format_dict(value: Dictionary) -> String:
     for key in value.keys():
         parts.append("%s x%s" % [key, value[key]])
     return _join_values(parts)
+
+
+func _focus_travel_gate() -> void:
+    if player_marker != null:
+        player_marker.position = TRAVEL_GATE_POSITION + Vector3(0, 0.2, -1.0)
+        camera.position.x = player_marker.position.x
+        camera.position.z = player_marker.position.z + 9.0
+        _update_interaction_prompt()
+    _set_event_log("[b]Travel Gate[/b]\nThe gate is visible from the commons. Full region travel is planned for multiplayer expansion.")
+
+
+func _show_stub_menu() -> void:
+    if secondary_tray != null:
+        secondary_tray.visible = not secondary_tray.visible
+    _set_event_log("[b]Menu[/b]\nInventory, Character, Collections, Mounts, Friends, Mail, Settings, and Nearby are stubbed for future MMO systems.")
 
 
 func _join_values(values: Array) -> String:
