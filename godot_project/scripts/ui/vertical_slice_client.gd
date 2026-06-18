@@ -450,37 +450,37 @@ func _build_placeholder_world(viewport: SubViewport) -> void:
     _update_interaction_prompt()
 
 
-func _add_marker(world: Node3D, label_text: String, position: Vector3, color: Color, mesh: Mesh) -> MeshInstance3D:
+func _add_marker(world: Node3D, label_text: String, marker_position: Vector3, color: Color, mesh: Mesh) -> MeshInstance3D:
     var marker := MeshInstance3D.new()
     marker.name = label_text
-    marker.position = position
+    marker.position = marker_position
     marker.mesh = mesh
     marker.material_override = _material(color)
     world.add_child(marker)
 
     var label := Label3D.new()
     label.text = label_text
-    label.position = position + Vector3(0, 1.1, 0)
+    label.position = marker_position + Vector3(0, 1.1, 0)
     label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
     label.modulate = Color.WHITE
     world.add_child(label)
     return marker
 
 
-func _add_label(world: Node3D, text: String, position: Vector3, color: Color) -> Label3D:
+func _add_label(world: Node3D, text: String, label_position: Vector3, color: Color) -> Label3D:
     var label := Label3D.new()
     label.text = text
-    label.position = position
+    label.position = label_position
     label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
     label.modulate = color
     world.add_child(label)
     return label
 
 
-func _add_box_prop(world: Node3D, prop_name: String, position: Vector3, scale_value: Vector3, color: Color) -> MeshInstance3D:
+func _add_box_prop(world: Node3D, prop_name: String, prop_position: Vector3, scale_value: Vector3, color: Color) -> MeshInstance3D:
     var prop := MeshInstance3D.new()
     prop.name = prop_name
-    prop.position = position
+    prop.position = prop_position
     prop.scale = scale_value
     prop.mesh = BoxMesh.new()
     prop.material_override = _material(color)
@@ -489,10 +489,10 @@ func _add_box_prop(world: Node3D, prop_name: String, position: Vector3, scale_va
 
 
 func _material(color: Color) -> StandardMaterial3D:
-    var material := StandardMaterial3D.new()
-    material.albedo_color = color
-    material.roughness = 0.75
-    return material
+    var world_material := StandardMaterial3D.new()
+    world_material.albedo_color = color
+    world_material.roughness = 0.75
+    return world_material
 
 
 func _line_edit(text: String, placeholder: String) -> LineEdit:
@@ -618,16 +618,16 @@ func _on_world_view_input(event: InputEvent) -> void:
     if not world_active or camera == null:
         return
     if event is InputEventMouseButton and event.pressed:
-        var position := (event as InputEventMouseButton).position
-        if position.distance_to(camera.unproject_position(NPC_POSITION)) < 58.0:
+        var click_position := (event as InputEventMouseButton).position
+        if click_position.distance_to(camera.unproject_position(NPC_POSITION)) < 58.0:
             _open_dialogue_panel()
-        elif position.distance_to(camera.unproject_position(ENEMY_POSITION)) < 58.0:
+        elif click_position.distance_to(camera.unproject_position(ENEMY_POSITION)) < 58.0:
             _open_combat_panel()
-        elif position.distance_to(camera.unproject_position(TRAVEL_GATE_POSITION)) < 58.0:
+        elif click_position.distance_to(camera.unproject_position(TRAVEL_GATE_POSITION)) < 58.0:
             _set_event_log("[b]Travel Gate[/b]\nThe gate hums softly. Region travel will unlock in a later milestone.")
-        elif position.distance_to(camera.unproject_position(MARKET_GUIDE_POSITION)) < 58.0:
+        elif click_position.distance_to(camera.unproject_position(MARKET_GUIDE_POSITION)) < 58.0:
             _set_event_log("[b]Tallo Reedcart[/b]\n\"Fresh wraps, reedcloth, and lantern oil. Shops are coming soon.\"")
-        elif position.distance_to(camera.unproject_position(TRAINER_POSITION)) < 58.0:
+        elif click_position.distance_to(camera.unproject_position(TRAINER_POSITION)) < 58.0:
             _set_event_log("[b]Instructor Veyra[/b]\n\"Keep your stance loose. Your next ability unlocks after more training.\"")
 
 
@@ -756,6 +756,13 @@ func _rich_panel() -> RichTextLabel:
     panel.custom_minimum_size = Vector2(0, 90)
     panel.add_theme_stylebox_override("normal", _style_box(COLOR_PANEL, 10))
     panel.add_theme_color_override("default_color", COLOR_TEXT)
+    return panel
+
+
+func _compact_panel() -> RichTextLabel:
+    var panel := _rich_panel()
+    panel.fit_content = false
+    panel.custom_minimum_size = Vector2(0, 74)
     return panel
 
 
