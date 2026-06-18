@@ -28,7 +28,7 @@ var touch_move := Vector2.ZERO
 var root: VBoxContainer
 var auth_screen: VBoxContainer
 var character_screen: VBoxContainer
-var world_screen: HSplitContainer
+var world_screen: VBoxContainer
 var player_marker: MeshInstance3D
 var enemy_marker: MeshInstance3D
 var camera: Camera3D
@@ -77,16 +77,16 @@ func _build_ui() -> void:
 
     root = VBoxContainer.new()
     root.set_anchors_preset(Control.PRESET_FULL_RECT)
-    root.offset_left = 24
-    root.offset_top = 24
-    root.offset_right = -24
-    root.offset_bottom = -24
+    root.offset_left = 14
+    root.offset_top = 14
+    root.offset_right = -14
+    root.offset_bottom = -14
     root.add_theme_constant_override("separation", 10)
     add_child(root)
 
     var title := Label.new()
     title.text = "Veilbound Tides"
-    title.add_theme_font_size_override("font_size", 28)
+    title.add_theme_font_size_override("font_size", 24)
     title.add_theme_color_override("font_color", COLOR_GOLD)
     root.add_child(title)
 
@@ -193,14 +193,16 @@ func _build_character_screen() -> void:
 
 
 func _build_world_screen() -> void:
-    world_screen = HSplitContainer.new()
+    world_screen = VBoxContainer.new()
     world_screen.size_flags_vertical = Control.SIZE_EXPAND_FILL
+    world_screen.add_theme_constant_override("separation", 8)
     root.add_child(world_screen)
 
     var viewport_container := SubViewportContainer.new()
     viewport_container.stretch = true
     viewport_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     viewport_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
+    viewport_container.custom_minimum_size = Vector2(0, 320)
     viewport_container.add_theme_stylebox_override("panel", _style_box(Color(0.05, 0.07, 0.12), 10))
     world_screen.add_child(viewport_container)
 
@@ -209,10 +211,22 @@ func _build_world_screen() -> void:
     viewport_container.add_child(viewport)
     _build_placeholder_world(viewport)
 
+    var controls_bar := VBoxContainer.new()
+    controls_bar.add_theme_constant_override("separation", 8)
+    world_screen.add_child(controls_bar)
+
+    var top_action_row := HBoxContainer.new()
+    top_action_row.add_theme_constant_override("separation", 8)
+    controls_bar.add_child(top_action_row)
+
     var hud := VBoxContainer.new()
-    hud.custom_minimum_size = Vector2(420, 0)
     hud.add_theme_constant_override("separation", 10)
-    world_screen.add_child(hud)
+
+    var hud_scroll := ScrollContainer.new()
+    hud_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+    hud_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+    hud_scroll.add_child(hud)
+    world_screen.add_child(hud_scroll)
 
     var hud_title := Label.new()
     hud_title.text = "Dawnreef Commons"
@@ -223,7 +237,7 @@ func _build_world_screen() -> void:
     interaction_label = Label.new()
     interaction_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     interaction_label.add_theme_color_override("font_color", COLOR_TEXT)
-    hud.add_child(interaction_label)
+    controls_bar.add_child(interaction_label)
 
     character_summary = _rich_panel()
     quest_summary = _rich_panel()
@@ -231,34 +245,36 @@ func _build_world_screen() -> void:
     event_log = _rich_panel()
     event_log.size_flags_vertical = Control.SIZE_EXPAND_FILL
 
-    hud.add_child(character_summary)
-    hud.add_child(quest_summary)
-    hud.add_child(inventory_summary)
-
     var movement_hint := Label.new()
     movement_hint.text = "Move: WASD, arrow keys, or the on-screen controls."
     movement_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     movement_hint.add_theme_color_override("font_color", COLOR_TEXT)
-    hud.add_child(movement_hint)
+    controls_bar.add_child(movement_hint)
 
-    hud.add_child(_movement_pad())
+    controls_bar.add_child(_movement_pad())
 
     var action_row := _button_row([
         ["Refresh World", Callable(self, "_on_enter_world_pressed")],
         ["Save", Callable(self, "_on_save_pressed")],
         ["Logout", Callable(self, "_on_logout_pressed")],
     ])
-    hud.add_child(action_row)
+    top_action_row.add_child(action_row)
 
     talk_button = Button.new()
     talk_button.text = "Talk to Mara"
     talk_button.pressed.connect(Callable(self, "_open_dialogue_panel"))
-    hud.add_child(talk_button)
+    _style_button(talk_button)
+    top_action_row.add_child(talk_button)
 
     fight_button = Button.new()
     fight_button.text = "Fight Fog-Thorn"
     fight_button.pressed.connect(Callable(self, "_open_combat_panel"))
-    hud.add_child(fight_button)
+    _style_button(fight_button)
+    top_action_row.add_child(fight_button)
+
+    hud.add_child(character_summary)
+    hud.add_child(quest_summary)
+    hud.add_child(inventory_summary)
 
     dialogue_panel = _panel_box()
     var dialogue_layout := VBoxContainer.new()
@@ -433,6 +449,7 @@ func _button_row(buttons: Array) -> HBoxContainer:
     for button_data in buttons:
         var button := Button.new()
         button.text = button_data[0]
+        button.custom_minimum_size = Vector2(132, 52)
         _style_button(button)
         button.pressed.connect(button_data[1])
         row.add_child(button)
@@ -440,6 +457,7 @@ func _button_row(buttons: Array) -> HBoxContainer:
 
 
 func _style_button(button: Button) -> void:
+    button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     button.add_theme_stylebox_override("normal", _style_box(COLOR_BUTTON, 8))
     button.add_theme_stylebox_override("hover", _style_box(COLOR_BUTTON_HOVER, 8))
     button.add_theme_stylebox_override("pressed", _style_box(Color(0.18, 0.16, 0.28), 8))
@@ -471,26 +489,20 @@ func _style_box(color: Color, radius: int) -> StyleBoxFlat:
     return box
 
 
-func _movement_pad() -> GridContainer:
-    var pad := GridContainer.new()
-    pad.columns = 3
-
-    pad.add_child(_pad_spacer())
-    pad.add_child(_movement_button("Up", Vector2(0, -1)))
-    pad.add_child(_pad_spacer())
+func _movement_pad() -> HBoxContainer:
+    var pad := HBoxContainer.new()
+    pad.add_theme_constant_override("separation", 8)
     pad.add_child(_movement_button("Left", Vector2(-1, 0)))
-    pad.add_child(_pad_spacer())
-    pad.add_child(_movement_button("Right", Vector2(1, 0)))
-    pad.add_child(_pad_spacer())
+    pad.add_child(_movement_button("Up", Vector2(0, -1)))
     pad.add_child(_movement_button("Down", Vector2(0, 1)))
-    pad.add_child(_pad_spacer())
+    pad.add_child(_movement_button("Right", Vector2(1, 0)))
     return pad
 
 
 func _movement_button(label_text: String, direction: Vector2) -> Button:
     var button := Button.new()
     button.text = label_text
-    button.custom_minimum_size = Vector2(84, 42)
+    button.custom_minimum_size = Vector2(112, 54)
     _style_button(button)
     button.button_down.connect(func() -> void:
         touch_move = _clamp_touch_move(touch_move + direction)
@@ -499,12 +511,6 @@ func _movement_button(label_text: String, direction: Vector2) -> Button:
         touch_move = _clamp_touch_move(touch_move - direction)
     )
     return button
-
-
-func _pad_spacer() -> Control:
-    var spacer := Control.new()
-    spacer.custom_minimum_size = Vector2(84, 42)
-    return spacer
 
 
 func _clamp_touch_move(value: Vector2) -> Vector2:
