@@ -930,9 +930,20 @@ func _require_character() -> bool:
     return true
 
 
+func _show_splash_screen() -> void:
+    world_active = false
+    touch_move = Vector2.ZERO
+    splash_screen.visible = true
+    auth_screen.visible = false
+    character_screen.visible = false
+    world_screen.visible = false
+    _set_status("Welcome to Auralis.")
+
+
 func _show_auth_screen() -> void:
     world_active = false
     touch_move = Vector2.ZERO
+    splash_screen.visible = false
     auth_screen.visible = true
     character_screen.visible = false
     world_screen.visible = false
@@ -941,6 +952,7 @@ func _show_auth_screen() -> void:
 func _show_character_screen() -> void:
     world_active = false
     touch_move = Vector2.ZERO
+    splash_screen.visible = false
     auth_screen.visible = false
     character_screen.visible = true
     world_screen.visible = false
@@ -948,6 +960,7 @@ func _show_character_screen() -> void:
 
 
 func _show_world_screen() -> void:
+    splash_screen.visible = false
     auth_screen.visible = false
     character_screen.visible = false
     world_screen.visible = true
