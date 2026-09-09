@@ -8,6 +8,8 @@ var request_timeout_seconds := 15.0
 
 
 func set_session(new_base_url: String, token: String) -> void:
+    base_url = ""
+    access_token = ""
     if not _is_allowed_base_url(new_base_url):
         request_failed.emit("session", 0, "API base URL must use HTTPS outside editor-local testing")
         return
@@ -78,8 +80,10 @@ func _normalize_endpoint(endpoint: String) -> String:
 func _is_allowed_base_url(candidate_url: String) -> bool:
     if candidate_url.begins_with("https://"):
         return true
-    if OS.has_feature("editor"):
-        return candidate_url.begins_with("http://127.0.0.1") or candidate_url.begins_with("http://localhost")
+    if OS.has_feature("editor") or OS.has_feature("debug"):
+        var local = RegEx.new()
+        local.compile("^http://(127\\.0\\.0\\.1|localhost)(:[0-9]+)?(/|$)")
+        return local.search(candidate_url) != null
     return false
 
 

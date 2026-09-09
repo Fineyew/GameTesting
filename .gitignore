@@ -14,3 +14,8 @@ godot_project/.import/
 backups/
 infra/certs/
 var/
+
+builds/
+*.keystore
+*.jks
+export_credentials.cfg
