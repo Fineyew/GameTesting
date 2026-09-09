@@ -14,6 +14,7 @@ class AccountRecord:
     email: str
     display_name: str
     password_hash: str
+    auth_version: int = 0
 
     @classmethod
     def create(cls, email: str, display_name: str, password_hash: str) -> "AccountRecord":
@@ -42,6 +43,13 @@ class CharacterRecord:
     quest_state: dict[str, dict[str, Any]] = field(default_factory=dict)
     defeated_enemies: dict[str, int] = field(default_factory=dict)
 
+    affinity: str = "lanterncraft"
+    appearance: dict[str, str] = field(default_factory=lambda: {"robe": "teal", "skin": "warm"})
+    position: dict[str, float] = field(default_factory=lambda: {"x": 0.0, "z": 4.0})
+    encounter: dict[str, Any] = field(default_factory=dict)
+    command_receipts: dict[str, Any] = field(default_factory=dict)
+    equipment: dict[str, str] = field(default_factory=dict)
+
     @classmethod
     def create(
         cls,
@@ -59,7 +67,10 @@ class CharacterRecord:
         )
 
     def public_state(self) -> dict[str, Any]:
-        return asdict(self)
+        state = asdict(self)
+        state.pop("command_receipts", None)
+        state.pop("account_id", None)
+        return state
 
 
 @dataclass(frozen=True)

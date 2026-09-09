@@ -1,5 +1,7 @@
 import json
 from copy import deepcopy
+from contextlib import contextmanager
+from threading import RLock
 from pathlib import Path
 from typing import Protocol
 
@@ -7,6 +9,9 @@ from backend.app.modules.vertical_slice.domain import AccountRecord, CharacterRe
 
 
 class VerticalSliceStore(Protocol):
+    def transaction(self, character_id: str | None = None):
+        ...
+
     def save_account(self, account: AccountRecord) -> None:
         raise NotImplementedError
 
@@ -31,8 +36,27 @@ class VerticalSliceStore(Protocol):
 
 class InMemoryVerticalSliceStore:
     def __init__(self) -> None:
+        self._lock = RLock()
+        self._in_transaction = False
         self.accounts: dict[str, AccountRecord] = {}
         self.characters: dict[str, CharacterRecord] = {}
+
+    @contextmanager
+    def transaction(self, character_id: str | None = None):
+        with self._lock:
+            if self._in_transaction:
+                yield
+                return
+            before = deepcopy((self.accounts, self.characters))
+            self._in_transaction = True
+            try:
+                yield
+                self._in_transaction = False
+                self.flush()
+            except BaseException:
+                self.accounts, self.characters = before
+                self._in_transaction = False
+                raise
 
     def save_account(self, account: AccountRecord) -> None:
         self.accounts[account.id] = deepcopy(account)
@@ -81,6 +105,8 @@ class JsonVerticalSliceStore(InMemoryVerticalSliceStore):
         self.flush()
 
     def flush(self) -> None:
+        if self._in_transaction:
+            return
         self.path.parent.mkdir(parents=True, exist_ok=True)
         payload = {
             "accounts": [account.__dict__ for account in self.accounts.values()],

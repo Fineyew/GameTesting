@@ -14,10 +14,11 @@ api_router = APIRouter()
 
 
 @api_router.get("/server-info", tags=["server"])
-async def server_info() -> dict[str, str]:
+async def server_info() -> dict[str, str | int]:
     settings = get_settings()
     return {
         "api_version": settings.api_version,
+        "world_protocol": 1,
         "minimum_client_version": settings.minimum_client_version,
         "content_manifest_version": settings.content_manifest_version,
     }

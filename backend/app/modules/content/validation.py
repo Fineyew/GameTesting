@@ -24,6 +24,9 @@ REQUIRED_CONTENT_CATEGORIES = {
 
 KNOWN_EFFECT_TYPES = {
     "deal_damage",
+    "bind",
+    "mark",
+    "guard",
     "grant_currency",
     "grant_experience",
     "grant_item",
@@ -82,6 +85,9 @@ def _load_definitions(root: Path, report: ContentValidationReport) -> None:
             report.errors.append(f"{path}: invalid JSON: {exc}")
             continue
 
+        if not isinstance(payload, dict):
+            report.errors.append(f"{path}: definition must be an object")
+            continue
         _validate_base_shape(path, payload, report)
         content_type = payload.get("type")
         key = payload.get("key")
@@ -184,6 +190,20 @@ def _validate_type_specific_references(
     rules: dict[str, Any],
     report: ContentValidationReport,
 ) -> None:
+    if content_type == "spells":
+        for cost in rules.get("costs", []):
+            if cost.get("resource") != "focus" or type(cost.get("amount")) is not int or not 0 <= cost["amount"] <= 6:
+                report.errors.append(f"{path}: invalid Focus cost")
+        for effect in rules.get("effects", []):
+            if effect.get("type") not in {"deal_damage", "restore_vigor", "bind", "mark", "guard"}:
+                report.errors.append(f"{path}: unsupported combat effect")
+            amount = effect.get("amount", effect.get("power"))
+            if type(amount) is not int or not 0 <= amount <= 10000:
+                report.errors.append(f"{path}: invalid effect amount")
+    if content_type == "enemies":
+        intents = rules.get("intents", [])
+        if not 1 <= len(intents) <= 12 or any(type(i.get("power")) is not int or not 0 <= i["power"] <= 30 for i in intents):
+            report.errors.append(f"{path}: invalid enemy intents")
     if content_type == "zones":
         for node_key in rules.get("gathering_nodes", []):
             _require_reference(path, "gathering", node_key, report)

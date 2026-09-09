@@ -1,4 +1,6 @@
 from dataclasses import dataclass
+from functools import wraps
+from inspect import signature
 from typing import Any
 
 from backend.app.core.passwords import hash_password, verify_password
@@ -56,15 +58,26 @@ class AuthResult:
         }
 
 
+def atomic(fn):
+    sig = signature(fn)
+    @wraps(fn)
+    def wrapped(self, *args, **kwargs):
+        bound = sig.bind(self, *args, **kwargs)
+        with self.store.transaction(bound.arguments.get("character_id")):
+            return fn(self, *args, **kwargs)
+    return wrapped
+
+
 class VerticalSliceService:
     def __init__(self, store: VerticalSliceStore) -> None:
         self.store = store
 
+    @atomic
     def register(self, email: str, display_name: str, password: str) -> AuthResult:
         normalized_email = _normalize_email(email)
-        if not normalized_email:
+        if "@" not in normalized_email or len(normalized_email) > 254:
             raise VerticalSliceError("email is required")
-        if len(password) < 8:
+        if not 8 <= len(password) <= 128:
             raise VerticalSliceError("password must be at least 8 characters")
         if self.store.get_account_by_email(normalized_email):
             raise VerticalSliceError("account already exists")
@@ -77,29 +90,45 @@ class VerticalSliceService:
         self.store.save_account(account)
         return self._auth_result(account)
 
+    @atomic
     def login(self, email: str, password: str) -> AuthResult:
         account = self.store.get_account_by_email(_normalize_email(email))
         if account is None or not verify_password(password, account.password_hash):
             raise AuthenticationError("invalid email or password")
+        if not account.password_hash.startswith("$argon2"):
+            account.password_hash = hash_password(password)
+            self.store.save_account(account)
         return self._auth_result(account)
 
+    @atomic
     def create_character(
         self,
         account_id: str,
         name: str,
         ancestry_key: str = "lumenfolk",
         origin_key: str = "dawnreef_local",
+        affinity: str = "lanterncraft",
+        appearance: dict[str, str] | None = None,
     ) -> CharacterRecord:
         self._require_account(account_id)
         if self.store.list_characters(account_id):
             raise VerticalSliceError("vertical slice supports one character per account")
 
+        if not 2 <= len(name.strip()) <= 24 or not all(c.isalnum() or c in " '-" for c in name):
+            raise VerticalSliceError("name must contain 2–24 letters, numbers, spaces, apostrophes or hyphens")
+        if affinity not in {"lanterncraft", "rootbinding", "tideseaming"}:
+            raise VerticalSliceError("unknown affinity")
+        appearance = appearance or {"robe": "teal", "skin": "warm"}
+        if set(appearance) != {"robe", "skin"} or appearance["robe"] not in {"teal", "coral", "indigo"} or appearance["skin"] not in {"warm", "deep", "pale"}:
+            raise VerticalSliceError("unknown appearance preset")
         character = CharacterRecord.create(
             account_id=account_id,
             name=name.strip(),
             ancestry_key=ancestry_key,
             origin_key=origin_key,
         )
+        character.affinity = affinity
+        character.appearance = dict(appearance)
         character.inventory[STARTER_ITEM_REWARD] = 1
         character.wallet[STARTER_CURRENCY_KEY] = 0
         self.store.save_character(character)
@@ -112,6 +141,7 @@ class VerticalSliceService:
     def enter_world(self, account_id: str, character_id: str) -> CharacterRecord:
         return self._require_character(account_id, character_id)
 
+    @atomic
     def accept_quest(self, account_id: str, character_id: str, quest_key: str) -> CharacterRecord:
         if quest_key != STARTER_QUEST_KEY:
             raise NotFoundError("quest is not available in the vertical slice")
@@ -128,6 +158,7 @@ class VerticalSliceService:
         self.store.save_character(character)
         return character
 
+    @atomic
     def fight_enemy(
         self,
         account_id: str,
@@ -141,10 +172,14 @@ class VerticalSliceService:
         if spell_key not in character.known_spells:
             raise VerticalSliceError("character does not know that spell")
 
+        if character.encounter.get("state") == "active":
+            raise VerticalSliceError("finish the active encounter first")
+        if character.defeated_enemies.get(enemy_key, 0):
+            return FightResult(character, enemy_key, spell_key, True, 0, False, None, {"items": {}, "currency": {}, "quest": None})
         damage = SPELL_DAMAGE.get(spell_key, 0)
         if spell_key == "tide_mend":
             character.vigor = min(character.vigor + 8, 30)
-            damage = SPELL_DAMAGE["glimmer_spark"]
+            damage = 0
 
         victory = damage >= ENEMY_VIGOR[enemy_key]
         experience_gained = 0
@@ -198,22 +233,32 @@ class VerticalSliceService:
             rewards=rewards,
         )
 
+    @atomic
     def save_progress(self, account_id: str, character_id: str) -> CharacterRecord:
         character = self._require_character(account_id, character_id)
         self.store.save_character(character)
         self.store.flush()
         return character
 
+    @atomic
     def logout(self, account_id: str) -> dict[str, str]:
-        self._require_account(account_id)
+        account = self._require_account(account_id)
+        account.auth_version += 1
+        self.store.save_account(account)
         self.store.flush()
         return {"status": "logged_out"}
 
     def _auth_result(self, account: AccountRecord) -> AuthResult:
         return AuthResult(
             account=account,
-            access_token=create_access_token(account.id, {"type": "access"}),
+            access_token=create_access_token(account.id, {"type": "access", "session_version": account.auth_version}),
         )
+
+    def validate_session(self, payload: dict) -> str:
+        account = self._require_account(str(payload.get("sub", "")))
+        if payload.get("type") != "access" or payload.get("session_version", 0) != account.auth_version:
+            raise AuthenticationError("session expired; sign in again")
+        return account.id
 
     def _require_account(self, account_id: str) -> AccountRecord:
         account = self.store.get_account(account_id)

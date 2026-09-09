@@ -5,9 +5,16 @@ import os
 
 PBKDF2_ITERATIONS = 120_000
 SALT_BYTES = 16
+from argon2 import PasswordHasher
+from argon2.exceptions import VerificationError, InvalidHashError
+_hasher = PasswordHasher(time_cost=2, memory_cost=19456, parallelism=1)
 
 
 def hash_password(password: str) -> str:
+    return _hasher.hash(password)
+
+
+def hash_legacy_password(password: str) -> str:
     salt = os.urandom(SALT_BYTES)
     digest = hashlib.pbkdf2_hmac(
         "sha256",
@@ -23,11 +30,18 @@ def hash_password(password: str) -> str:
 
 
 def verify_password(password: str, password_hash: str) -> bool:
+    if password_hash.startswith("$argon2"):
+        try:
+            return _hasher.verify(password_hash, password)
+        except (VerificationError, InvalidHashError):
+            return False
     try:
         algorithm, iterations_raw, salt_raw, expected_raw = password_hash.split("$", 3)
         if algorithm != "pbkdf2_sha256":
             return False
         iterations = int(iterations_raw)
+        if not 1 <= iterations <= 2_000_000:
+            return False
         salt = _unb64(salt_raw)
         expected = _unb64(expected_raw)
     except (ValueError, TypeError):

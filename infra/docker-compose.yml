@@ -25,6 +25,7 @@ services:
     environment:
       VT_ENVIRONMENT: ${VT_ENVIRONMENT:-local}
       VT_DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-game}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in infra/.env}@postgres:5432/${POSTGRES_DB:-game}
+      VT_PLAYER_STORE: ${VT_PLAYER_STORE:-postgres}
       VT_DEBUG: ${VT_DEBUG:-false}
       VT_JWT_SECRET: ${VT_JWT_SECRET:?Set VT_JWT_SECRET in infra/.env}
       VT_VERTICAL_SLICE_SAVE_PATH: /app/var/vertical_slice_save.json
