@@ -111,3 +111,11 @@ https://game.surveyroute.work/api/v1
 ```
 
 The client has a mobile-oriented account gateway, character hall, basic character creation/customization choices, top profile/status area, quest tracker, mini-map readout, bottom six-slot action bar, expandable secondary menu tray, readable character/quest/inventory HUD, themed fantasy UI panels, and a stylized placeholder 3D Dawnreef Commons with a lantern well, paths, reeds, crystals, market/training/dock/travel-gate landmarks, player, NPC, and enemy markers. Existing accounts return to a saved Wayfarer card before entering the world. Move the player marker with WASD, arrow keys, or the virtual joystick; primary controls sit above a scrollable HUD so mobile-sized screens do not cut off actions. Tapping visible NPC/enemy/gate areas in the world view opens interactions, and contextual Talk/Fight buttons appear when near Mara or the Fog-Thorn enemy. Talk opens a short Mara dialogue with an accept-quest choice that changes after quest progress, and Fight opens a small combat panel with Glimmer Spark, Root Snare, and Tide Mend actions. The enemy marker pulses on combat resolution and dims after the starter threat is completed. It can register/login, create a character, enter the world, accept the starter quest, fight the starter enemy, save, logout, and display the current character state.
+
+## September 2026 continuation
+
+Read [current project state](docs/PROJECT_STATE.md), [current architecture](docs/ARCHITECTURE.md),
+[roadmap](docs/ROADMAP.md), and [changelog](CHANGELOG.md) before changing this project.
+The September Android foundation is being restored on `feature/android-foundation`
+after an interrupted transient workspace; the original main branch is preserved.
+Do not confuse older descriptions above with completion of the expanded MMO slice.
