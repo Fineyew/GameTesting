@@ -1,0 +1,66 @@
+name: Playable foundation
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: foundation-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  backend:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: vt_test
+          POSTGRES_USER: vt_test
+          POSTGRES_PASSWORD: ci-only-password
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U vt_test -d vt_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      VT_DATABASE_URL: postgresql+psycopg://vt_test:ci-only-password@127.0.0.1:5432/vt_test
+      VT_TEST_DATABASE_URL: postgresql+psycopg://vt_test:ci-only-password@127.0.0.1:5432/vt_test
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r backend/requirements.lock
+      - name: Execute database migrations
+        run: python -m alembic -c backend/alembic.ini upgrade head
+      - name: Test rules, APIs, concurrency and PostgreSQL persistence
+        run: python -m pytest backend/tests -q
+      - name: Validate generated content
+        run: |
+          python -m tools.build_catalog
+          git diff --exit-code godot_project/data/catalog.json
+  godot:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r backend/requirements.lock
+      - name: Install pinned Godot editor
+        run: |
+          curl -fL --retry 3 https://github.com/godotengine/godot-builds/releases/download/4.5.1-stable/Godot_v4.5.1-stable_linux.x86_64.zip -o /tmp/godot.zip
+          unzip -q /tmp/godot.zip -d /tmp/godot
+          chmod +x /tmp/godot/Godot_v4.5.1-stable_linux.x86_64
+          echo "GODOT_BIN=/tmp/godot/Godot_v4.5.1-stable_linux.x86_64" >> "$GITHUB_ENV"
+      - name: Import and playable smoke check
+        run: python -m tools.check_godot
+      - name: Godot to API integration with two players
+        run: python -m tools.check_online

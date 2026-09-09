@@ -1,6 +1,6 @@
 [project]
 name = "veilbound-tides-backend"
-version = "0.1.0"
+version = "0.2.0"
 description = "FastAPI backend scaffold for a data-driven mobile fantasy RPG."
 requires-python = ">=3.11"
 
