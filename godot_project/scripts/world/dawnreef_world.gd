@@ -49,10 +49,8 @@ func _landscape() -> void:
     var ground = ReefKit.box(self,Vector3(48,.8,42),Vector3(0,-.4,-1),Color("709881"),true)
     ground.material_override = ReefKit.ground(Color("709881"))
     ReefKit.box(self,Vector3(450,.2,450),Vector3(0,-1.5,0),Color("357a8d"))
-    var path = ReefKit.box(self,Vector3(5,.04,40),Vector3(0,.02,-1),Color("d4c295"))
-    path.material_override = ReefKit.ground(Color("d4c295"))
-    path = ReefKit.box(self,Vector3(42,.04,3.5),Vector3(0,.025,-4),Color("d4c295"))
-    path.material_override = ReefKit.ground(Color("d4c295"))
+    # Existing road locations are painted into the flat ground material. They never
+    # had movement collision; feathered verges avoid raised, perfectly straight slabs.
     for i in 10:
         var angle = i*TAU/10
         ReefKit.cylinder(self,7,4,Vector3(cos(angle)*20,-2.4,sin(angle)*18-1),Color("857b68"),5)
@@ -74,6 +72,7 @@ func _landscape() -> void:
         var crown = ReefKit.sphere(self,1.5,at+Vector3.UP*3.1,Color("417e78"))
         crown.scale = Vector3(1,.65,1)
         ReefKit.sphere(self,.7,at+Vector3(.8,3.25,0),Color("71a89b"))
+        ReefKit.camera_canopy(self,at+Vector3.UP*3.1,1.55)
     for i in 12:
         var at = Vector3(-9+sin(i*2)*1.1,.6,-14+cos(i*3)*.8)
         ReefKit.cylinder(self,.07,1.2,at,Color("dbb866"),.03)

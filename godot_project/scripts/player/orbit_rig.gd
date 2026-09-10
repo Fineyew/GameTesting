@@ -11,6 +11,7 @@ var finger := -1
 func _ready() -> void:
     arm = SpringArm3D.new()
     arm.spring_length = 5.4
+    arm.collision_mask = 3 # World solids plus camera-only foliage; no movement change.
     arm.margin = .22
     var shape = SphereShape3D.new()
     shape.radius = .2
@@ -49,3 +50,22 @@ func orbit(motion: Vector2) -> void:
 func recenter() -> void:
     yaw = 0
     pitch = -.27
+
+static func pair_frame(world: World3D, origin: Vector3, target: Vector3, excluded: RID) -> Vector3:
+    var flat = Vector3(target.x-origin.x,0,target.z-origin.z)
+    var direction = flat.normalized() if flat.length() > .02 else Vector3.FORWARD
+    var side = Vector3(-direction.z,0,direction.x)
+    var middle = origin.lerp(target,.5)
+    var candidates = [middle+side*5+Vector3.UP*2.2,middle-side*5+Vector3.UP*2.2,
+        middle-direction*5+Vector3.UP*3.2,middle+direction*5+Vector3.UP*3.2,
+        middle+side*2+Vector3.UP*6]
+    for at in candidates:
+        var clear := true
+        for point in [origin,target]:
+            var ray = PhysicsRayQueryParameters3D.create(at,point,3,[excluded])
+            ray.hit_from_inside = true
+            if not world.direct_space_state.intersect_ray(ray).is_empty():
+                clear = false
+        if clear:
+            return at
+    return Vector3.INF # Caller keeps the gameplay view when no clean framing exists.

@@ -308,6 +308,17 @@ def house():
     for y in [.18,.48]: box('Foundation',(0,y,0),(8.1,.24,6.1),'stone',.04)
     for x in [-3.9,3.9]:
         for z in [-2.95,2.95]: box('Timber corner',(x,1.8,z),(.16,3.6,.16),'wood',.025)
+    for side in [-1,1]:
+        x=side*4.04
+        for y in [1.05,3.05]: box('Side timber course',(x,y,0),(.12,.13,5.95),'wood_light',0)
+        for z in [-1.65,1.65]:
+            box('Side window surround',(x,2.03,z),(.16,1.35,1.1),'wood',.045)
+            box('Side window recess',(x+side*.1,2.03,z),(.07,1.12,.86),'teal_dark',0)
+            box('Side window mullion',(x+side*.145,2.03,z),(.05,1.1,.035),'gold',0)
+            box('Side sill',(x+side*.16,1.3,z),(.4,.13,1.3),'stone',.025)
+            for offset in [-.69,.69]:
+                box('Woven shutter',(x+side*.08,2.03,z+offset),(.08,1.27,.32),'teal',.025)
+                for h in [1.66,2.13]: box('Shutter strap',(x+side*.135,h,z+offset),(.04,.055,.32),'copper',0)
     for z in [-3.07,3.07]:
         outline=[(-4,3.05,z)]+[(x,5.15-1.83*(abs(x)/4.55)**.7,z) for x in [-4+i*.5 for i in range(17)]]+[(4,3.05,z)]
         face=tuple(range(len(outline)))

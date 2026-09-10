@@ -303,3 +303,10 @@ art/motion only; fixed capture FPS cannot establish runtime frame pacing. On app
 pause/focus loss, PlaySession clears input and horizontal velocity; the existing server
 stale-input timeout and reconciliation remain authoritative. Native QA settles two
 consecutive pre-background frames before the unchanged resume/movement assertions.
+
+Visual review at d9293fa prompted a bounded camera/composition pass: foliage has camera-only
+collision on physics layer2, while player/server movement remains on layer1 and unchanged
+catalog bounds. OrbitRig uses both layers; its reusable pair-framing query tests both
+actors from candidate camera positions and keeps the gameplay view if none is clear.
+The material paints the existing road layout onto the same flat floor, with feathered
+verges and a rounded well plaza; no navigable terrain or server geometry changed.

@@ -104,6 +104,17 @@ uninstall/reinstall. Release signing and Play Store/AAB publication are not conf
 
 ### Physical phone handoff (still unverified)
 
+For the M1.4 visual review, spend 2–3 minutes on the existing route: enter preview,
+walk from the arrival path to the Lantern Well, orbit the floating lens and Mara, then
+walk west toward her supply cart. Check the avatar in motion, tree/roof silhouettes,
+paving and readable HUD. The retained before/after MP4s use matching controls/cameras
+at .75 render scale with shadows off; they are Movie Maker captures, not measured FPS.
+On an online test character, cast Glimmer Spark, try **Short spell effects · no camera
+cut**, then revisit Mara's vendor/Bag flow. These are existing progression rules.
+Owner art-direction acceptance and the real-phone measurements below are still open;
+M1.4 cannot be marked complete from desktop/emulator evidence alone.
+
+
 The owner's Galaxy S25 Ultra has not been available to this workspace. Install the
 **ARM64** APK from the successful CI run recorded in PROJECT_STATE; compare its SHA-256
 with `build-manifest.json` (`Get-FileHash <apk> -Algorithm SHA256` on Windows).

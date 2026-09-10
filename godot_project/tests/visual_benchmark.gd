@@ -35,7 +35,7 @@ static func check(app: Node, tree: SceneTree) -> void:
     var frame = Camera3D.new()
     app.world.add_child(frame)
     frame.fov = 60
-    frame.position = Vector3(5.8,5.0,3.2)
+    frame.position = Vector3(2.8,5.0,3.2)
     frame.look_at(Vector3(-3.8,1.3,-5.3))
     frame.make_current()
     await capture(tree,"benchmark")
@@ -65,6 +65,9 @@ static func check(app: Node, tree: SceneTree) -> void:
     # online.gd separately proves it is reached only after an authoritative receipt.
     var before_position = app.session.player.position
     app.session.player.position = Vector3(10,0,-8)
+    assert(app.session.player.collision_mask == 1 and app.session.camera.arm.collision_mask == 3)
+    var clear_frame = OrbitRig.pair_frame(app.world.get_world_3d(),Vector3(10,1.45,-8),Vector3(12,1,-10),app.session.player.get_rid())
+    assert(clear_frame.is_finite(),"The sample encounter needs a clear shot of both actors")
     app.session.busy = true
     app.session.present_glimmer()
     await tree.create_timer(.3).timeout

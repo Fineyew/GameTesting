@@ -13,8 +13,10 @@
   Native resume comparison failed at19.35%; artifact10152976777 retained, no ARM64 published.
   Preserve imported kit transforms, clear pause movement and require a settled baseline
   while retaining all existing native movement/resume thresholds. Add matching route movies
-  and keep render diagnostics on failures. Corrected full validation is pending;
-  no new APK is certified yet. Owner art-direction and physical-phone acceptance remain open.
+  and keep render diagnostics on failures. d9293fa/run34480660769 passes all full gates,
+  retains ARM64 0.2.4/code6 and both matched route recordings. Visual review leads to a
+  final bounded canopy/cast-camera, paving and shop-side cleanup, pending fresh full CI;
+  owner art-direction and physical-phone acceptance remain open.
 
 ## 0.2.3 — M1.3 vendor/equipment complete (2026-09-10)
 

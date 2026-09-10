@@ -26,3 +26,4 @@
 | D022 | Prove a small Dawnreef art benchmark before wider production | Roadmap edec97b moves bandages to M1.5; art acceptance and actual phone measurements gate copying the kit. No server redesign. |
 | D023 | Editable Blender sources outside Godot, checked-in self-contained GLBs | Original reusable assets, deterministic recipes, named rigs/materials and import budgets without Blender on game CI or phones. |
 | D024 | Confirm combat first, then bounded presentation with a short-effects option | Keep server authority/receipts and make a significant spell visible without forcing repeat camera cuts. |
+| D025 | Separate camera-only foliage from catalog movement collision | Improve orbit/cast visibility without client-only movement blockers, protocol changes or server shortcuts; test both actor sightlines. |

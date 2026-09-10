@@ -1,112 +1,94 @@
 # Veilbound Tides — project state
 
-Updated 2026-09-10. Branch `feature/android-foundation`; draft PR [#4](https://github.com/Fineyew/GameTesting/pull/4).
-Read README → this file → ARCHITECTURE → relevant source before editing.
+Updated 2026-09-10. Branch `feature/android-foundation`, draft PR [#4](https://github.com/Fineyew/GameTesting/pull/4).
+Read README → PROJECT_STATE → ARCHITECTURE → relevant source. Main is bd98746; no merge/deployment.
 
-## Current checkpoint
+## Current milestone
 
-**M1.3 complete.** Code/APK source `de9d7a38bed6c18b396173cfd926c09c20e8159d` passes all
-required gates in [run34440512749](https://github.com/Fineyew/GameTesting/actions/runs/34440512749).
-M0 remains complete at1044f95; M1.1 at4efd3a6/d138214; M1.2 atd0c6048/56370e6. The M1.2
-handoff run34437584787 also passed all jobs. Main remains bd98746; no merge or deployment.
-Preserve original IDs, accounts/saves and all working systems.
+**M1.4 visual benchmark: implemented candidate; acceptance remains open.**
+Roadmap checkpoint edec97b introduced this scope; the owner then authorized implementation.
+The last fully validated code is `d9293fac518cda680cdcf21795ff49ec68b5db07`,
+[run34480660769](https://github.com/Fineyew/GameTesting/actions/runs/34480660769), all three jobs successful.
+A bounded final visual cleanup now addresses observed canopy/cast-camera occlusion,
+regular paving and the blank shop side wall. Local art/Godot checks pass; its full CI is pending.
+Do not mark M1.4 complete or start M1.5 before owner art-direction acceptance and the required
+physical-phone install/online-touch/20-minute thermal baseline. Neither has been performed.
 
-**M1.4 benchmark candidate is in progress** after roadmap checkpoint
-`edec97b128cf8cd86ca2c788ebe737316c71742d` (run34463841938 passed).
-The owner authorized implementation on this branch. Original editable GLBs/Blender sources
-now replace the small well/cart area, one Wayfarer and Mara; imported idle/walk/cast,
-Glimmer presentation, ground/contact shading and existing HUD styling are integrated.
-Headless Godot/import/rig/VFX smoke and art budgets pass locally. Candidate b5b90a5/run34478939955 passed backend90/30 subtests, PostgreSQL, Godot/API
-and desktop render74 calls/81,654 primitives/15,182,467 texture bytes. Native touch and
-menu navigation reached resume, then the unchanged <15% match gate failed (19.35% changed).
-Artifact10152976777 retains frames/logs; no ARM64 artifact published. Inspection also
-found dropped kit-node transforms. Transform preservation, pause input/velocity clearing,
-settled pre-background capture and matching before/after routes are now being validated.
-Owner art-direction acceptance and real-phone thermal/touch validation remain open; do
-not mark M1.4 complete or begin M1.5 until its roadmap gate is satisfied.
+Completed history is preserved in ROADMAP/CHANGELOG:
+
+| Milestone | Code | Handoff |
+|---|---|---|
+| M0 engineering | 1044f95 | 1044f95 |
+| M1.1 story | 4efd3a6 | d138214 |
+| M1.2 spell acquisition/folio | d0c6048 | 56370e6dd442485101824dc188d12e00aa87d3f8 |
+| M1.3 vendor/equipment | de9d7a38bed6c18b396173cfd926c09c20e8159d | 3ac1f8fc69379b15594191294e6248e9911be950 |
 
 ## What works
 
-- Modular Godot4.5.1 gateway/creator, appearance/affinity, third-person movement, camera,
-  touch controls, procedural Dawnreef, search/settings and explicit offline preview.
-- Argon2 accounts, legacy hash upgrade, versioned access sessions/revocation/renewal.
-- Server-owned WebSocket movement/presence/interpolation/reconnect and preset chat.
-  World protocol1 unchanged; one process/room, 32-player cap still unbenchmarked.
-- Persistent Tidebeat intents/Focus/turns, prepared spells and atomic/retry-safe rewards.
-- M1.1 catalog dialogue, persisted cursors, NPC offers and ordered objectives; M1.2 Mara
-  investigation/three lessons. Five playable quests, one enemy, six obtainable spells,
-  persistent 1–6 spell folio with ownership/revision/retry protection and combat locks.
-- JSON development and PostgreSQL aggregate adapters; existing migrations0001/0002.
-- **M1.3:** Mara's existing supply cart sells the Lanternkeeper Vest for 12 earned shell
-  chits. One owned copy, one chest slot. Catalog Guard1 reduces each incoming hit by one,
-  adds to Brace/spell protection and leaves robe appearance, Focus and spells unchanged.
-- Atomic spend/grant, server prices/availability/level/stack/slot validation, explicit
-  equip/unequip, commerce revision and existing receipts. Active combat blocks changes;
-  new buys require live proximity to Mara. Matching retries can replay after leaving.
-- Touch Bag/vendor panels in the existing HUD: currency, prices, owned/equipped state,
-  Guard comparison, search, saved feedback and exact-command retry/reload. No preview writes.
-- Still 26 catalog definitions; existing item/vendor/listing keys preserved. Bandages are
-  visible but unavailable to buy until item use works. No other content increment started.
-- Old saves default commerce_revision0/missing equipment; no DDL or reset. Old encounters
-  without equipment_guard resolve with zero gear bonus. Client0.2.3 requires commerce1
-  alongside world1/story1/folio1; inventory module status now reflects its narrow rules.
+- Godot4.5.1 modular gateway/creator, third-person movement, touch/camera, offline preview,
+  network interpolation/reconnect, preset chat, inventory/search/settings and saved appearance.
+- Argon2 accounts with legacy upgrade, short versioned sessions/revocation/renewal;
+  server-owned WebSocket movement and HTTP progression. One process/room; cap32 is unbenchmarked.
+- Persistent server-owned Tidebeat combat/intents/Focus/rewards, five authored quests,
+  Mara's dialogue/investigation/three spell lessons, six obtainable spells and a 1–6 spell folio.
+- Mara sells the existing Lanternkeeper Vest for 12 earned shell chits. One chest slot,
+  Guard1 per incoming hit; purchase/equip/unequip/comparison/retries are authoritative and atomic.
+  Equipment preserves appearance; the existing bandage listing stays unavailable until M1.5.
+- JSON development and PostgreSQL aggregate adapters, migrations0001/0002, old-save defaults,
+  revisions/receipts/concurrency protection. World1/story1/folio1/commerce1 and26 definitions unchanged.
+- M1.4 adds eight original editable kit pieces around the Lantern Well/cart, a sample
+  Wayfarer and distinct Mara with13-bone Idle/Walk/Cast rigs, shared appearance tints,
+  grounded foliage/materials and styling in the existing HUD. Other areas remain blocked in.
+- Confirmed Glimmer casts show anticipation/travel/impact with bounded lifetime, restored
+  navigation and a saved short-effects/no-camera-cut option. VFX cannot grant damage/rewards.
+- Pause/focus loss clears horizontal input/velocity; native pre-background capture settles
+  before the unchanged resume threshold. Camera-only foliage is separate from movement geometry.
 
-## Tested evidence and retained APK
+## Tested evidence / retained review APK
 
-At **de9d7a3**, all three CI jobs passed on the first attempt: **90 backend tests and
-30 subtests**, including eight real PostgreSQL tests and both migrations. Coverage includes
-forged prices/items/stats, insufficient funds, retries/conflicts/stale revisions, concurrent
-spending across independent connections, rollback after SQL writes, equipment legality/
-active-combat locks and old JSON/JSONB saves. Local: 82 passed, eight PostgreSQL tests
-explicitly skipped, 30 subtests; two upstream test deprecation warnings remain.
+At d9293fa: **90 backend tests /30 subtests**, including8 real PostgreSQL tests and both
+migrations; content/art budgets; strict Godot import/smoke; actual two-player Godot/API
+account/story/folio/vendor/equipment/reconnect/Guard flow. Both normal and short cast
+presentation restore navigation. Local baseline82 passed/8 PG skips/30 subtests; two
+upstream deprecation warnings. Current local art/rig/geometry/VFX/pause checks also pass.
 
-Godot import/smoke and full real Godot/API progression passed: account/creator, two-player
-presence, original story, all spell lessons/folio/reconnect/earned Lance, then purchase
-with earned chits, comparison, equip/unequip/reconnect and Guard combat. Folio/appearance
-remain unchanged. Smoke additionally dispatches GUI mouse input; every Godot gate rejects
-engine errors. The native gate supplies actual Android touch input.
+Actual desktop sample:74 draw calls,81,654 rendered primitives,15,182,467 texture bytes.
+Matched before/after preview route MP4s pass at1280×720/.75/no shadows; Movie Maker30 FPS
+is a capture setting, not a performance measurement. Native API35 x86_64 install, Folio,
+Bag→vendor touch, movement, visible landscape resume and repeat touch all pass.
 
-ARM64 debug APK **0.2.3/code5**, **27,914,052 bytes**, minimumAPI24/target35.
-Artifact **10137878626**, runtime evidence **10137878970**, retained until2026-12-09.
-Manifest source de9d7a3; tested PR merge commit `27f320efeca82be2af58013f8797836014c1636d`.
-SHA256: `cd4c196dc7d679f6c64aa978f8c16fb08a7e2a8c1ec03c5ba5d9e34bdec568fb`.
-Downloaded bytes/hash, ARM64-only libraries, version/code/signature report, compiled
-CommercePanel and shop catalog verified. APK retained for owner handoff.
+ARM64 **0.2.4/code6**,29,135,812 bytes; artifact10153789972, native10153791518,
+render10153793102 (90-day CI retention). Source d9293fa; tested PR merge
+`10d8557e3916485e1e15fc99b88a2d3f3f20b0c4`.
+SHA256 `80f02345666bbe75da56eb7c6e8e4016a35bed137877123bd874cfc73d20eea9`.
+Downloaded CRC/hash, ARM64-only libraries, version/code, v2 signature report and packaged
+art/presentation scripts verified. This is the prior candidate; final visual-cleanup APK pending.
 
-API35 x86_64 emulator: install, visible gateway, Folio open/close, Bag→vendor touch,
-locomotion, background/resume to a visible landscape world and repeat movement pass.
-Desktop vendor/equipment and native vendor/resumed frames inspected. **89 draw calls**
-(default desktop scene; budget150). Native coverage is preview/navigation/resume;
-online transactions are tested through the real Godot/API flow, not a physical phone.
+Initial b5b90a5 native resume failed at19.35% changed pixels; artifact10152976777 retained,
+no ARM64 published. Inspection found a separate dropped-transform art bug. Both corrections
+pass at d9293fa. Intermediate f4ef6ec failed an overconservative rotated-AABB test; it now
+checks actual transformed vertices. KNOWN_ISSUES keeps failure evidence and prior M1.3 history.
 
-Initial candidate19ac379 had two native failures: a Pixel Launcher ANR overlay, then a
-real can_process error from detaching a panel during touch dispatch. The HUD now hides
-retiring controls and queues deletion; fresh full CI validates the fix atde9d7a3. Failure
-artifacts10137449675/10137587989 remain recorded in KNOWN_ISSUES. No thresholds weakened.
+## Placeholder / unverified / next
 
-## Placeholder / unverified / planned
+Owner art acceptance and **all physical ARM64 phone validation remain unverified**.
+Two houses, distant trees/coast/vistas, dock, cistern, lurker, most spell VFX, all audio,
+full animation/creator variety, wearable vest mesh and full UI/accessibility remain unfinished.
+Tree canopy shapes affect cameras only; movement still uses the preserved planar catalog.
+No new quests/spells/regions, consumable use, selling/trading, dungeon/co-op, gathering/crafting,
+mounts/housing/pets or broad social content were added. Account recovery/moderation, load tests,
+JSON→Postgres import/restore drills, production deployment/signing/updater remain future work.
 
-Physical S25 Ultra/ARM64 install/touch/safe areas, sustained FPS/thermal/memory/battery
-and cellular/Wi-Fi transitions remain **unverified release gates**. Public backend not
-updated/verified; use this branch's backend. Release signing/store publication unfinished.
-README gives local-server/USB reverse and physical-device procedures.
+Finish M1.4 validation/review first; **M1.5 is the still-unstarted Sunthread Bandage loop**.
+Use README's local backend/USB reverse recipe for phone testing; a paid public server is
+not required for this review. The inherited public endpoint has not been updated/verified.
 
-Procedural art, gait/VFX, flat terrain and cart/vest asset bindings remain placeholders;
-no finished wearable vest mesh or audio. No full cosmetic override/transmog system.
-Item use/selling/trading, additional gear, gathering/crafting, mounts/housing/pets,
-dungeon/boss/co-op, free chat/moderation and account recovery remain unfinished.
-JSON→PostgreSQL import, backup/restore drills and load tests remain release gates.
-Intermittent emulator/launcher startup reliability remains open in KNOWN_ISSUES.
+## Build / continue
 
-## Next / build and test
-
-Finish M1.4 art/render/native validation and owner/physical-device review first.
-The revised roadmap edec97b moves the still-unstarted Sunthread Bandage loop to M1.5.
-Preserve all completed M0–M1.3 behavior; no bulk content or new regions/families/dungeon/crafting.
-
-`python -m pip install -r backend/requirements.lock`; `python -m pytest backend/tests -q`;
-`python -m tools.build_catalog`. Set GODOT_BIN to4.5.1; run `python -m tools.check_godot`
-and `python -m tools.check_online`. CI supplies PostgreSQL16, SDK35/JDK17/templates.
-README covers export/render/emulator and physical-device commands. Key additions:
-inventory/rules.py, vertical_slice/commerce.py, test_commerce.py, ui/commerce_panel.gd.
-Preserve composition-root injection, aggregate locks and the deferred HUD lifecycle.
+Install `backend/requirements.lock`; run `python -m pytest backend/tests -q`,
+`python -m tools.build_catalog`, `python -m tools.check_art`. Set GODOT_BIN to4.5.1 and run
+`python -m tools.check_godot` / `python -m tools.check_online`. CI supplies PG16, SDK35,
+JDK17/templates and native/render gates; README documents export and matching route capture.
+New art is in `art_sources`, `godot_project/assets/dawnreef`, DawnreefArt, WayfarerAvatar,
+GlimmerPresentation and VisualBenchmark. CONTENT_GUIDE owns source/import/budget instructions.
+Preserve service injection, catalog IDs, aggregate locks/receipts and deferred HUD deletion.

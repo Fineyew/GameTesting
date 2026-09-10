@@ -94,6 +94,12 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
 - M1.4 candidate b5b90a5/run34478939955 passed backend/Godot/API/render but failed the
   native resume image comparison (19.35% changed, limit15%). Artifact10152976777 shows
   a small camera/position advance with no engine errors, plus a separate kit-transform
-  import defect that tilted trees/well. Corrections are under validation: retain authored
+  import defect that tilted trees/well. Corrections pass at d9293fa/run34480660769: retain authored
   transforms, clear motion on application pause, and settle the pre-background capture.
   Keep the failed evidence and all movement/resume thresholds; no ARM64 was published.
+
+- Intermediate f4ef6ec/run34480293814 failed the new geometry check because transforming
+  an enclosing AABB overestimates rotated extents. It now checks transformed vertices;
+  export also bakes canonical upright orientation. d9293fa passes all full gates.
+  Its visual review found canopy/cast-camera occlusion; a final bounded cleanup is pending
+  full validation. Art acceptance and physical-device gates remain open independently.

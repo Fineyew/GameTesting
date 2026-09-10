@@ -24,15 +24,16 @@ func _ready() -> void:
             [Vector3(-6.5,0,-8.7),1.12,.8],[Vector3(6.7,0,-9.1),.93,1.8]]:
         place("WindTree",spec[0],Vector3.ONE*spec[1],spec[2])
         ReefKit.contact_shadow(self,spec[0]+Vector3.UP*.055,Vector2(3.8,3.1)*spec[1])
+        ReefKit.camera_canopy(self,spec[0]+Vector3.UP*3.55*spec[1],1.8*spec[1])
     for i in 24:
         var angle = i*TAU/24
-        place("PavingStone",Vector3(cos(angle)*2.15,.052,-5+sin(angle)*2.15),Vector3.ONE,angle)
+        place("PavingStone",Vector3(cos(angle)*2.15,.052,-5+sin(angle)*2.15),Vector3(.74,1,.7),-angle+PI/2)
     # Broken-in paving follows the existing path; no walkable ledges or new collision.
     for row in 12:
         for side in [-1,1]:
-            place("PavingStone",Vector3(side*(1.45+.06*sin(row)),.045,4-row*.65),Vector3(.9,1,.84),row*.12)
+            place("PavingStone",Vector3(side*(1.45+.06*sin(row)),.005,4-row*.65),Vector3(.72,1,.66),sin(row*1.7)*.12)
     for i in 10:
-        place("PavingStone",Vector3(-3-i*.72,.046,-3.45+.13*sin(i)),Vector3.ONE,i*.21)
+        place("PavingStone",Vector3(-3-i*.72,.006,-3.45+.08*sin(i)),Vector3(.8,1,.72),sin(i*1.7)*.12)
     for i in 8:
         var angle = i*2.399
         place("SunthreadCluster",Vector3(-5.8+cos(angle)*.8,0,.1+sin(angle)*.6),Vector3.ONE*.75,angle)

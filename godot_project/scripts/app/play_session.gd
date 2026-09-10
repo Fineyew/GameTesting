@@ -315,10 +315,13 @@ func present_glimmer() -> void:
     player.avatar.play_cast()
     var frame = Camera3D.new()
     world.add_child(frame)
-    var direction = flat.normalized() if flat.length() > .02 else Vector3.FORWARD
     var middle = origin.lerp(target,.5)
-    frame.position = middle + Vector3(direction.z,0,-direction.x)*5 + Vector3.UP*2.2
-    frame.look_at(middle)
+    var framed = OrbitRig.pair_frame(world.get_world_3d(),origin,target,player.get_rid())
+    if framed.is_finite():
+        frame.position = framed
+        frame.look_at(middle)
+    else:
+        frame.global_transform = camera.camera.global_transform
     frame.fov = 60
     frame.make_current()
     world.glimmer_spark(origin,target)

@@ -4,6 +4,19 @@ static var materials: Dictionary = {}
 static var ground_materials: Dictionary = {}
 static var contact_material: ShaderMaterial
 
+static func camera_canopy(parent: Node3D, at: Vector3, radius: float) -> void:
+    # Layer 2 obstructs cameras only. Player/world movement remains on catalog layer 1.
+    var body = StaticBody3D.new()
+    body.collision_layer = 2
+    body.collision_mask = 0
+    var collider = CollisionShape3D.new()
+    var shape = SphereShape3D.new()
+    shape.radius = radius
+    collider.shape = shape
+    body.add_child(collider)
+    body.position = at
+    parent.add_child(body)
+
 static func ground(color: Color) -> ShaderMaterial:
     var key = color.to_html()
     if not ground_materials.has(key):
@@ -88,6 +101,7 @@ static func label(parent: Node3D, words: String, at: Vector3) -> Label3D:
     node.modulate = Color("f3ead5")
     node.billboard = BaseMaterial3D.BILLBOARD_ENABLED
     node.no_depth_test = false
+    node.visibility_range_end = 24
     parent.add_child(node)
     return node
 
