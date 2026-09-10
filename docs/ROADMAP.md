@@ -11,7 +11,7 @@ Updated 2026-09-10. Distinguish engineering gates from unverified physical-devic
 - [x] Reconcile PROJECT_STATE and CHANGELOG with completed CI evidence.
 - [x] Fix the observed coastline/floor overlap and inspect fresh renders.
 - [x] Automate, retain and signature-check an ARM64 APK; verify Android runtime install/start.
-- [x] Verify visible world and touch locomotion after resume (run34430377236 at69457a4).
+- [x] Verify visible world and touch locomotion after resume (run 34430377236 at 69457a4).
 - [x] Record physical Android testing status, performance targets, remaining risks and build provenance.
 - [x] Complete canonical documentation and checkpoint M0 source/artifacts remotely.
 
@@ -20,20 +20,21 @@ honest device-status documentation. Physical phone thermal/touch/network validat
 an open release gate; never call an emulator or desktop result a physical-phone pass.
 No broad M1 content production before this engineering checkpoint.
 
-## M1 — authored vertical slice (M1.1 in validation)
+## M1 — authored vertical slice (M1.1 complete)
 
-M1.1 implementation: generic quest acceptance from NPC offers, server-owned dialogue
-cursors/branches/conditions, ordered discovery/talk objectives, atomic rewards, client journal
-and one Mara follow-up. Local rules/API tests pass; full Godot/PG/Android rerun is pending.
-Do not expand until this increment is validated and checkpointed.
+- [x] M1.1: catalog-owned NPC dialogue/branches/conditions with server-owned cursors.
+- [x] Validated quest offers, ordered defeat/inspect/talk objectives and once-only rewards.
+- [x] One Mara follow-up through existing reeds/cistern landmarks; data-driven HUD/journal.
+- [x] Preserve old saves/starter IDs; prove API authority, retries, concurrent turn-ins and
+  PostgreSQL persistence; real Godot story integration and Android runtime gates pass.
 
-Start with a narrow content-framework increment: generic server-owned quest/dialogue
-execution, validated objectives/rewards and a small authored continuation of Mara's
-story. Scope the first increment to one follow-up: inspect the reeds, listen at the cistern
-entrance, then return to Mara. Require server-owned dialogue cursors, conditions, ordered
-objectives, proximity checks and once-only rewards; preserve existing saves and starter IDs.
-Reuse the existing catalog and aggregate transactions. Then make the remaining
-initial spells obtainable and add folio selection; expand content only after this works.
+M1.1 code/APK source 4efd3a6 passed all jobs in run 34431891977 (38 tests). M0 remains
+checkpointed at 1044f95. No bulk content was produced; the cistern dungeon is still sealed.
+
+**Next: M1.2 (planned)** — make the existing additional spells obtainable through meaningful
+sources and implement server-validated folio selection. Reuse the new story framework and
+existing combat engine. Expand authored content only after acquisition/preparation works.
+Do not replace the working transport, persistence, catalog or modular client.
 
 Target: one town plus adventure region, 18 varied quests, 18 working obtainable spells,
 five enemies, eight recurring NPCs, one dungeon with a phased boss, equipment/vendor,

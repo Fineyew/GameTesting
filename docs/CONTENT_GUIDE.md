@@ -39,11 +39,13 @@ before extending the flat region. Do not add invisible client-only movement shor
 ## Authoring a playable conversation/investigation
 
 Use `mara_first_meeting.json` and `an_answer_in_the_reeds.json` as the tested shapes.
-A dialogue has start_node, optional ordered entry_nodes with conditions, and at most32
-nodes. Nodes contain text and up to8 uniquely keyed options; next_node branches and
+A dialogue has start_node, optional ordered entry_nodes with conditions, and at most 32
+nodes. Nodes contain text and up to 8 uniquely keyed options; next_node branches and
 `offer_quest` is the only permitted effect. Direct item/currency/XP grants in dialogue
 are rejected. Add an offered quest to its giver NPC's available_quests; the quest's
-giver_npc_key must match. No new handler is needed for another conversation in this shape.
+giver_npc_key must match. No new server rule handler is needed for another conversation in this shape. Additional
+NPC visual placement/interaction bindings still require scene authoring; this increment
+makes story rules data-driven, not automatic world construction.
 
 Conditions: character_level_at_least(value), quest_completed(quest_key), and
 quest_state(quest_key,state=not_started/accepted/completed). All conditions are ANDed.
@@ -59,7 +61,7 @@ collect_item remains a reserved definition type; accepting such a quest is rejec
 until a real inventory-event handler exists. Repeated/repeatable quests are not supported.
 
 Quest rewards allow only grant_experience(amount), grant_currency(currency_key,amount),
-and grant_item(item_key,quantity), positive integers up to10000 per entry. Objectives
-cap at1000; discovery/talk quantities must be1. The validator rejects negative/bool
+and grant_item(item_key,quantity), positive integers up to 10000 per entry. Objectives
+cap at 1000; discovery/talk quantities must be 1. The validator rejects negative/bool
 quantities, broken references/branches, malformed rule lists and direct dialogue rewards.
 Run catalog generation, backend tests and the actual Godot/API check after changes.

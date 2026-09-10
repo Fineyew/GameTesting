@@ -11,7 +11,10 @@ Read [PROJECT_STATE](docs/PROJECT_STATE.md), [ARCHITECTURE](docs/ARCHITECTURE.md
 [DECISIONS](docs/DECISIONS.md), [KNOWN_ISSUES](docs/KNOWN_ISSUES.md) and [CHANGELOG](CHANGELOG.md).
 M0 engineering is complete: PostgreSQL/Godot integration, retained signed ARM64 export,
 inspected renders, and Android emulator touch/visible-resume checks pass. Physical phone
-validation remains unverified. PROJECT_STATE records exact CI/artifact evidence and next M1 scope.
+validation remains unverified. M1.1 is also complete: reusable story rules and one Mara
+investigation. [CI run 34431891977](https://github.com/Fineyew/GameTesting/actions/runs/34431891977)
+passes 38 tests, real Godot/API story integration and Android runtime checks. PROJECT_STATE
+records exact source/artifact hashes; ROADMAP defines the next narrow M1.2 increment.
 
 ## What is playable
 
@@ -44,8 +47,8 @@ Local mode defaults to JSON saves at `var/vertical_slice_save.json`, ignored by 
 Open `godot_project/project.godot` and press Play. Under **Server connection**, set
 `http://127.0.0.1:8000/api/v1`. HTTP is permitted only for localhost in editor/debug builds;
 shared servers require HTTPS. The inherited default `https://game.surveyroute.work/api/v1`
-has not been updated or verified operational in this session. World protocol1 and story
-protocol1 are required; a 0.2.0 backend needs the story update before this client signs in.
+has not been updated or verified operational in this session. World protocol 1 and story
+protocol 1 are required; a 0.2.0 backend needs the story update before this client signs in.
 
 To test an attached Android phone against your PC server, install the APK, run
 `adb reverse tcp:8000 tcp:8000`, and use the same localhost URL. This is a development
@@ -69,7 +72,7 @@ isolated database migrated to head. CI runs both migrations and the PostgreSQL t
 ## Android build and runtime checks
 
 Use the checked-in **Android** export preset: ARM64, INTERNET permission, app ID
-`work.surveyroute.veilboundtides`, version 0.2.1/code3. Use Godot 4.5.1 export templates,
+`work.surveyroute.veilboundtides`, version 0.2.1/code 3. Use Godot 4.5.1 export templates,
 JDK17, Android SDK platform35 and build-tools35.0.0. See the
 [official engine export instructions](https://docs.godotengine.org/en/4.5/tutorials/export/exporting_for_android.html).
 The exported engine minimum is API24, target API35; minimum OS is not a device-performance guarantee.

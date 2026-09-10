@@ -1,15 +1,19 @@
 # Changelog
 
-## 0.2.1 — M1.1 story framework (validation in progress)
+## 0.2.1 — M1.1 story framework complete (2026-09-10)
 
-- Begin only after M0 checkpoint1044f95. Preserve the combat engine, world protocol1,
+- Begin only after M0 checkpoint 1044f95. Preserve the combat engine, world protocol 1,
   persistence adapters, original IDs and Android CI gates.
 - Add catalog-driven NPC dialogue with persisted/rotating server cursor IDs, prerequisites,
   ordered objectives, proximity checks and transactional once-only quest rewards.
 - Wire Mara's existing graph and one follow-up, An Answer in the Reeds, into Godot.
   Journal/HUD now read quest/objective data. Existing first-quest saves remain valid.
 - Add story/API/authoring/old-save/concurrency tests and a real PostgreSQL story gate.
-  Local35 tests, Godot smoke and the extended live client/API story pass; CI reruns pending.
+  CI run 34431891977 at 4efd3a6 passes all three jobs: 38 tests with PostgreSQL, Godot
+  smoke/full online story, signed ARM64 export, 87-draw-call rendering and Android
+  touch/visible-resume checks. APK/runtime evidence retained; physical phone unverified.
+- Negotiate story support before login; preserve the existing world protocol and local
+  preview content. Version 0.2.1/code 3 APK contains the new story catalog.
 
 ## 0.2.0 — M0 engineering handoff complete (2026-09-10)
 
@@ -18,10 +22,10 @@
   integration, inspected 87-draw-call renders, retained signed APK and Android runtime gates.
 - Retain signed ARM64 APKs, provenance, verification reports and actual render evidence in CI.
 - Fix coplanar coast/floor flicker; fresh desktop render measures 87 draw calls.
-- Correct Android landscape orientation. CI run34424981946 passes export, install, touch
+- Correct Android landscape orientation. CI run 34424981946 passes export, install, touch
   preview/locomotion and background/resume process survival.
 - Use ANGLE/SwiftShader after the legacy emulator GLES translator failed shader linking;
-  runtime checks now reject engine/render errors explicitly. Run34430377236 at69457a4
+  runtime checks now reject engine/render errors explicitly. Run34430377236 at 69457a4
   also proves visible world recovery and repeat touch locomotion after resume.
 - Document a reproducible S25 Ultra install/online/thermal test procedure; physical results remain open.
 - Preserve existing JSON deployments by default; require an explicit PostgreSQL switch/import.

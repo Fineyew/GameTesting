@@ -72,7 +72,7 @@ combat needs participant ownership, ready timers and reconnect rules before impl
 
 The account/creator/exploration/first combat quest and one short Mara investigation are
 implemented. An Answer in the Reeds sends the Wayfarer to listen at two existing landmarks
-and return; it awards40 XP/5 chits once. The cistern remains sealed. There is not yet an
+and return; it awards 40 XP/5 chits once. The cistern remains sealed. There is not yet an
 hour of authored content. Quests should frequently teach ecology, characters,
 locations or mechanics, instead of repeatedly asking for arbitrary kill totals.
 

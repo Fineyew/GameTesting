@@ -43,7 +43,7 @@ before handoff. No secrets or build products belong in source control.
 ## Implemented interfaces and runtime constraints
 
 The composition root (`backend/app/main.py`) injects the immutable content catalog,
-player store, `CombatEngine`, `EncounterService` and `WorldHub`. Existing boundary tests
+player store, `CombatEngine`, `EncounterService`, `QuestRules`, `StoryService` and `WorldHub`. Existing boundary tests
 forbid cross-module internal imports and gameplay imports of database infrastructure.
 The PostgreSQL adapter implements the same aggregate-store contract as local JSON saves.
 
@@ -127,13 +127,13 @@ version, node and a rotating UUID. Stale/reordered/forged choices fail; clients 
 node jumps or reward amounts. POST `/interactions/{key}/inspect` accepts no completion
 claim: the server checks ownership/live world proximity and the catalog's discovery.
 Combat blocks story interactions. Quest events are ordered when declared; discoveries
-and talk objectives have quantity1. Nonrepeatable completion/rewards_claimed flags commit
+and talk objectives have quantity 1. Nonrepeatable completion/rewards_claimed flags commit
 with XP/items/currency under the existing aggregate lock, so retries cannot reward twice.
 After an uncertain choice response, reopen the conversation; saved progress is retained.
 
 `CharacterRecord.dialogue_state` is an optional dictionary, defaulting empty for old JSON
 and PostgreSQL JSONB saves. It is excluded from public character responses; dialogue APIs
-return a sanitized view. This is additive within runtime schema1 and needs no DDL migration.
+return a sanitized view. This is additive within runtime schema 1 and needs no DDL migration.
 An older server binary cannot read newly added aggregate fields: backup before rollback,
 and migrate/drop only this cursor field deliberately if downgrading to M0. Never reset
 player IDs, inventory, quest progress or rewards. Protocol1 movement/geometry is unchanged.
@@ -141,5 +141,9 @@ player IDs, inventory, quest progress or rewards. Protocol1 movement/geometry is
 so an older backend fails with a clear update message instead of partial story support.
 Older clients can still use the unchanged world protocol and starter compatibility API.
 
-The first authored follow-up uses existing landmarks and rewards40 XP/5 shell chits once.
+The first authored follow-up uses existing landmarks and rewards 40 XP/5 shell chits once.
 It does not open the cistern dungeon or add harvesting, folios or additional spells.
+
+M1.1 verification is complete at 4efd3a6/run 34431891977:38 backend tests with PostgreSQL,
+actual Godot online story traversal and retained Android export/touch/visible-resume
+evidence. APK/runtime artifact IDs and source hashes live in PROJECT_STATE.
