@@ -5,7 +5,7 @@ Read README → this file → ARCHITECTURE → relevant source before editing.
 
 ## Current checkpoint
 
-**M1.2 complete**, code/APK source `40fcfa7addaac98cd7f69329f38eb382d5c1d6dc`.
+**M1.2 complete**, code/APK source `d0c604894ba768c6647b42ff19a76285d0e41bce`.
 Later handoffs add Android diagnostics and frame-state checks; the startup footer now
 shows 0.2.2. Gameplay/backend/content remain unchanged from the tested code checkpoint. M0 completed at 1044f95; M1.1 code 4efd3a6,
 handoff d138214. Main remains at bd98746; no merge or deployment. Restoration is finished.
@@ -37,7 +37,7 @@ Continue the existing architecture and IDs; do not recreate systems from convers
 
 ## Tested evidence and Android artifact
 
-[CI run 34434861638](https://github.com/Fineyew/GameTesting/actions/runs/34434861638), code 40fcfa7:
+[CI run 34437004626](https://github.com/Fineyew/GameTesting/actions/runs/34437004626), code d0c6048:
 **all three jobs passed**. 59 backend tests and 30 subtests; five real PostgreSQL tests and
 both migrations. Tests cover forged/unowned/duplicate folios, stale/retried/concurrent
 updates, rollback, old JSON/JSONB saves, prepared-only combat and once-only spell acquisition.
@@ -49,9 +49,9 @@ reconnect, learned-but-unprepared rejection and an earned Seam Lance cast. Nativ
 coverage is touch exploration/folio preview and resume; online progression uses Godot/API.
 
 Signed ARM64 debug APK **0.2.2/code 4**, 27,905,691 bytes, minimum API24/target35.
-Artifact **10135899991**, runtime evidence **10135900260**, retained until 2026-12-09.
-Manifest source 40fcfa7; tested PR merge tree 2fc358a74b029508d60734549d8c8b6e3e3799a1.
-SHA-256: `7c5dae35c624faa21ad4e5baf4bc05ef442f583f1dd72c2bc0fbf98802fafd3f`.
+Artifact **10136657783**, runtime evidence **10136658341**, retained until 2026-12-09.
+Manifest source d0c6048; tested PR merge tree 9a92f41b8612f8ff0ac6f61afc7df71ffd14bf11.
+SHA-256: `50673c6c7d9d10d7e8ae234b404ad0257787305898c7f114267c5890b6a371c2`.
 Downloaded APK hash/manifest/ABI/version, included lesson catalog and compiled Folio checked.
 
 API35 x86_64 emulator: install, visible gateway, touch Folio open/close, locomotion,
@@ -64,7 +64,8 @@ Documentation checkpoint 8105f4a also passed all jobs in run 34435465708 after o
 startup failure and an isolated retry. Its underlying cause is unverified; KNOWN_ISSUES
 records it. The test now retains full system logcat and a final frame for diagnosis. Run 34436332914
 then exposed a stale gateway used as an exploration baseline; the capture now checks the
-visible player HUD. Fresh validation of this check/footer correction is pending.
+visible player HUD. Fresh validation of this check/footer correction passes at d0c6048;
+its exploration baseline, Folio, corrected version footer and resumed frames were inspected.
 Earlier M0/M1.1 evidence remains in history/CHANGELOG; source and saves are preserved.
 
 ## Unverified / placeholder / planned

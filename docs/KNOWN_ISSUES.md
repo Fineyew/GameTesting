@@ -51,7 +51,7 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
 - Docker runtime/public deployment are unverified here; CI proves the application and database
   behavior in its isolated test environment, not the production topology.
 
-- M1.2 full gates pass at 40fcfa7/run 34434861638. The d138214 docs-only rerun failed on a
+- M1.2 full gates pass at d0c6048/run 34437004626. The d138214 docs-only rerun failed on a
   portrait launcher-transition screenshot; waiting for landscape presentation resolved it
   without relaxing the view-match threshold. This is not physical-device certification.
 
@@ -67,4 +67,5 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
   Folio close worked; the baseline capture was early. The check now requires the visible
   player plaque/thumb control in exploration frames as well as landscape/terrain. Existing
   comparison thresholds are unchanged; the captured failing frame is rejected by the new
-  predicate and captured exploration/resume frames are accepted. Fresh CI is pending.
+  predicate and captured exploration/resume frames are accepted. Full CI passes at d0c6048
+  (run 34437004626); the new exploration baseline and native Folio/resume frames were inspected.

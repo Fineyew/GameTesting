@@ -190,7 +190,7 @@ launcher-transition screenshot during resume: the gate now waits for landscape p
 before applying the unchanged view-match threshold and repeat-touch check. It does not
 rotate evidence or certify physical-device behavior.
 
-M1.2 engineering verification is complete at 40fcfa7/run 34434861638: 59 tests with
+M1.2 engineering verification is complete at d0c6048/run 34437004626: 59 tests with
 PostgreSQL, full Godot/API flow and signed ARM64/native Folio-touch/resume evidence.
 PROJECT_STATE records artifact IDs, exact hashes and the unverified physical-device gates.
 

@@ -13,7 +13,7 @@ M0 engineering is complete: PostgreSQL/Godot integration, retained signed ARM64 
 inspected renders, and Android emulator touch/visible-resume checks pass. Physical phone
 validation remains unverified. M1.1 and M1.2 are complete: reusable story rules, Mara's
 investigation, three earned spells and a persistent server-owned folio.
-[CI run 34434861638](https://github.com/Fineyew/GameTesting/actions/runs/34434861638) at 40fcfa7
+[CI run 34437004626](https://github.com/Fineyew/GameTesting/actions/runs/34437004626) at d0c6048
 passes 59 tests, full Godot/API progression and Android Folio touch/visible-resume checks.
 PROJECT_STATE records exact source/artifact hashes; ROADMAP defines the narrow M1.3 scope.
 

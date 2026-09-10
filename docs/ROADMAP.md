@@ -31,7 +31,7 @@ No broad M1 content production before this engineering checkpoint.
 M1.1 code/APK source 4efd3a6 passed all jobs in run 34431891977 (38 tests). M0 remains
 checkpointed at 1044f95. No bulk content was produced; the cistern dungeon is still sealed.
 
-**M1.2 complete** — code/APK source 40fcfa7, all gates passed in run 34434861638.
+**M1.2 complete** — code/APK source d0c6048, all gates passed in run 34437004626.
 
 - [x] Three short Mara lessons make Beacon Trace, Reed Aegis and Seam Lance obtainable.
 - [x] Six-slot persistent folio, ownership/catalog/duplicate checks, stale-write/retry guards.
