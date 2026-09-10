@@ -65,7 +65,7 @@ Explore shared space → meet a character/discover a phenomenon → choose a que
 build/appearance → return to a social home → follow another lead. Future cooperative
 combat needs participant ownership, ready timers and reconnect rules before implementation.
 
-## First supplies and equipment (M1.3 implemented; validation tracked in PROJECT_STATE)
+## First supplies and equipment (M1.3 implemented and tested)
 
 Mara's existing Dawnreef Supply Cart sells one Lanternkeeper Vest for 12 shell chits.
 The first quest plus lurker victory yields 14, so the purchase follows helping the town.

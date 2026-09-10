@@ -261,3 +261,10 @@ to the pressed control after the callback returns. This follows Godot's
 [queue_free lifecycle](https://docs.godotengine.org/en/4.5/classes/class_node.html#class-node-method-queue-free).
 The native Bag→vendor gate caught the previous can_process error; smoke now dispatches
 GUI mouse input and all Godot gates reject engine errors as well as script failures.
+
+M1.3 complete code/APK checkpoint de9d7a3 passes all gates in run34440512749: 90 tests /
+30 subtests with eight PostgreSQL tests/migrations, full Godot/API progression, 89 draw
+calls and native Bag/vendor/Folio/movement/visible-resume checks. PROJECT_STATE records
+exact APK provenance and open physical-device/public-deployment gates. The initial
+Pixel Launcher overlay and subsequent real panel error remain documented with retained
+failure evidence; the corrected run passes without relaxing any native assertion.

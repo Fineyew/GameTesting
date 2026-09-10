@@ -20,7 +20,7 @@ honest device-status documentation. Physical phone thermal/touch/network validat
 an open release gate; never call an emulator or desktop result a physical-phone pass.
 No broad M1 content production before this engineering checkpoint.
 
-## M1 — authored vertical slice (M1.3 validation in progress)
+## M1 — authored vertical slice (M1.3 complete)
 
 - [x] M1.1: catalog-owned NPC dialogue/branches/conditions with server-owned cursors.
 - [x] Validated quest offers, ordered defeat/inspect/talk objectives and once-only rewards.
@@ -42,14 +42,15 @@ checkpointed at 1044f95. No bulk content was produced; the cistern dungeon is st
 - [x] Complete PostgreSQL, render and Android runtime gates (59 tests, 89 draw calls).
 - [x] Retain verified ARM64 0.2.2/code 4, reconcile handoff and checkpoint M1.2.
 
-**M1.3 implemented; full CI/artifact gates pending** — one Dawnreef supply loop.
+**M1.3 complete** — code/APK de9d7a3, all gates passed in run34440512749.
 
 - [x] Reuse Mara's supply cart and Lanternkeeper Vest; 12-chit purchase, one chest slot, Guard1.
 - [x] Atomic server-owned buy/equip/unequip, ownership/price/stack/level validation.
 - [x] Persistent commerce revisions/receipts, old JSON/JSONB defaults and concurrency coverage.
 - [x] Touch Bag/vendor comparison, feedback/recovery and unchanged visual appearance.
-- [ ] Complete full PostgreSQL/Godot/API/render/Android gates and inspect evidence.
-- [ ] Retain ARM640.2.3/code5, reconcile canonical documents/PR and checkpoint.
+- [x] Full PostgreSQL/Godot/API/render/Android gates: 90 tests /30 subtests, 89 draw calls.
+- [x] Fix native input-time panel detachment; retain failure evidence and pass fresh touch QA.
+- [x] Retain verified ARM64 0.2.3/code5 (artifact10137878626), reconcile docs/PR and checkpoint.
 
 Stop after M1.3. Recommended narrow **M1.4 (not started)**: activate existing Sunthread
 Bandage use outside combat, with server-owned capped healing, atomic inventory consumption,

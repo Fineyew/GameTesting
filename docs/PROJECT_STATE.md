@@ -5,10 +5,11 @@ Read README → this file → ARCHITECTURE → relevant source before editing.
 
 ## Current checkpoint
 
-**M1.3 implemented; complete CI/artifact validation pending.** This candidate extends
-M1.2 code d0c6048/handoff56370e6. The latter's run34437584787 is now verified successful
-in all three jobs. M0 remains complete at1044f95; M1.1 at4efd3a6/d138214. Main remains
-bd98746. No merge or public deployment; preserve original IDs and all existing systems.
+**M1.3 complete.** Code/APK source `de9d7a38bed6c18b396173cfd926c09c20e8159d` passes all
+required gates in [run34440512749](https://github.com/Fineyew/GameTesting/actions/runs/34440512749).
+M0 remains complete at1044f95; M1.1 at4efd3a6/d138214; M1.2 atd0c6048/56370e6. The M1.2
+handoff run34437584787 also passed all jobs. Main remains bd98746; no merge or deployment.
+Preserve original IDs, accounts/saves and all working systems. Stop before M1.4.
 
 ## What works
 
@@ -18,50 +19,56 @@ bd98746. No merge or public deployment; preserve original IDs and all existing s
 - Server-owned WebSocket movement/presence/interpolation/reconnect and preset chat.
   World protocol1 unchanged; one process/room, 32-player cap still unbenchmarked.
 - Persistent Tidebeat intents/Focus/turns, prepared spells and atomic/retry-safe rewards.
-- M1.1 catalog dialogue, persisted cursor, NPC quest offers and ordered objectives.
-- M1.2 Mara investigation and three lessons; five playable quests, one enemy, six
-  obtainable spells and 1–6 prepared folio. Ownership/revision/retry and combat locks.
+- M1.1 catalog dialogue, persisted cursors, NPC offers and ordered objectives; M1.2 Mara
+  investigation/three lessons. Five playable quests, one enemy, six obtainable spells,
+  persistent 1–6 spell folio with ownership/revision/retry protection and combat locks.
 - JSON development and PostgreSQL aggregate adapters; existing migrations0001/0002.
-- **M1.3:** Mara's existing supply cart sells the Lanternkeeper Vest for12 earned shell
-  chits. One owned copy, one chest slot. Server Guard1 reduces each incoming hit by one,
-  adds to Brace/spell protection and never changes robe appearance or spell mechanics.
-- Atomic spend/grant, catalog prices/stock/level/stack validation, explicit equip/unequip,
-  persistent commerce revision and existing receipts. Combat blocks purchases/equipment
-  changes; new buys require live proximity to Mara. Matching retries can replay elsewhere.
-- Touch Bag/vendor panels inside the existing HUD: current chits/price/ownership/equipment,
-  Guard comparison, search, feedback, exact-request retry or reload. Preview cannot transact.
-- Existing item/vendor keys retained; still26 catalog definitions. Bandage listing stays
-  visible but unavailable until item use works. No other content increment was started.
-- Old saves default commerce_revision0 and missing equipment to empty; no DDL/reset.
-  Encounter snapshots without equipment_guard resolve with zero gear bonus. New client
-  0.2.3 requires commerce1 alongside world1/story1/folio1 before sign-in.
+- **M1.3:** Mara's existing supply cart sells the Lanternkeeper Vest for 12 earned shell
+  chits. One owned copy, one chest slot. Catalog Guard1 reduces each incoming hit by one,
+  adds to Brace/spell protection and leaves robe appearance, Focus and spells unchanged.
+- Atomic spend/grant, server prices/availability/level/stack/slot validation, explicit
+  equip/unequip, commerce revision and existing receipts. Active combat blocks changes;
+  new buys require live proximity to Mara. Matching retries can replay after leaving.
+- Touch Bag/vendor panels in the existing HUD: currency, prices, owned/equipped state,
+  Guard comparison, search, saved feedback and exact-command retry/reload. No preview writes.
+- Still 26 catalog definitions; existing item/vendor/listing keys preserved. Bandages are
+  visible but unavailable to buy until item use works. No other content increment started.
+- Old saves default commerce_revision0/missing equipment; no DDL or reset. Old encounters
+  without equipment_guard resolve with zero gear bonus. Client0.2.3 requires commerce1
+  alongside world1/story1/folio1; inventory module status now reflects its narrow rules.
 
-## Current validation
+## Tested evidence and retained APK
 
-Local candidate: **82 tests passed, 8 PostgreSQL tests explicitly skipped, 30 subtests**;
-2 upstream test deprecation warnings. Catalog validation/bundle, Godot import/smoke and
-full real Godot/API flow pass. The latter retains all M1.1/M1.2 progression and proves
-quest-earned vendor purchase, comparison, equip/unequip/reconnect and Guard in combat.
-New regression tests cover malformed/forged buys, insufficient funds, retries/conflicts,
-concurrent spending, rollback, ownership/level/active combat, JSON/JSONB compatibility.
+At **de9d7a3**, all three CI jobs passed on the first attempt: **90 backend tests and
+30 subtests**, including eight real PostgreSQL tests and both migrations. Coverage includes
+forged prices/items/stats, insufficient funds, retries/conflicts/stale revisions, concurrent
+spending across independent connections, rollback after SQL writes, equipment legality/
+active-combat locks and old JSON/JSONB saves. Local: 82 passed, eight PostgreSQL tests
+explicitly skipped, 30 subtests; two upstream test deprecation warnings remain.
 
-CI run34439273721 at19ac379 passed **90 tests / 30 subtests**, including all eight real
-PostgreSQL tests and migrations, plus the complete Godot/API gate. Export and desktop
-render passed (89 draw calls). The first Android attempt failed at gateway visibility:
-a Pixel Launcher ANR dialog covered the rendered game (artifact10137449675). The identical
-Android-only rerun passed startup/navigation/movement/resume but failed on a real native
-panel lifecycle error (artifact10137587989). GameHUD now hides/queues old controls instead
-of detaching them during input; fresh full CI is pending. Godot gates reject engine errors
-and smoke dispatches actual GUI mouse events. No M1.3 ARM64 artifact is published yet.
-**Pending:** render evidence review and successful native install/Folio/Bag→vendor/touch/
-visible-resume validation, followed by artifact verification and final handoff.
-Candidate Android version0.2.3/code5; no new APK claimed until required gates pass.
-CI only publishes ARM64 after backend/Godot/render/native validation succeeds.
+Godot import/smoke and full real Godot/API progression passed: account/creator, two-player
+presence, original story, all spell lessons/folio/reconnect/earned Lance, then purchase
+with earned chits, comparison, equip/unequip/reconnect and Guard combat. Folio/appearance
+remain unchanged. Smoke additionally dispatches GUI mouse input; every Godot gate rejects
+engine errors. The native gate supplies actual Android touch input.
 
-Previous tested M1.2 artifact: ARM64 0.2.2/code4, source d0c6048, run34437004626,
-artifact10136657783/runtime10136658341, 27,905,691 bytes, minAPI24/target35.
-SHA256 `50673c6c7d9d10d7e8ae234b404ad0257787305898c7f114267c5890b6a371c2`.
-This is prior milestone evidence, not the M1.3 candidate. CHANGELOG/history retain M0/M1.1.
+ARM64 debug APK **0.2.3/code5**, **27,914,052 bytes**, minimumAPI24/target35.
+Artifact **10137878626**, runtime evidence **10137878970**, retained until2026-12-09.
+Manifest source de9d7a3; tested PR merge commit `27f320efeca82be2af58013f8797836014c1636d`.
+SHA256: `cd4c196dc7d679f6c64aa978f8c16fb08a7e2a8c1ec03c5ba5d9e34bdec568fb`.
+Downloaded bytes/hash, ARM64-only libraries, version/code/signature report, compiled
+CommercePanel and shop catalog verified. APK retained for owner handoff.
+
+API35 x86_64 emulator: install, visible gateway, Folio open/close, Bag→vendor touch,
+locomotion, background/resume to a visible landscape world and repeat movement pass.
+Desktop vendor/equipment and native vendor/resumed frames inspected. **89 draw calls**
+(default desktop scene; budget150). Native coverage is preview/navigation/resume;
+online transactions are tested through the real Godot/API flow, not a physical phone.
+
+Initial candidate19ac379 had two native failures: a Pixel Launcher ANR overlay, then a
+real can_process error from detaching a panel during touch dispatch. The HUD now hides
+retiring controls and queues deletion; fresh full CI validates the fix atde9d7a3. Failure
+artifacts10137449675/10137587989 remain recorded in KNOWN_ISSUES. No thresholds weakened.
 
 ## Placeholder / unverified / planned
 
@@ -70,24 +77,22 @@ and cellular/Wi-Fi transitions remain **unverified release gates**. Public backe
 updated/verified; use this branch's backend. Release signing/store publication unfinished.
 README gives local-server/USB reverse and physical-device procedures.
 
-Procedural art, gait/VFX, flat terrain, supply-cart/vest asset bindings remain placeholders;
+Procedural art, gait/VFX, flat terrain and cart/vest asset bindings remain placeholders;
 no finished wearable vest mesh or audio. No full cosmetic override/transmog system.
 Item use/selling/trading, additional gear, gathering/crafting, mounts/housing/pets,
 dungeon/boss/co-op, free chat/moderation and account recovery remain unfinished.
 JSON→PostgreSQL import, backup/restore drills and load tests remain release gates.
-Intermittent emulator startup failure remains documented in KNOWN_ISSUES; full logs/final
-frames retained. Fixed landscape and presented-HUD checks remain unchanged.
+Intermittent emulator/launcher startup reliability remains open in KNOWN_ISSUES.
 
 ## Next / build and test
 
-Finish M1.3 CI/artifact/documentation checkpoint, then **stop before M1.4**. Recommended
-next small scope: server-owned out-of-combat Sunthread Bandage use (capped healing,
-atomic consumption/retries, clear Vigor UI), then enable its existing shop listing.
-No bulk content, additional families/regions, crafting/gathering or dungeon generation.
+**Stop at M1.3.** Recommended narrow M1.4: server-owned out-of-combat Sunthread Bandage
+use with capped healing, atomic consumption/retries and clear Vigor UI; enable its existing
+shop listing only once functional. No bulk content or new regions/families/dungeon/crafting.
 
 `python -m pip install -r backend/requirements.lock`; `python -m pytest backend/tests -q`;
-`python -m tools.build_catalog`. Set GODOT_BIN to4.5.1 and run `python -m tools.check_godot`
-and `python -m tools.check_online`. CI supplies migrated PostgreSQL16, SDK35/JDK17/templates.
-README covers export/render/emulator and physical-device commands.
-Key additions: inventory/rules.py, vertical_slice/commerce.py, test_commerce.py,
-scripts/ui/commerce_panel.gd. Preserve composition-root injection and aggregate locks.
+`python -m tools.build_catalog`. Set GODOT_BIN to4.5.1; run `python -m tools.check_godot`
+and `python -m tools.check_online`. CI supplies PostgreSQL16, SDK35/JDK17/templates.
+README covers export/render/emulator and physical-device commands. Key additions:
+inventory/rules.py, vertical_slice/commerce.py, test_commerce.py, ui/commerce_panel.gd.
+Preserve composition-root injection, aggregate locks and the deferred HUD lifecycle.

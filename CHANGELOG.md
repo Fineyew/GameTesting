@@ -1,7 +1,12 @@
 # Changelog
 
-## 0.2.3 — M1.3 vendor/equipment (validation in progress, 2026-09-10)
+## 0.2.3 — M1.3 vendor/equipment complete (2026-09-10)
 
+- Code/APK checkpoint de9d7a3 passes all gates on the first attempt in run34440512749:
+  90 tests/30 subtests, eight PostgreSQL tests/migrations, full Godot/API progression,
+  inspected 89-draw-call vendor/equipment renders and native touch/visible-resume QA.
+- Retain ARM64 0.2.3/code5 artifact10137878626 and runtime evidence10137878970;
+  27,914,052 bytes, SHA256 cd4c196dc7d679f6c64aa978f8c16fb08a7e2a8c1ec03c5ba5d9e34bdec568fb.
 - Continue M1.2 at d0c6048/56370e6; its final handoff run34437584787 passed all jobs.
 - Activate existing Dawnreef Supply Cart and Lanternkeeper Vest for 12 earned chits.
 - Add server-owned atomic purchases, catalog prices, inventory/level/slot checks and
@@ -16,7 +21,8 @@
   failed on a Pixel Launcher ANR overlay, retained in artifact10137449675; identical rerun
   reached native navigation and caught an input-time panel-detachment error. Hide/queue
   retiring controls so Godot can finish input dispatch; strengthen all Godot error gates
-  and dispatch GUI input in smoke. Fresh full validation pending; no M1.3 ARM64 published.
+  and dispatch GUI input in smoke. Full corrected validation passes atde9d7a3; both failed
+  attempts published no ARM64 artifact. Record failure evidence without weakening tests.
   Physical phone remains unverified.
 
 ## 0.2.2 — M1.2 acquisition and folio complete (2026-09-10)

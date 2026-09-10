@@ -22,3 +22,4 @@
 | D018 | One existing chest item with catalog Guard1, separate appearance | A meaningful earned purchase without stat bloat, new gear families or cosmetic penalties; no wearable mesh/transmog claim. |
 | D019 | Commerce revision + existing aggregate lock/receipts; catalog shop version | Atomic spend/grant, cross-connection overspend protection, safe retries after receipt eviction and stale-price rejection; reuse both adapters. |
 | D020 | Preserve unavailable bandage listing until item use is implemented | Avoid selling a nonfunctional consumable while retaining existing IDs and reward inventory; candidate narrow M1.4 scope. |
+| D021 | Hide retiring modal controls, then queue deletion at frame end | Native touch retained the emitting control during dispatch; synchronous detachment caused can_process errors. Preserve actual adb touch and strict engine-error gates. |

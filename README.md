@@ -11,13 +11,12 @@ Read [PROJECT_STATE](docs/PROJECT_STATE.md), [ARCHITECTURE](docs/ARCHITECTURE.md
 [DECISIONS](docs/DECISIONS.md), [KNOWN_ISSUES](docs/KNOWN_ISSUES.md) and [CHANGELOG](CHANGELOG.md).
 M0 engineering is complete: PostgreSQL/Godot integration, retained signed ARM64 export,
 inspected renders, and Android emulator touch/visible-resume checks pass. Physical phone
-validation remains unverified. M1.1 and M1.2 are complete: reusable story rules, Mara's
-investigation, three earned spells and a persistent server-owned folio. M1.3 adds the
-first vendor/equipment loop; complete CI/artifact validation is pending.
-[CI run 34437004626](https://github.com/Fineyew/GameTesting/actions/runs/34437004626) at d0c6048
-passes 59 tests, full Godot/API progression and Android Folio touch/visible-resume checks.
-The M1.2 handoff at 56370e6 also passed all jobs in run 34437584787.
-PROJECT_STATE records current validation and source/artifact hashes.
+validation remains unverified. M1.1, M1.2 and M1.3 are complete: reusable story rules,
+Mara's investigation/three earned spells, a persistent folio, and one earned vendor/equipment loop.
+[CI run34440512749](https://github.com/Fineyew/GameTesting/actions/runs/34440512749) at de9d7a3
+passes 90 tests/30 subtests with PostgreSQL, full Godot/API progression, 89-draw-call rendering
+and native Folio/Bag/vendor touch/visible-resume checks. PROJECT_STATE records exact
+source/artifact hashes. Stop before the narrow proposed M1.4 in ROADMAP.
 
 ## What is playable
 

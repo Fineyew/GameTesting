@@ -4,7 +4,7 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
 
 ## Release gates
 
-- Updated public server not deployed or verified. Online play needs a protocol 1 server.
+- Updated public server not deployed or verified. Client0.2.3 needs world1/story1/folio1/commerce1.
 - Physical Android install/touch/safe-area, 20-minute thermal/memory/battery, packet-loss,
   cellular/Wi-Fi switching and background/resume certification remain outstanding.
   CI emulator and desktop rendering cannot substitute for these measurements. The emulator
@@ -25,7 +25,7 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
 - Catalog-driven Mara dialogue and one investigation now exist. Collect-item/repeatable
   quests, broader objective types and visual authoring tools remain planned. M1.1 integration
   and Android gates pass at 4efd3a6; additional NPC visual/interaction bindings need scene work.
-- One vest vendor/equipment loop is implemented; full M1.3 gates are pending. Item use, selling,
+- One vest vendor/equipment loop passes all M1.3 gates atde9d7a3/run34440512749. Item use, selling,
   trading, wearable vest mesh, additional gear slots, gathering/crafting, mounts,
   housing, pets, dungeon/boss and most social features are not implemented.
 - Procedural models, gait, primitive spell impacts and flat region remain placeholders.
@@ -85,4 +85,5 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
   GameHUD now hides retiring controls and queue_free defers their removal until the frame
   ends. GUI-dispatched mouse clicks supplement smoke coverage; native adb touch remains
   the regression for this Android path. All Godot gates now reject engine ERROR messages,
-  not only SCRIPT ERROR. Fresh full CI is pending for this correction.
+  not only SCRIPT ERROR. Fresh full CI passes atde9d7a3/run34440512749, including the
+  same native touch path and visible resume; screenshots inspected. No assertions weakened.

@@ -117,3 +117,7 @@ Rules live in inventory/InventoryRules; orchestration lives in vertical_slice/Co
 The server returns comparison/owned/equipped/price data from one locked aggregate snapshot.
 Clients cannot grant items, send prices/stat modifiers or invent equipment ownership.
 Run the complete backend/PostgreSQL, Godot/API, render and Android gates after changes.
+
+The first vendor/equipment loop is validated at de9d7a3/run34440512749. Preserve the
+native Bag→vendor touch gate when changing navigation; invoking a button signal alone
+does not exercise Android input dispatch and previously missed a panel lifecycle error.
