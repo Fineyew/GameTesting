@@ -11,8 +11,16 @@ static func check(app: Node, tree: SceneTree) -> void:
     for child in app.world.get_children():
         if child is DawnreefArt:
             var well = child.get_node("LanternWell") as MeshInstance3D
-            var bounds = well.transform * well.get_aabb()
-            assert(bounds.position.y >= -.01 and bounds.end.y > 3.3 and bounds.end.y < 3.6,
+            # Transform vertices, not an already axis-aligned bounding box: rotating
+            # the latter overestimates extents for a legitimately transformed import.
+            var lowest := INF
+            var highest := -INF
+            for surface in well.mesh.get_surface_count():
+                for vertex in well.mesh.surface_get_arrays(surface)[Mesh.ARRAY_VERTEX]:
+                    var height: float = (well.transform * vertex).y
+                    lowest = minf(lowest,height)
+                    highest = maxf(highest,height)
+            assert(lowest >= -.01 and highest > 3.3 and highest < 3.6,
                 "Imported well must keep its walkable floor and upright floating vanes")
     var actor = app.session.player.avatar as WayfarerAvatar
     var skeleton = actor.find_child("Skeleton3D",true,false) as Skeleton3D

@@ -194,6 +194,9 @@ def join_objects(objects, name):
     obj.name=name
     bpy.context.scene.cursor.location=(0,0,0)
     bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
+    # A joined mesh inherits its first object's rotation. Bake that orientation so
+    # source bounds, exported bounds and scene placement use the same upright axes.
+    bpy.ops.object.transform_apply(location=False,rotation=True,scale=True)
     return obj
 
 
@@ -232,9 +235,11 @@ def well():
     lathe('Lantern crown',(0,1.72,0),[(.12,0),(.31,.12),(.12,.28),(.02,.54)],'gold',12)
     for i in [-1,1]:
         # Floating sail-shaped stone vanes, deliberately above player head height.
+        faces=[(0,1,2,3),(7,6,5,4),(0,4,5,1),(1,5,6,2),(2,6,7,3),(3,7,4,0)]
+        if i<0: faces=[tuple(reversed(face)) for face in faces]
         mesh('Skyward sail',[(i*.85,2.45,-.35),(i*1.85,2.7,-.16),(i*1.4,3.25,0),(i*.58,3.42,.06),
               (i*.85,2.45,-.18),(i*1.85,2.7,.01),(i*1.4,3.25,.17),(i*.58,3.42,.23)],
-             [(0,1,2,3),(7,6,5,4),(0,4,5,1),(1,5,6,2),(2,6,7,3),(3,7,4,0)],'light_stone')
+             faces,'light_stone')
     ring('Upper suspension',(0,2.65,0),1.28,.022,'copper',arc=math.pi*1.5)
 
 
