@@ -21,5 +21,8 @@
 | D017 | Three small quest-based spell lessons, including server-observed casts | Meaningful sources for existing spells without changing completed rewards or generating more families/regions. |
 | D018 | One existing chest item with catalog Guard1, separate appearance | A meaningful earned purchase without stat bloat, new gear families or cosmetic penalties; no wearable mesh/transmog claim. |
 | D019 | Commerce revision + existing aggregate lock/receipts; catalog shop version | Atomic spend/grant, cross-connection overspend protection, safe retries after receipt eviction and stale-price rejection; reuse both adapters. |
-| D020 | Preserve unavailable bandage listing until item use is implemented | Avoid selling a nonfunctional consumable while retaining existing IDs and reward inventory; candidate narrow M1.4 scope. |
+| D020 | Preserve unavailable bandage listing until item use is implemented | Avoid selling a nonfunctional consumable while retaining existing IDs and reward inventory; originally candidate M1.4; roadmap edec97b schedules it as M1.5. |
 | D021 | Hide retiring modal controls, then queue deletion at frame end | Native touch retained the emitting control during dispatch; synchronous detachment caused can_process errors. Preserve actual adb touch and strict engine-error gates. |
+| D022 | Prove a small Dawnreef art benchmark before wider production | Roadmap edec97b moves bandages to M1.5; art acceptance and actual phone measurements gate copying the kit. No server redesign. |
+| D023 | Editable Blender sources outside Godot, checked-in self-contained GLBs | Original reusable assets, deterministic recipes, named rigs/materials and import budgets without Blender on game CI or phones. |
+| D024 | Confirm combat first, then bounded presentation with a short-effects option | Keep server authority/receipts and make a significant spell visible without forcing repeat camera cuts. |

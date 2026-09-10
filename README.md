@@ -16,12 +16,13 @@ Mara's investigation/three earned spells, a persistent folio, and one earned ven
 [CI run34440512749](https://github.com/Fineyew/GameTesting/actions/runs/34440512749) at de9d7a3
 passes 90 tests/30 subtests with PostgreSQL, full Godot/API progression, 89-draw-call rendering
 and native Folio/Bag/vendor touch/visible-resume checks. PROJECT_STATE records exact
-source/artifact hashes. Stop before the narrow proposed M1.4 in ROADMAP.
+source/artifact hashes. M1.4 is now an implemented visual benchmark candidate awaiting
+full CI/render/Android validation and owner/physical-phone acceptance; see PROJECT_STATE.
 
 ## What is playable
 
 Create an account and one Wayfarer with appearance/affinity; enter a small original
-procedural Dawnreef; move with touch/WASD/controller stick; orbit/recenter the camera;
+Dawnreef with a small authored Lantern Well/Mara art benchmark; move with touch/WASD/controller stick; orbit/recenter the camera;
 see other connected players and use preset chat; follow Mara's branching dialogue, accept the first quest,
 fight the Fog-Thorn Lurker in server-owned Tidebeat turns and retain XP, currency and
 inventory rewards. Then trace a note through the reeds and sealed cistern entrance and
@@ -67,6 +68,7 @@ recipe; physical phone results are recorded separately in PROJECT_STATE.
 python -m pytest backend/tests -q
 python -m tools.build_catalog
 # Set GODOT_BIN to your Godot executable, or put `godot` on PATH.
+python -m tools.check_art
 python -m tools.check_godot
 python -m tools.check_online
 ```
@@ -79,7 +81,7 @@ isolated database migrated to head. CI runs both migrations and the PostgreSQL t
 ## Android build and runtime checks
 
 Use the checked-in **Android** export preset: ARM64, INTERNET permission, app ID
-`work.surveyroute.veilboundtides`, version 0.2.3/code 5. Use Godot 4.5.1 export templates,
+`work.surveyroute.veilboundtides`, version 0.2.4/code 6 (candidate; verify CI in PROJECT_STATE). Use Godot 4.5.1 export templates,
 JDK17, Android SDK platform35 and build-tools35.0.0. See the
 [official engine export instructions](https://docs.godotengine.org/en/4.5/tutorials/export/exporting_for_android.html).
 The exported engine minimum is API24, target API35; minimum OS is not a device-performance guarantee.
@@ -109,7 +111,7 @@ With Android platform-tools and USB debugging enabled:
 
 ```bash
 adb devices
-adb install -r veilbound-tides-0.2.3-android.apk
+adb install -r veilbound-tides-0.2.4-android.apk
 adb reverse tcp:8000 tcp:8000
 ```
 
@@ -162,7 +164,8 @@ follow the current persistence and protocol requirements before using them.
 | backend/app/db, backend/alembic | Persistence adapters and additive migrations |
 | content | Validated source gameplay definitions |
 | godot_project | Modular scenes, scripts and generated catalog |
-| tools | Catalog generation, Godot integration, Android export and runtime checks |
+| art_sources | Editable Blender scenes, original recipes and benchmark status/budgets |
+| tools | Catalog/art validation, Godot integration, Android export and runtime checks |
 | .github/workflows | Repeatable CI checks and retained artifacts |
 | infra | Existing Docker/Nginx/backup setup |
 | docs | Canonical state, design, authoring, decisions and historical plans |

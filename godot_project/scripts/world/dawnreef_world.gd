@@ -17,9 +17,9 @@ func _ready() -> void:
 
 func _environment() -> void:
     var sky_material = ProceduralSkyMaterial.new()
-    sky_material.sky_top_color = Color("365f7f")
-    sky_material.sky_horizon_color = Color("b0d4cd")
-    sky_material.ground_horizon_color = Color("b0d4cd")
+    sky_material.sky_top_color = Color("537e9c")
+    sky_material.sky_horizon_color = Color("d4dbc5")
+    sky_material.ground_horizon_color = Color("d4dbc5")
     sky_material.ground_bottom_color = Color("255868")
     var sky = Sky.new()
     sky.sky_material = sky_material
@@ -30,6 +30,10 @@ func _environment() -> void:
     environment.ambient_light_color = Color("a6ccc2")
     environment.ambient_light_energy = .35
     environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+    environment.fog_enabled = true
+    environment.fog_light_color = Color("c2d8cb")
+    environment.fog_density = .0025
+    environment.fog_sky_affect = .25
     var world_environment = WorldEnvironment.new()
     world_environment.environment = environment
     add_child(world_environment)
@@ -38,14 +42,17 @@ func _environment() -> void:
     sun.light_color = Color("fff0c9")
     sun.light_energy = .9
     sun.shadow_enabled = false
-    sun.directional_shadow_max_distance = 55
+    sun.directional_shadow_max_distance = 32
     add_child(sun)
 
 func _landscape() -> void:
-    ReefKit.box(self,Vector3(48,.8,42),Vector3(0,-.4,-1),Color("709881"),true)
+    var ground = ReefKit.box(self,Vector3(48,.8,42),Vector3(0,-.4,-1),Color("709881"),true)
+    ground.material_override = ReefKit.ground(Color("709881"))
     ReefKit.box(self,Vector3(450,.2,450),Vector3(0,-1.5,0),Color("357a8d"))
-    ReefKit.box(self,Vector3(5,.04,40),Vector3(0,.02,-1),Color("d4c295"))
-    ReefKit.box(self,Vector3(42,.04,3.5),Vector3(0,.025,-4),Color("d4c295"))
+    var path = ReefKit.box(self,Vector3(5,.04,40),Vector3(0,.02,-1),Color("d4c295"))
+    path.material_override = ReefKit.ground(Color("d4c295"))
+    path = ReefKit.box(self,Vector3(42,.04,3.5),Vector3(0,.025,-4),Color("d4c295"))
+    path.material_override = ReefKit.ground(Color("d4c295"))
     for i in 10:
         var angle = i*TAU/10
         ReefKit.cylinder(self,7,4,Vector3(cos(angle)*20,-2.4,sin(angle)*18-1),Color("857b68"),5)
@@ -61,6 +68,8 @@ func _landscape() -> void:
         var at = Vector3(random.randf_range(-22,22),0,random.randf_range(-20,17))
         if absf(at.x) < 4 or absf(at.z+4)<3 or _inside_building(at):
             continue
+        if Vector2(at.x,at.z+4).length() < 11:
+            continue # The small benchmark uses authored foliage; distant trees remain blocked in.
         ReefKit.cylinder(self,.24,2.6,at+Vector3.UP*1.3,Color("74624f"),.17)
         var crown = ReefKit.sphere(self,1.5,at+Vector3.UP*3.1,Color("417e78"))
         crown.scale = Vector3(1,.65,1)
@@ -80,6 +89,17 @@ func _house(bounds: Array) -> void:
     var width = bounds[2]-bounds[0]
     var depth = bounds[3]-bounds[1]
     var at = Vector3((bounds[0]+bounds[2])/2,0,(bounds[1]+bounds[3])/2)
+    if bounds == geometry.blockers[0]:
+        # Art replacement only: preserve the exact collision used by world protocol 1.
+        var body = StaticBody3D.new()
+        var collider = CollisionShape3D.new()
+        var shape = BoxShape3D.new()
+        shape.size = Vector3(width,3.6,depth)
+        collider.shape = shape
+        collider.position = at + Vector3.UP*1.8
+        body.add_child(collider)
+        add_child(body)
+        return
     ReefKit.box(self,Vector3(width,3.6,depth),at+Vector3.UP*1.8,Color("d4c29f"),true)
     var roof = PrismMesh.new()
     roof.size = Vector3(width+1,2.3,depth+1)
@@ -91,17 +111,14 @@ func _house(bounds: Array) -> void:
     ReefKit.box(self,Vector3(.7,2,.7),at+Vector3(width*.3,5,0),Color("b3a285"))
 
 func _landmarks() -> void:
-    ReefKit.cylinder(self,1.3,.5,Vector3(0,.25,-5),Color("b7ac90"))
-    ReefKit.cylinder(self,1.05,.6,Vector3(0,.6,-5),Color("6e8d8b"),.9)
-    well_light = ReefKit.sphere(self,.38,Vector3(0,1.5,-5),Color("d7da87"),true)
-    for x in [-1.5,1.5]:
-        ReefKit.cylinder(self,.13,3.2,Vector3(x,1.6,-5),Color("a69778"))
-    ReefKit.box(self,Vector3(3.6,.22,.4),Vector3(0,3.2,-5),Color("a69778"))
+    add_child(DawnreefArt.new())
+    well_light = ReefKit.sphere(self,.27,Vector3(0,1.5,-5),Color("ffdfa0"),true)
     ReefKit.label(self,"LANTERN WELL",Vector3(0,3.65,-5))
     var mara = WayfarerAvatar.new()
     add_child(mara)
     mara.position = Vector3(-4,0,-4)
-    mara.build({"robe":"coral","skin":"deep"})
+    mara.build({"robe":"coral","skin":"deep"},true)
+    mara.rotation.y = -2.5
     ReefKit.label(mara,"Mara Lanternwright",Vector3(0,2.3,0))
     enemy = Node3D.new()
     add_child(enemy)
@@ -138,3 +155,12 @@ func spell_impact(spell: String) -> void:
         var reaction = create_tween()
         reaction.tween_property(enemy,"scale",Vector3(1.12,.8,1.12),.12)
         reaction.tween_property(enemy,"scale",Vector3.ONE,.3)
+
+func glimmer_spark(from: Vector3, to: Vector3) -> void:
+    var presentation = GlimmerPresentation.new()
+    add_child(presentation)
+    presentation.begin(from,to)
+    presentation.impact.connect(func():
+        var reaction = create_tween()
+        reaction.tween_property(enemy,"scale",Vector3(1.12,.8,1.12),.1)
+        reaction.tween_property(enemy,"scale",Vector3.ONE,.24))

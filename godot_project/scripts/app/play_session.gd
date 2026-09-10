@@ -21,11 +21,15 @@ var commerce_view: Dictionary = {}
 var pending_commerce: Dictionary = {}
 var commerce_shop := ""
 var commerce_error := ""
+var short_spell_effects := false
 
 func begin(zone: DawnreefWorld, profile: Dictionary, offline: bool) -> void:
     world = zone
     character = profile
     preview = offline
+    var settings = ConfigFile.new()
+    settings.load("user://settings.cfg")
+    short_spell_effects = settings.get_value("accessibility","short_spell_effects",false)
     player = preload("res://scenes/player/wayfarer.tscn").instantiate()
     world.add_child(player)
     player.setup(character.get("appearance",{}),world.geometry)
@@ -68,9 +72,9 @@ func _process(delta: float) -> void:
             axis += joy
     axis = axis.limit_length().rotated(-camera.yaw)
     var fighting = character.get("encounter",{}).get("state") == "active"
-    player.enabled = not hud.modal and not fighting and (preview or connection.connected)
+    player.enabled = not busy and not hud.modal and not fighting and (preview or connection.connected)
     player.input_axis = axis
-    camera.enabled = not hud.modal
+    camera.enabled = not busy and not hud.modal
     if connection:
         connection.axis = axis if player.enabled else Vector2.ZERO
     nearest = ""
@@ -86,6 +90,7 @@ func _process(delta: float) -> void:
         var before = remote.avatar.position
         remote.avatar.position = before.lerp(remote.target,minf(1,delta*10))
         var motion = remote.avatar.position-before
+        remote.avatar.travel_speed = motion.length()/maxf(delta,.001)
         remote.avatar.walking = motion.length() > .003
         if remote.avatar.walking:
             remote.avatar.rotation.y = lerp_angle(remote.avatar.rotation.y,atan2(-motion.x,-motion.z),delta*10)
@@ -271,13 +276,41 @@ func retry_action() -> void:
     busy = true
     hud.open_panel("Casting…").add_child(TideUI.paragraph("Your action is being resolved."))
     var result = await ApiClient.post_json("/world/characters/%s/encounters/actions" % character.id,pending_action.payload,pending_action.key)
-    busy = false
     if not result.is_empty():
-        world.spell_impact(pending_action.payload.action)
+        var action: String = pending_action.payload.action
         pending_action.clear()
         character = result.character
         hud.set_character(character,preview)
+        if action == "glimmer_spark" and not short_spell_effects:
+            await present_glimmer()
+        else:
+            world.spell_impact(action)
+    busy = false
     show_combat()
+
+func present_glimmer() -> void:
+    # This is presentation of a confirmed result. Damage/rewards never come from VFX.
+    hud.close_panel()
+    hud.hide()
+    var target = world.enemy.global_position + Vector3.UP
+    var origin = player.global_position + Vector3.UP*1.45
+    var flat = Vector3(target.x-origin.x,0,target.z-origin.z)
+    if flat.length() > .02:
+        player.avatar.look_at(Vector3(target.x,player.avatar.global_position.y,target.z))
+    player.avatar.play_cast()
+    var frame = Camera3D.new()
+    world.add_child(frame)
+    var direction = flat.normalized() if flat.length() > .02 else Vector3.FORWARD
+    var middle = origin.lerp(target,.5)
+    frame.position = middle + Vector3(direction.z,0,-direction.x)*5 + Vector3.UP*2.2
+    frame.look_at(middle)
+    frame.fov = 60
+    frame.make_current()
+    world.glimmer_spark(origin,target)
+    await get_tree().create_timer(GlimmerPresentation.DURATION).timeout
+    camera.camera.make_current()
+    frame.queue_free()
+    hud.show()
 
 func reload_character() -> void:
     if busy:
@@ -481,6 +514,12 @@ func show_settings() -> void:
     shadow.button_pressed = world.sun.shadow_enabled
     shadow.toggled.connect(func(value): world.sun.shadow_enabled = value; save_settings())
     panel.add_child(shadow)
+    var effects = CheckButton.new()
+    effects.text = "Short spell effects · no camera cut"
+    effects.custom_minimum_size.y = 56
+    effects.button_pressed = short_spell_effects
+    effects.toggled.connect(func(value): short_spell_effects = value; save_settings())
+    panel.add_child(effects)
     var scale_option = TideUI.option(["Render resolution · 75%","Render resolution · 100%"])
     scale_option.select(1 if get_viewport().scaling_3d_scale > .9 else 0)
     scale_option.item_selected.connect(func(index): get_viewport().scaling_3d_scale = 1.0 if index else .75; save_settings())
@@ -493,6 +532,7 @@ func save_settings() -> void:
     config.load("user://settings.cfg")
     config.set_value("graphics","fps",Engine.max_fps)
     config.set_value("graphics","shadows",world.sun.shadow_enabled)
+    config.set_value("accessibility","short_spell_effects",short_spell_effects)
     config.set_value("graphics","scale",get_viewport().scaling_3d_scale)
     config.save("user://settings.cfg")
 

@@ -4,7 +4,7 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
 
 ## Release gates
 
-- Updated public server not deployed or verified. Client0.2.3 needs world1/story1/folio1/commerce1.
+- Updated public server not deployed or verified. Clients0.2.3/0.2.4 need world1/story1/folio1/commerce1.
 - Physical Android install/touch/safe-area, 20-minute thermal/memory/battery, packet-loss,
   cellular/Wi-Fi switching and background/resume certification remain outstanding.
   CI emulator and desktop rendering cannot substitute for these measurements. The emulator
@@ -28,8 +28,11 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
 - One vest vendor/equipment loop passes all M1.3 gates atde9d7a3/run34440512749. Item use, selling,
   trading, wearable vest mesh, additional gear slots, gathering/crafting, mounts,
   housing, pets, dungeon/boss and most social features are not implemented.
-- Procedural models, gait, primitive spell impacts and flat region remain placeholders.
-  No finished audio framework, soundtrack, skeletal animation or production asset kit.
+- M1.4 has a small original art/rig/VFX candidate with local smoke checks; full current
+  CI/render/native validation and owner art acceptance are pending. Do not call it final.
+  Two houses, distant foliage/coast/vistas, dock, cistern, lurker and most spell effects
+  remain placeholders. No full audio framework/soundtrack or complete animation library.
+  The sample has three clips and limited appearance tinting; it is not the full creator.
 - Capsule/gravity/floor snap exist, but server movement is planar. Stairs, slopes and vertical
   authority are not tested. Full UI scaling, safe areas, left-handed controls and menu controller
   support remain accessibility work.

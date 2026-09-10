@@ -6,7 +6,7 @@ Revised 2026-09-10 after inspecting the repository at
 and successful M0–M1.3 CI jobs. This revision changes planning only. No new gameplay,
 assets, server, deployment or APK is implemented by this document.
 
-**Immediate next milestone: M1.4, the playable Dawnreef visual benchmark.** The former
+**Current milestone: M1.4, the playable Dawnreef visual benchmark (in progress).** The former
 unstarted M1.4 bandage recommendation moves to M1.5 with its scope preserved. References
 to that recommendation in PROJECT_STATE, DECISIONS and PR #4 describe the M1.3 handoff;
 this dated roadmap amendment governs forward ordering. Only ROADMAP changes in this
@@ -241,6 +241,11 @@ Specific dependency reasons:
 ## M1 forward — Dawnreef becomes a polished authored slice
 
 ### M1.4 — Playable Dawnreef visual benchmark
+
+Implementation authorized after roadmap checkpoint edec97b. A compact original kit,
+Wayfarer/Mara rigs and Glimmer presentation are integrated as a benchmark candidate.
+Headless checks pass; full render/Android validation, owner art review and physical-phone
+acceptance are still pending. This is not a completed milestone; PROJECT_STATE owns evidence.
 
 - **Kind / purpose:** Visual production, content systems, polish. Establish the actual
   final art direction in motion, giving the next APK a clear visible improvement.
@@ -973,7 +978,8 @@ If too much placeholder debt remains, return to bounded production batches befor
 **Recommended immediate next work is M1.4.** Build and review the in-engine Lantern Well/
 Mara visual benchmark within existing flat geometry, with an actual ARM64 review APK and
 device evidence. It is deliberately ahead of additional backend/gameplay scope. The bandage
-loop follows as M1.5; neither milestone has been implemented by this roadmap revision.
+loop follows as M1.5 and remains unstarted. M1.4 is now in progress; its acceptance gates
+remain mandatory. The roadmap revision itself added no gameplay.
 
 Postpone bulk quest/spell generation until the authoring/art benchmark exists; additional
 magical disciplines until the first three show build depth; regions beyond the approved

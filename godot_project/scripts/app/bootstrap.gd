@@ -63,7 +63,7 @@ func _build_gateway() -> void:
     var air = Control.new()
     air.custom_minimum_size.y = 36
     title_column.add_child(air)
-    title_column.add_child(TideUI.paragraph("DAWNREEF ATOLL\nDawnreef supplies · 0.2.3",16))
+    title_column.add_child(TideUI.paragraph("DAWNREEF ATOLL\nDawnreef art benchmark · 0.2.4",16))
     var panel = PanelContainer.new()
     panel.custom_minimum_size.x = 460
     panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER

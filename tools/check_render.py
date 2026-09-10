@@ -11,9 +11,13 @@ print(output)
 assert result.returncode==0 and 'GODOT_SMOKE_PASS' in output and 'ERROR:' not in output and 'SCRIPT ERROR' not in output
 calls=int(re.search(r'DRAW_CALLS=(\d+)',output).group(1))
 assert calls<=150,f'default scene exceeded draw-call budget: {calls}'
+primitives=int(re.search(r'RENDERED_PRIMITIVES=(\d+)',output).group(1))
+textures=int(re.search(r'TEXTURE_BYTES=(\d+)',output).group(1))
+assert primitives<=150_000,f'default scene exceeded triangle/primitive budget: {primitives}'
+assert textures<=128*1024*1024,f'initial texture budget exceeded: {textures}'
 destination=ROOT/'builds/render-check'
 destination.mkdir(parents=True,exist_ok=True)
 source=Path.home()/'.local/share/godot/app_userdata/Veilbound Tides'
-for name in ['gateway.png','dawnreef.png','folio.png','vendor.png','equipment.png']:
+for name in ['gateway.png','dawnreef.png','folio.png','vendor.png','equipment.png','benchmark.png','mara.png','wayfarer.png','glimmer.png']:
     shutil.copy2(source/name,destination/name)
 (destination/'result.txt').write_text(output)

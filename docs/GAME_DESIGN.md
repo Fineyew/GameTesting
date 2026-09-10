@@ -133,3 +133,15 @@ is the primary product; Windows then iOS share backend/content/account state.
 No monetization is implemented. Avoid pay-to-win, child-targeted gambling, forced ads
 and deliberate misery sold away as convenience. Inspiration stays at broad genre
 principles; review every new name, creature, region, spell and asset for originality.
+
+## M1.4 art benchmark candidate
+
+The small Lantern Well/Mara area tests warm limestone, woven teal canopies, curved sail
+roofs, brass lens details and tapered reed foliage within the established Dawnreef palette.
+The Wayfarer has a split travel coat, short mantle, folio satchel and lens staff; Mara has
+her own lanternwright apron, tools and swept silver hair. These are original sample assets
+awaiting owner direction approval, not acceptance of all future character/environment art.
+Glimmer Spark gathers through a lens, travels in a bright arc and breaks into eight warm
+shards; a short-effects setting removes its camera cut. Combat rules remain Tidebeat.
+Audio, the other spell effects, distant scenery and full animation/creator variety remain
+later roadmap work. Expand this visual language only after M1.4's review/device gates.

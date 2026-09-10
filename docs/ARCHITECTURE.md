@@ -268,3 +268,31 @@ calls and native Bag/vendor/Folio/movement/visible-resume checks. PROJECT_STATE 
 exact APK provenance and open physical-device/public-deployment gates. The initial
 Pixel Launcher overlay and subsequent real panel error remain documented with retained
 failure evidence; the corrected run passes without relaxing any native assertion.
+
+## M1.4 visual benchmark boundary (candidate)
+
+`DawnreefArt` assembles eight reusable imported mesh pieces inside the existing zone's
+flat footprint. The first house keeps exactly the catalog collision rectangle; its visual
+room/cart occupy that rectangle. World protocol1 and the geometry digest do not change.
+Other houses, distant scenery, the lurker and cistern remain explicit placeholders.
+
+Editable `.blend` files and deterministic source recipes live outside the Godot project
+in `art_sources`; checked-in GLB/import settings are runtime inputs. Ordinary CI/export
+does not require Blender. The small manifest records status, provenance and mesh budgets;
+`tools.check_art` verifies self-contained glTF, materials, vertex colors, rigs and clips.
+Godot generates mesh LODs on import. Static batches retain every material surface and
+shadow policy, leaving collision children active. Contact shadows are small transparent
+planes; optional real shadows retain the existing user preference. Ground washes use
+a two-scale shader with no texture assets. Render gates retain actual frames and enforce
+150 default draw calls, 150k primitives and 128 MiB textures; these are not phone timings.
+
+`WayfarerAvatar` preserves build/appearance/walking for local and remote players while
+loading the sample rig. Tint materials are shared by the finite appearance palette,
+which also keeps their lifetime valid during engine teardown. Animation speed follows
+movement; the imported three-clip sample is not the full M1.8 locomotion library.
+
+`GlimmerPresentation` is visual only. PlaySession waits for a confirmed action receipt,
+updates authoritative character state, freezes movement while busy and then plays the
+bounded visual before returning to the combat panel. The effect cannot calculate damage
+or grant progress. Pending commands retain existing retry rules. A saved local setting
+shortens effects and avoids the temporary camera cut. No schema/HTTP/WS changes.

@@ -9,7 +9,17 @@ Read README → this file → ARCHITECTURE → relevant source before editing.
 required gates in [run34440512749](https://github.com/Fineyew/GameTesting/actions/runs/34440512749).
 M0 remains complete at1044f95; M1.1 at4efd3a6/d138214; M1.2 atd0c6048/56370e6. The M1.2
 handoff run34437584787 also passed all jobs. Main remains bd98746; no merge or deployment.
-Preserve original IDs, accounts/saves and all working systems. Stop before M1.4.
+Preserve original IDs, accounts/saves and all working systems.
+
+**M1.4 benchmark candidate is in progress** after roadmap checkpoint
+`edec97b128cf8cd86ca2c788ebe737316c71742d` (run34463841938 passed).
+The owner authorized implementation on this branch. Original editable GLBs/Blender sources
+now replace the small well/cart area, one Wayfarer and Mara; imported idle/walk/cast,
+Glimmer presentation, ground/contact shading and existing HUD styling are integrated.
+Headless Godot/import/rig/VFX smoke and art budgets pass locally. Full current CI, actual
+render inspection and Android0.2.4/code6 validation are pending. No M1.4 APK is verified yet.
+Owner art-direction acceptance and real-phone thermal/touch validation remain open; do
+not mark M1.4 complete or begin M1.5 until its roadmap gate is satisfied.
 
 ## What works
 

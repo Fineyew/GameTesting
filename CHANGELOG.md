@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.2.4 — M1.4 visual benchmark candidate (in progress, 2026-09-10)
+
+- Continue the revised roadmap from edec97b; preserve completed M0–M1.3 checkpoints.
+- Add original editable Blender sources and exported well/cart/house/foliage kit.
+- Replace the sample Wayfarer/Mara placeholders with tinted 13-bone rigs and idle/walk/cast.
+- Present confirmed Glimmer casts with framing, anticipation, trail, impact and cleanup;
+  add a saved short-effects/no-camera-cut setting. No server rules or protocols changed.
+- Add ground/contact shading and compatible HUD borders; preserve collision geometry.
+- Add source/GLB budgets, rig/VFX smoke and retained render/triangle/texture evidence.
+- Local import/headless checks pass. Full CI/render/Android0.2.4/code6 validation pending;
+  no new APK is certified yet. Owner art-direction and physical-phone acceptance remain open.
+
 ## 0.2.3 — M1.3 vendor/equipment complete (2026-09-10)
 
 - Code/APK checkpoint de9d7a3 passes all gates on the first attempt in run34440512749:

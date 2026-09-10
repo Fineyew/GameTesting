@@ -37,6 +37,8 @@ func run() -> void:
         await RenderingServer.frame_post_draw
         root.get_texture().get_image().save_png("user://dawnreef.png")
         print("DRAW_CALLS=",RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME))
+        print("RENDERED_PRIMITIVES=",RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_PRIMITIVES_IN_FRAME))
+        print("TEXTURE_BYTES=",RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TEXTURE_MEM_USED))
     await app.session.show_inventory()
     assert(app.session.hud.modal)
     await create_timer(.2).timeout
@@ -89,6 +91,7 @@ func run() -> void:
         await RenderingServer.frame_post_draw
         root.get_texture().get_image().save_png("user://equipment.png")
     app.session.hud.close_panel()
+    await VisualBenchmark.check(app,self)
     app.session.show_settings()
     assert(app.session.hud.modal)
     app.return_to_gateway()

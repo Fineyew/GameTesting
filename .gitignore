@@ -19,3 +19,5 @@ builds/
 *.keystore
 *.jks
 export_credentials.cfg
+*.blend1
+*.blend2

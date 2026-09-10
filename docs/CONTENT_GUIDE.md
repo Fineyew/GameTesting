@@ -121,3 +121,34 @@ Run the complete backend/PostgreSQL, Godot/API, render and Android gates after c
 The first vendor/equipment loop is validated at de9d7a3/run34440512749. Preserve the
 native Bag→vendor touch gate when changing navigation; invoking a button signal alone
 does not exercise Android input dispatch and previously missed a panel lifecycle error.
+
+## M1.4 editable art and imports
+
+Use Blender **4.5.3 LTS** for the sample recipes; the runtime remains Godot4.5.1.
+Open `art_sources/dawnreef/*.blend` for direct mesh/rig edits, or regenerate the original
+sample geometry/vertex palette/animation from the recipes (regeneration overwrites edits):
+
+```bash
+blender --background --factory-startup --threads 2 --python art_sources/build_dawnreef.py
+blender --background --factory-startup --threads 2 --python art_sources/build_wayfarer.py
+python -m tools.check_art
+python -m tools.check_godot
+```
+
+Recipes use metres, Godot Y-up/-Z-forward, converted to Blender coordinates for export.
+Export self-contained GLBs with vertex colors and named animation clips. Keep the editable
+source and recipe; commit `.glb.import` so LOD/import settings stay reviewable. No Blender
+installation is required for ordinary game CI. Follow Godot's
+[glTF import guidance](https://docs.godotengine.org/en/4.5/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html).
+
+`art_sources/dawnreef/manifest.json` records candidates, source paths, provenance, budgets
+and remaining placeholders. `DawnreefArt` maps named kit pieces to placements. No gameplay
+content/catalog IDs changed; existing proposed model/icon bindings elsewhere are not
+implemented by this sample. Appearance tint slots are `RobeTint` and `SkinTint`; common
+accessories use shared materials. Keep 13 rig bones and Idle/Walk/Cast clips until an
+explicit compatible rig migration. Do not introduce client-only colliders or terrain.
+
+The strict smoke test samples actual imported bone motion, a single VFX impact/cleanup,
+then records gameplay/benchmark/Mara/Wayfarer/Glimmer frames under a real display. The
+existing online gate still earns/casts/buys through the real API. A screenshot fixture
+cannot stand in for progression, a walkthrough review or physical-phone measurement.
