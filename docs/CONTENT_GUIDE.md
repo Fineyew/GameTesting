@@ -146,8 +146,10 @@ and remaining placeholders. `DawnreefArt` maps named kit pieces to placements. N
 content/catalog IDs changed; existing proposed model/icon bindings elsewhere are not
 implemented by this sample. Appearance tint slots are `RobeTint` and `SkinTint`; common
 accessories use shared materials. Keep 13 rig bones and Idle/Walk/Cast clips until an
-explicit compatible rig migration. Do not introduce client-only movement colliders or terrain. Camera-only foliage uses
-layer2 and is excluded from the player layer1 mask; validate that separation.
+explicit compatible rig migration. Do not introduce client-only movement colliders or
+terrain. Camera-only foliage uses layer2 and is excluded from the player layer1 mask;
+validate that separation. Preserve imported node transforms when batching the kit; test
+actual transformed vertices for oriented extents, not a re-transformed enclosing AABB.
 
 The strict smoke test samples actual imported bone motion, a single VFX impact/cleanup,
 then records gameplay/benchmark/Mara/Wayfarer/Glimmer frames under a real display. The

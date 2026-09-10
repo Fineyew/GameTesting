@@ -15,8 +15,17 @@
   while retaining all existing native movement/resume thresholds. Add matching route movies
   and keep render diagnostics on failures. d9293fa/run34480660769 passes all full gates,
   retains ARM64 0.2.4/code6 and both matched route recordings. Visual review leads to a
-  final bounded canopy/cast-camera, paving and shop-side cleanup, pending fresh full CI;
-  owner art-direction and physical-phone acceptance remain open.
+  final bounded canopy/cast-camera, paving and shop-side cleanup.
+- Code checkpoint 365993ce7e79fc29025ee23d1c77cbf449ad2bfc passes all gates in
+  run34483308643: 90 tests / 30 subtests with 8 PostgreSQL tests and both migrations,
+  strict Godot/art/two-player API checks, inspected 71-call/83,630-primitive render,
+  matching 30.83-second movies and native touch/visible-resume/repeat-movement checks.
+- Retain verified ARM64 0.2.4/code6, 29,144,004 bytes, artifact10154911714;
+  native10154913361 / render10154915083. SHA256
+  d5ba342559fc0a19e0bcdc6133128415dce30467ff796b2a392d7a66ae0f65ab.
+- Reconcile canonical docs and PR handoff with the verified code/artifact and corrected
+  forward ordering. M1.4 owner art acceptance and physical-phone Device E remain open;
+  M1.5 is unstarted. No merge, public deployment or completed-milestone claim.
 
 ## 0.2.3 — M1.3 vendor/equipment complete (2026-09-10)
 

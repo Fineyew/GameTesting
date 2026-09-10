@@ -7,10 +7,10 @@ Read README → PROJECT_STATE → ARCHITECTURE → relevant source. Main is bd98
 
 **M1.4 visual benchmark: implemented candidate; acceptance remains open.**
 Roadmap checkpoint edec97b introduced this scope; the owner then authorized implementation.
-The last fully validated code is `d9293fac518cda680cdcf21795ff49ec68b5db07`,
-[run34480660769](https://github.com/Fineyew/GameTesting/actions/runs/34480660769), all three jobs successful.
-A bounded final visual cleanup now addresses observed canopy/cast-camera occlusion,
-regular paving and the blank shop side wall. Local art/Godot checks pass; its full CI is pending.
+Validated code checkpoint: `365993ce7e79fc29025ee23d1c77cbf449ad2bfc`,
+[run 34483308643](https://github.com/Fineyew/GameTesting/actions/runs/34483308643), all three jobs successful.
+Actual overview, Mara, vendor, Glimmer, native resume and matched-route frames were inspected.
+The final pass clears camera foliage, grounds the paving and finishes the sample shop side.
 Do not mark M1.4 complete or start M1.5 before owner art-direction acceptance and the required
 physical-phone install/online-touch/20-minute thermal baseline. Neither has been performed.
 
@@ -46,23 +46,32 @@ Completed history is preserved in ROADMAP/CHANGELOG:
 
 ## Tested evidence / retained review APK
 
-At d9293fa: **90 backend tests /30 subtests**, including8 real PostgreSQL tests and both
+At 365993ce: **90 backend tests / 30 subtests**, including 8 real PostgreSQL tests and both
 migrations; content/art budgets; strict Godot import/smoke; actual two-player Godot/API
 account/story/folio/vendor/equipment/reconnect/Guard flow. Both normal and short cast
-presentation restore navigation. Local baseline82 passed/8 PG skips/30 subtests; two
-upstream deprecation warnings. Current local art/rig/geometry/VFX/pause checks also pass.
+presentation restore navigation. New smoke covers imported geometry/rig motion, single
+VFX impact/cleanup, camera obstruction layers/framing and pause input reset.
+Local baseline: 82 passed / 8 explicit PostgreSQL skips / 30 subtests; current headless/art
+checks pass. PostgreSQL, real display/API and Android gates were executed in CI; two
+upstream backend test deprecation warnings remain.
 
-Actual desktop sample:74 draw calls,81,654 rendered primitives,15,182,467 texture bytes.
-Matched before/after preview route MP4s pass at1280×720/.75/no shadows; Movie Maker30 FPS
-is a capture setting, not a performance measurement. Native API35 x86_64 install, Folio,
-Bag→vendor touch, movement, visible landscape resume and repeat touch all pass.
+Actual desktop sample: **71 draw calls, 83,630 rendered primitives, 15,182,467 texture bytes**
+within unchanged 150-call/150k/128 MiB gates. Kit: 25,638 source triangles, 2 materials;
+Wayfarer: 10,538 / 4; Mara: 10,414 / 3. The three GLBs total 4,085,572 bytes.
+Matched before/after preview MP4s: 925 frames each, 30.83 seconds, 1280×720/.75/no shadows.
+Movie Maker 30 FPS is a capture setting, not a performance measurement. Native API35
+x86_64 install, Folio, Bag→vendor touch, movement, visible landscape resume and repeat
+movement pass with no engine errors (initial movement changed-world fraction 0.293).
 
-ARM64 **0.2.4/code6**,29,135,812 bytes; artifact10153789972, native10153791518,
-render10153793102 (90-day CI retention). Source d9293fa; tested PR merge
-`10d8557e3916485e1e15fc99b88a2d3f3f20b0c4`.
-SHA256 `80f02345666bbe75da56eb7c6e8e4016a35bed137877123bd874cfc73d20eea9`.
-Downloaded CRC/hash, ARM64-only libraries, version/code, v2 signature report and packaged
-art/presentation scripts verified. This is the prior candidate; final visual-cleanup APK pending.
+Verified ARM64 **0.2.4/code6**, **29,144,004 bytes**; build artifact **10154911714**,
+native **10154913361**, render **10154915083** (CI retention through 2026-12-09).
+Source `365993ce7e79fc29025ee23d1c77cbf449ad2bfc`; tested PR merge
+`38bd671a40e2f8469f9f75b680c1e38207144fd9`.
+SHA256 `d5ba342559fc0a19e0bcdc6133128415dce30467ff796b2a392d7a66ae0f65ab`.
+Downloaded ZIP/APK CRC/hash, ARM64-only libraries, version/code, retained v2/v3 signature
+report and packaged art/presentation scripts verified. Minimum API24 / target API35.
+The review APK, before/after movies and evidence bundle are retained for the owner handoff.
+Signing is an ephemeral debug identity, not a production or stable update key.
 
 Initial b5b90a5 native resume failed at19.35% changed pixels; artifact10152976777 retained,
 no ARM64 published. Inspection found a separate dropped-transform art bug. Both corrections
@@ -79,7 +88,7 @@ No new quests/spells/regions, consumable use, selling/trading, dungeon/co-op, ga
 mounts/housing/pets or broad social content were added. Account recovery/moderation, load tests,
 JSON→Postgres import/restore drills, production deployment/signing/updater remain future work.
 
-Finish M1.4 validation/review first; **M1.5 is the still-unstarted Sunthread Bandage loop**.
+Finish M1.4 owner/device acceptance first; **M1.5 is the still-unstarted Sunthread Bandage loop**.
 Use README's local backend/USB reverse recipe for phone testing; a paid public server is
 not required for this review. The inherited public endpoint has not been updated/verified.
 

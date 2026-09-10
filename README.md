@@ -13,11 +13,14 @@ M0 engineering is complete: PostgreSQL/Godot integration, retained signed ARM64 
 inspected renders, and Android emulator touch/visible-resume checks pass. Physical phone
 validation remains unverified. M1.1, M1.2 and M1.3 are complete: reusable story rules,
 Mara's investigation/three earned spells, a persistent folio, and one earned vendor/equipment loop.
-[CI run34440512749](https://github.com/Fineyew/GameTesting/actions/runs/34440512749) at de9d7a3
-passes 90 tests/30 subtests with PostgreSQL, full Godot/API progression, 89-draw-call rendering
-and native Folio/Bag/vendor touch/visible-resume checks. PROJECT_STATE records exact
-source/artifact hashes. M1.4 is now an implemented visual benchmark candidate awaiting
-full CI/render/Android validation and owner/physical-phone acceptance; see PROJECT_STATE.
+M1.4 is an implemented visual benchmark candidate at
+`365993ce7e79fc29025ee23d1c77cbf449ad2bfc`.
+[CI run 34483308643](https://github.com/Fineyew/GameTesting/actions/runs/34483308643)
+passes 90 tests / 30 subtests with PostgreSQL, full Godot/API progression, a 71-draw-call
+render sample, matching walkthrough recordings and Android touch/visible-resume checks.
+Verified ARM64 **0.2.4/code6** is retained as artifact **10154911714**. PROJECT_STATE records
+exact source/manifest/APK hashes and evidence. Owner art-direction acceptance and the
+required physical-phone baseline remain open; M1.4 is not yet complete and M1.5 is unstarted.
 
 ## What is playable
 
@@ -33,7 +36,9 @@ by one while leaving robe appearance unchanged. Shopping requires proximity to M
 equipment changes require no active encounter. Bandages remain unavailable for purchase
 until item use exists. Resume an active encounter after reconnecting. Search the bag and
 change FPS, shadows and render resolution. Offline exploration is explicitly a preview
-with no saved progression. This is not yet the complete 18-quest authored vertical slice.
+with no saved progression. The sample area now uses original editable environment pieces,
+animated Wayfarer/Mara rigs and a confirmed Glimmer Spark sequence. Settings can shorten
+spell effects and remove the camera cut. This is not yet the complete 18-quest authored vertical slice.
 
 The legacy `scenes/vertical_slice_client.tscn` and its script are preserved. The active
 main scene is `godot_project/scenes/app/bootstrap.tscn`; older deployment documents'
@@ -81,7 +86,7 @@ isolated database migrated to head. CI runs both migrations and the PostgreSQL t
 ## Android build and runtime checks
 
 Use the checked-in **Android** export preset: ARM64, INTERNET permission, app ID
-`work.surveyroute.veilboundtides`, version 0.2.4/code 6 (candidate; verify CI in PROJECT_STATE). Use Godot 4.5.1 export templates,
+`work.surveyroute.veilboundtides`, version 0.2.4/code 6 (verified review candidate; provenance in PROJECT_STATE). Use Godot 4.5.1 export templates,
 JDK17, Android SDK platform35 and build-tools35.0.0. See the
 [official engine export instructions](https://docs.godotengine.org/en/4.5/tutorials/export/exporting_for_android.html).
 The exported engine minimum is API24, target API35; minimum OS is not a device-performance guarantee.
@@ -99,7 +104,7 @@ The build script creates the ARM64 deliverable, a separate x86_64 QA APK, signat
 verification reports and a SHA-256/source-commit manifest. Only the ARM64 file is for
 phones. CI retains it as `veilbound-tides-android-foundation` with render evidence;
 `android-runtime-evidence` records emulator touch/resume checks. Artifact retention
-is 90 days. Debug keys are ephemeral; a differently signed later test APK can require
+is 90 days. `dawnreef-render-evidence` also retains captures on failure. Debug keys are ephemeral; a differently signed later test APK can require
 uninstall/reinstall. Release signing and Play Store/AAB publication are not configured.
 
 ### Physical phone handoff (still unverified)
@@ -108,12 +113,11 @@ For the M1.4 visual review, spend 2–3 minutes on the existing route: enter pre
 walk from the arrival path to the Lantern Well, orbit the floating lens and Mara, then
 walk west toward her supply cart. Check the avatar in motion, tree/roof silhouettes,
 paving and readable HUD. The retained before/after MP4s use matching controls/cameras
-at .75 render scale with shadows off; they are Movie Maker captures, not measured FPS.
+at .75 render scale with shadows off (30.83 seconds each); they are Movie Maker captures, not measured FPS.
 On an online test character, cast Glimmer Spark, try **Short spell effects · no camera
 cut**, then revisit Mara's vendor/Bag flow. These are existing progression rules.
 Owner art-direction acceptance and the real-phone measurements below are still open;
 M1.4 cannot be marked complete from desktop/emulator evidence alone.
-
 
 The owner's Galaxy S25 Ultra has not been available to this workspace. Install the
 **ARM64** APK from the successful CI run recorded in PROJECT_STATE; compare its SHA-256
@@ -139,7 +143,7 @@ HTTPS test server separately; USB reverse does not simulate a mobile network.
 Record device model/OS, source SHA/APK hash, quality preset, failures and logs. A 20-minute
 30 FPS session must measure frame pacing, memory (target 700 MB working/under1 GB peak),
 thermal throttling and battery use; measure network bandwidth and reconnect behavior.
-The desktop 89-draw-call observation does not establish these phone measurements.
+Desktop render observations do not establish these phone measurements.
 Use `adb logcat -d -s godot:V AndroidRuntime:E` for engine failures; scrub user data before
 sharing logs. Do not run `tools.check_android` on a personal phone: it changes emulator
 display/test-profile settings. Physical results stay open until actually recorded.

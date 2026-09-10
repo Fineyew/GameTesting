@@ -3,19 +3,17 @@
 Revised 2026-09-10 after inspecting the repository at
 3ac1f8fc69379b15594191294e6248e9911be950, canonical docs, draft
 [PR #4](https://github.com/Fineyew/GameTesting/pull/4), source, retained Dawnreef render
-and successful M0–M1.3 CI jobs. This revision changes planning only. No new gameplay,
-assets, server, deployment or APK is implemented by this document.
+and successful M0–M1.3 CI jobs. Roadmap checkpoint edec97b changed planning only.
+The owner subsequently authorized implementation; current evidence lives in PROJECT_STATE.
 
 **Current milestone: M1.4, the playable Dawnreef visual benchmark (in progress).** The former
-unstarted M1.4 bandage recommendation moves to M1.5 with its scope preserved. References
-to that recommendation in PROJECT_STATE, DECISIONS and PR #4 describe the M1.3 handoff;
-this dated roadmap amendment governs forward ordering. Only ROADMAP changes in this
-planning session; reconcile those forward references when the next implementation begins.
+unstarted M1.4 bandage recommendation moved to M1.5 with its scope preserved. The dated
+roadmap amendment governs forward ordering; earlier handoff recommendations remain history.
 
 ## How to use this roadmap
 
-- Completed milestones and their evidence below are immutable history. All forward
-  milestones are **planned**, including milestones with existing catalog examples.
+- Completed milestones and their evidence below are immutable history. Beyond the current
+  M1.4 candidate, forward milestones are **planned**, including existing catalog examples.
 - Android is the primary game. Keep Godot 4.5.1 Compatibility, the modular client,
   FastAPI/PostgreSQL/JSON ports, server-owned rules and existing IDs/saves/tests. A future
   change to those decisions needs measured justification and a compatibility plan.
@@ -244,8 +242,9 @@ Specific dependency reasons:
 
 Implementation authorized after roadmap checkpoint edec97b. A compact original kit,
 Wayfarer/Mara rigs and Glimmer presentation are integrated as a benchmark candidate.
-Headless checks pass; full render/Android validation, owner art review and physical-phone
-acceptance are still pending. This is not a completed milestone; PROJECT_STATE owns evidence.
+Code checkpoint `365993ce7e79fc29025ee23d1c77cbf449ad2bfc` passes the full F gates in
+run34483308643, with inspected captures and retained ARM64 0.2.4/code6. Owner art review
+and Device E are still pending. This is not a completed milestone; PROJECT_STATE owns evidence.
 
 - **Kind / purpose:** Visual production, content systems, polish. Establish the actual
   final art direction in motion, giving the next APK a clear visible improvement.
@@ -975,11 +974,11 @@ If too much placeholder debt remains, return to bounded production batches befor
 | Entire-game art | M4.1 → M4.2 → M4.3 → M4.4 | Every launch environment, character/collectible, effect/audio and UI surface complete |
 | Release | M5.1 → M5.2 → M5.3 → M5.4 → M5.5 | Whole-game cohesion, phone certification, recovery/security, beta and approved launch |
 
-**Recommended immediate next work is M1.4.** Build and review the in-engine Lantern Well/
-Mara visual benchmark within existing flat geometry, with an actual ARM64 review APK and
-device evidence. It is deliberately ahead of additional backend/gameplay scope. The bandage
-loop follows as M1.5 and remains unstarted. M1.4 is now in progress; its acceptance gates
-remain mandatory. The roadmap revision itself added no gameplay.
+**Recommended immediate next work is M1.4 acceptance.** Review the retained in-engine
+Lantern Well/Mara candidate and perform Device E with its actual ARM64 APK. The automated
+engineering/render/native gates pass; owner art acceptance and physical-phone measurements
+remain unverified. After those gates, the narrow bandage loop follows as **M1.5** and remains
+unstarted. The roadmap revision itself added no gameplay; later implementation has separate evidence.
 
 Postpone bulk quest/spell generation until the authoring/art benchmark exists; additional
 magical disciplines until the first three show build depth; regions beyond the approved
@@ -1011,8 +1010,7 @@ Concerns corrected from the former roadmap:
 - Existing M0–M1.3 CI success is real and preserved. It does not establish production scale,
   a finished art style, public deployment, or physical-device certification.
 
-This planning checkpoint changes ROADMAP only. Implementation resumes in a later session.
-Validate this document's structure, dependency order, preserved history and Git scope;
-do not claim new gameplay tests or request a new APK for the planning edit. If the existing
-PR workflow reruns automatically, record it separately: the M1.3 APK remains the current
-playable deliverable, and no future milestone becomes implemented by that rerun.
+Roadmap checkpoint edec97b changed ROADMAP only and did not implement future milestones.
+Subsequent implementation is recorded separately in PROJECT_STATE and CHANGELOG, including
+the M1.4 review APK. Preserve this distinction between planning, automated validation and
+accepted milestone completion when continuing the project.

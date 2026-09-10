@@ -28,8 +28,10 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
 - One vest vendor/equipment loop passes all M1.3 gates atde9d7a3/run34440512749. Item use, selling,
   trading, wearable vest mesh, additional gear slots, gathering/crafting, mounts,
   housing, pets, dungeon/boss and most social features are not implemented.
-- M1.4 has a small original art/rig/VFX candidate with local smoke checks; full current
-  CI/render/native validation and owner art acceptance are pending. Do not call it final.
+  M1.5 Sunthread Bandage use remains unstarted until M1.4 acceptance.
+- M1.4's small original art/rig/VFX candidate passes full CI/render/native validation at
+  365993ce/run34483308643; actual captures and matching route frames were inspected.
+  Owner art acceptance and physical-phone Device E remain open. Do not call it final.
   Two houses, distant foliage/coast/vistas, dock, cistern, lurker and most spell effects
   remain placeholders. No full audio framework/soundtrack or complete animation library.
   The sample has three clips and limited appearance tinting; it is not the full creator.
@@ -101,5 +103,7 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
 - Intermediate f4ef6ec/run34480293814 failed the new geometry check because transforming
   an enclosing AABB overestimates rotated extents. It now checks transformed vertices;
   export also bakes canonical upright orientation. d9293fa passes all full gates.
-  Its visual review found canopy/cast-camera occlusion; a final bounded cleanup is pending
-  full validation. Art acceptance and physical-device gates remain open independently.
+  Its visual review found canopy/cast-camera occlusion. The bounded cleanup uses camera-only
+  foliage and clear two-actor framing, with no movement/protocol changes. It passes full
+  validation at 365993ce/run34483308643; overview/cast/native frames were inspected.
+  Art acceptance and physical-device gates remain open independently.
