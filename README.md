@@ -1,127 +1,123 @@
-# Veilbound Tides — Android-first online RPG foundation
+# Veilbound Tides
 
-This repository contains the architecture plan and initial scaffold for an original mobile-first online 3D fantasy RPG built with:
+An original Android-first online fantasy RPG built with Godot 4.5.1, FastAPI,
+PostgreSQL, Docker and Nginx. Continue this repository; do not recreate working systems.
+The active work is `feature/android-foundation`, [draft PR #4](https://github.com/Fineyew/GameTesting/pull/4).
 
-- Godot 4.x client
-- FastAPI backend
-- PostgreSQL
-- Docker Compose
-- Nginx
-- JWT authentication
+## Start here
 
-The design prioritizes modular systems, low operational cost, self-hosted infrastructure, mobile performance, and data-driven gameplay content.
+Read [PROJECT_STATE](docs/PROJECT_STATE.md), [ARCHITECTURE](docs/ARCHITECTURE.md),
+[GAME_DESIGN](docs/GAME_DESIGN.md), [ROADMAP](docs/ROADMAP.md), [CONTENT_GUIDE](docs/CONTENT_GUIDE.md),
+[DECISIONS](docs/DECISIONS.md), [KNOWN_ISSUES](docs/KNOWN_ISSUES.md) and [CHANGELOG](CHANGELOG.md).
+Restoration and initial integration validation are complete. PROJECT_STATE records current gates.
 
-## Key documents
+## What is playable
 
-- [Complete architecture plan](docs/architecture/mobile_first_online_rpg_architecture.md)
-- [Brutal 5-year architecture review](docs/architecture/brutal_architecture_review.md)
-- [Desktop setup and droplet fresh-start runbook](docs/deployment/desktop_and_droplet_fresh_start_runbook.md)
-- [DigitalOcean first deployment checklist](docs/deployment/digitalocean_first_deploy_checklist.md)
+Create an account and one Wayfarer with appearance/affinity; enter a small original
+procedural Dawnreef; move with touch/WASD/controller stick; orbit/recenter the camera;
+see other connected players and use preset chat; talk to Mara, accept the first quest,
+fight the Fog-Thorn Lurker in server-owned Tidebeat turns and retain XP, currency and
+inventory rewards. Resume an active encounter after reconnecting. Search the bag and
+change FPS, shadows and render resolution. Offline exploration is explicitly a preview
+with no saved progression. This is not yet the complete 18-quest authored vertical slice.
 
-## Repository layout
+The legacy `scenes/vertical_slice_client.tscn` and its script are preserved. The active
+main scene is `godot_project/scenes/app/bootstrap.tscn`; older deployment documents'
+legacy interface descriptions do not describe this new client.
 
-```text
-backend/        FastAPI modular-monolith scaffold
-content/        Data-driven gameplay definitions
-docs/           Architecture and planning documents
-godot_project/  Godot 4.x client scaffold
-infra/          Docker Compose and Nginx deployment files
-```
+## Local development
 
-## Local validation
-
-Run the content validation tests:
+Python 3.12 and Godot **4.5.1 stable** are the tested versions. From repository root:
 
 ```bash
-python -m unittest discover backend/tests
+python -m venv .venv
+# Activate .venv using your shell's normal activation command.
+python -m pip install -r backend/requirements.lock
+python -m tools.build_catalog
+python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000
 ```
 
-Use `python3` if your environment does not provide a `python` alias:
+Local mode defaults to JSON saves at `var/vertical_slice_save.json`, ignored by Git.
+Open `godot_project/project.godot` and press Play. Under **Server connection**, set
+`http://127.0.0.1:8000/api/v1`. HTTP is permitted only for localhost in editor/debug builds;
+shared servers require HTTPS. The inherited default `https://game.surveyroute.work/api/v1`
+has not been updated or verified operational in this session. Server protocol 1 is required.
+
+To test an attached Android phone against your PC server, install the APK, run
+`adb reverse tcp:8000 tcp:8000`, and use the same localhost URL. This is a development
+recipe; physical phone results are recorded separately in PROJECT_STATE.
+
+## Checks
 
 ```bash
-python3 -m unittest discover backend/tests
+python -m pytest backend/tests -q
+python -m tools.build_catalog
+# Set GODOT_BIN to your Godot executable, or put `godot` on PATH.
+python -m tools.check_godot
+python -m tools.check_online
 ```
 
-Run the backend locally after installing Python dependencies:
+`check_online` starts an isolated API and another WebSocket player, then runs the real
+Godot account/creator/movement/quest/combat/reward/reconnect flow. Unit tests alone are
+insufficient. PostgreSQL tests explicitly skip unless `VT_TEST_DATABASE_URL` names an
+isolated database migrated to head. CI runs both migrations and the PostgreSQL tests.
+
+## Android build and runtime checks
+
+Use the checked-in **Android** export preset: ARM64, INTERNET permission, app ID
+`work.surveyroute.veilboundtides`, version 0.2.0/code2. Use Godot 4.5.1 export templates,
+JDK17, Android SDK platform35 and build-tools35.0.0. See the
+[official engine export instructions](https://docs.godotengine.org/en/4.5/tutorials/export/exporting_for_android.html).
+The exported engine minimum is API24, target API35; minimum OS is not a device-performance guarantee.
+
+The Linux/CI helper requires `GODOT_BIN`, `ANDROID_HOME`, `JAVA_HOME` and installed templates:
 
 ```bash
-pip install -r backend/requirements.txt
-uvicorn backend.app.main:app --reload
+python -m tools.export_android --emulator
+xvfb-run -a python -m tools.check_render
+# With an Android emulator already booted and adb available:
+python -m tools.check_android
 ```
 
-Run database migrations:
+The build script creates the ARM64 deliverable, a separate x86_64 QA APK, signature
+verification reports and a SHA-256/source-commit manifest. Only the ARM64 file is for
+phones. CI retains it as `veilbound-tides-android-foundation` with render evidence;
+`android-runtime-evidence` records emulator touch/resume checks. Artifact retention
+is 90 days. Debug keys are ephemeral; a differently signed later test APK can require
+uninstall/reinstall. Release signing and Play Store/AAB publication are not configured.
+
+## PostgreSQL and deployment
+
+Important variables: `VT_PLAYER_STORE` (`json` or `postgres`), `VT_DATABASE_URL`,
+`VT_VERTICAL_SLICE_SAVE_PATH`, `VT_ENVIRONMENT`, `VT_JWT_SECRET`, `VT_DEBUG`.
+Full defaults and validation are in `backend/app/core/config.py`. Staging/production
+require non-placeholder secrets and PostgreSQL. Never put a production secret in the client.
+
+Back up existing saves before switching persistence. Migration 0002 adds the runtime
+state table and session version column; it does not import JSON players automatically.
+Existing JSON accounts need an explicit validated import preserving IDs and balances.
+Do not erase the old volume or switch a live service without testing backup/restore.
 
 ```bash
-alembic -c backend/alembic.ini upgrade head
+python -m alembic -c backend/alembic.ini upgrade head
+# Copy infra/.env.example to infra/.env and supply credentials/TLS files first.
+docker compose --env-file infra/.env -f infra/docker-compose.yml up --build
 ```
 
-Run the self-hosted stack:
+Nginx needs `infra/certs/fullchain.pem` and `privkey.pem`; HTTP redirects to HTTPS.
+Run **one** application process: the world room is currently process-owned. No production
+update has been deployed here. Historical runbooks remain under `docs/deployment/`;
+follow the current persistence and protocol requirements before using them.
 
-```bash
-docker compose -f infra/docker-compose.yml up --build
-```
+## Repository map
 
-Copy `infra/.env.example` to `infra/.env` and replace all secrets before running a shared or production-like environment.
-
-For HTTPS deployment, place TLS files at:
-
-```text
-infra/certs/fullchain.pem
-infra/certs/privkey.pem
-```
-
-The default Nginx deployment redirects HTTP to HTTPS and will not start without mounted certificates.
-
-Create a local PostgreSQL backup from the Compose stack:
-
-```bash
-infra/scripts/backup_postgres.sh
-```
-
-## Content-first rule
-
-Gameplay content such as spells, quests, NPCs, enemies, items, equipment, shops, loot tables, achievements, crafting recipes, gathering nodes, mounts, dungeons, and zones belongs in `content/` and should be validated before import. Runtime systems should consume content through the content catalog instead of hardcoding gameplay definitions.
-
-Every content file must include `schema_version`, and references between content files must pass `backend/tests/test_content_definitions.py`.
-
-## Playable vertical slice
-
-The current playable loop is intentionally small:
-
-1. `POST /api/v1/auth/register`
-2. `POST /api/v1/characters`
-3. `GET /api/v1/world/characters/{character_id}`
-4. `POST /api/v1/world/characters/{character_id}/quests/lantern_well_first_light/accept`
-5. `POST /api/v1/world/characters/{character_id}/combat/fight`
-6. `POST /api/v1/world/characters/{character_id}/save`
-7. `POST /api/v1/auth/logout`
-8. `POST /api/v1/auth/login`
-9. `GET /api/v1/world/characters/{character_id}`
-
-This loop supports one account, one playable character, one starting zone, one NPC, one quest, one enemy, three starter spells, XP gain, leveling, inventory rewards, save/load, logout, and persisted login.
-
-Local vertical-slice save data is written to `var/vertical_slice_save.json` by default and is ignored by Git. Docker deployments mount `/app/var` to the `vertical_slice_saves` named volume so the JSON save survives backend container recreation.
-
-## Godot vertical-slice client
-
-Open `godot_project/project.godot` in Godot 4.x and press Play. The current main scene is a simple vertical-slice client for the deployed backend at:
-
-```text
-https://game.surveyroute.work/api/v1
-```
-
-The client has a mobile-oriented account gateway, character hall, basic character creation/customization choices, top profile/status area, quest tracker, mini-map readout, bottom six-slot action bar, expandable secondary menu tray, readable character/quest/inventory HUD, themed fantasy UI panels, and a stylized placeholder 3D Dawnreef Commons with a lantern well, paths, reeds, crystals, market/training/dock/travel-gate landmarks, player, NPC, and enemy markers. Existing accounts return to a saved Wayfarer card before entering the world. Move the player marker with WASD, arrow keys, or the virtual joystick; primary controls sit above a scrollable HUD so mobile-sized screens do not cut off actions. Tapping visible NPC/enemy/gate areas in the world view opens interactions, and contextual Talk/Fight buttons appear when near Mara or the Fog-Thorn enemy. Talk opens a short Mara dialogue with an accept-quest choice that changes after quest progress, and Fight opens a small combat panel with Glimmer Spark, Root Snare, and Tide Mend actions. The enemy marker pulses on combat resolution and dims after the starter threat is completed. It can register/login, create a character, enter the world, accept the starter quest, fight the starter enemy, save, logout, and display the current character state.
-
-## Current continuation status
-
-Restoration is complete on `feature/android-foundation` in [draft PR #4](https://github.com/Fineyew/GameTesting/pull/4).
-[CI](https://github.com/Fineyew/GameTesting/actions/runs/34400798944) passed PostgreSQL migrations,
-24 tests, Godot smoke and real client/API integration. Read [PROJECT_STATE](docs/PROJECT_STATE.md),
-[ARCHITECTURE](docs/ARCHITECTURE.md), [ROADMAP](docs/ROADMAP.md) and [CHANGELOG](CHANGELOG.md).
-
-The descriptions above record the original legacy slice. The active main scene is now
-`godot_project/scenes/app/bootstrap.tscn`; preserve the legacy scene. Use Godot 4.5.1 and
-`python -m pip install -r backend/requirements.lock`. Full tests use pytest; unittest alone
-omits the newer integration tests. Run `python -m tools.check_godot` and `python -m tools.check_online`
-with `GODOT_BIN` set. The updated public server is not deployed or verified; use a local
-0.2.0 server or the explicitly labeled offline exploration preview.
+| Path | Responsibility |
+|---|---|
+| backend/app/modules | Gameplay/service modules; boundaries checked by tests |
+| backend/app/db, backend/alembic | Persistence adapters and additive migrations |
+| content | Validated source gameplay definitions |
+| godot_project | Modular scenes, scripts and generated catalog |
+| tools | Catalog generation, Godot integration, Android export and runtime checks |
+| .github/workflows | Repeatable CI checks and retained artifacts |
+| infra | Existing Docker/Nginx/backup setup |
+| docs | Canonical state, design, authoring, decisions and historical plans |

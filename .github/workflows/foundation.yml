@@ -91,7 +91,20 @@ jobs:
           mkdir -p "$HOME/.local/share/godot/export_templates/4.5.1.stable"
           unzip -j -q /tmp/templates.tpz templates/android_debug.apk templates/android_release.apk templates/version.txt -d "$HOME/.local/share/godot/export_templates/4.5.1.stable"
       - name: Install Android export dependencies
-        run: sdkmanager 'platform-tools' 'build-tools;35.0.0' 'platforms;android-35'
+        run: |
+          export ANDROID_HOME="$RUNNER_TEMP/android-sdk"
+          mkdir -p "$ANDROID_HOME/cmdline-tools"
+          curl -fL --retry 3 https://dl.google.com/android/repository/commandlinetools-linux-13114758_latest.zip -o /tmp/android-cli.zip
+          unzip -q /tmp/android-cli.zip -d "$ANDROID_HOME/cmdline-tools"
+          mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
+          echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> "$GITHUB_ENV"
+          echo "$ANDROID_HOME/platform-tools" >> "$GITHUB_PATH"
+          echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
+          python -c 'import os,subprocess; sdk=os.environ["ANDROID_HOME"]; subprocess.run([sdk+"/cmdline-tools/latest/bin/sdkmanager","--sdk_root="+sdk,"--licenses"],input="y\n"*100,text=True,check=True)'
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$ANDROID_HOME" 'platform-tools' 'build-tools;35.0.0' 'platforms;android-35'
+          sudo apt-get update
+          sudo apt-get install -y xvfb
       - name: Export and verify ARM64 and emulator APKs
         run: python -m tools.export_android --emulator
       - name: Render and draw-call gate
