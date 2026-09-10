@@ -67,6 +67,8 @@ jobs:
         run: python -m tools.check_online
 
   android:
+    env:
+      VT_SOURCE_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:

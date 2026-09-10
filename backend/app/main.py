@@ -25,7 +25,7 @@ def create_app() -> FastAPI:
     validate_runtime_settings(settings)
     if settings.player_store not in {"json", "postgres"}:
         raise ValueError("VT_PLAYER_STORE must be json or postgres")
-    if settings.environment in {"production", "staging"} and settings.player_store != "postgres":
+    if settings.environment.lower() in {"production", "staging"} and settings.player_store != "postgres":
         raise ValueError("staging and production require PostgreSQL persistence")
 
     @asynccontextmanager

@@ -3,7 +3,11 @@
 ## Unreleased — M0 handoff (2026-09-10)
 
 - Reconcile canonical status with the completed restoration and successful CI.
-- Android artifact retention, runtime validation and final visual cleanup in progress.
+- Retain signed ARM64 APKs, provenance, verification reports and actual render evidence in CI.
+- Fix coplanar coast/floor flicker; fresh desktop render measures87 draw calls.
+- Android emulator uncovered portrait orientation; correct the setting and rerun native checks.
+- Preserve existing JSON deployments by default; require an explicit PostgreSQL switch/import.
+- Close the environment-case bypass of the production PostgreSQL requirement, with regression coverage.
 
 ## 0.2.0 — Android foundation restored (2026-09-09)
 

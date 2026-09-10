@@ -31,12 +31,14 @@ def main():
     adb('shell','wm','size','720x1280')
     adb('shell','settings','put','system','accelerometer_rotation','0')
     adb('shell','settings','put','system','user_rotation','1')
+    # Dismiss the OS tutorial in the test profile; this is not an app permission.
+    adb('shell','settings','put','secure','immersive_mode_confirmations','confirmed')
     adb('install','-r',str(ROOT/'builds/veilbound-tides-android-qa.apk'))
     adb('logcat','-c')
     adb('shell','monkey','-p',PACKAGE,'-c','android.intent.category.LAUNCHER','1')
     def log():return adb('logcat','-d','-s','godot:V','AndroidRuntime:E','libc:F')
     wait_for(lambda:'VT_GATEWAY_READY' in log())
-    time.sleep(2)
+    time.sleep(4)
     gateway=capture('gateway')
     with Image.open(gateway) as image:width,height=image.size
     assert width>height,'expected landscape'
@@ -66,4 +68,12 @@ def main():
     (OUT/'result.txt').write_text(f'ANDROID_RUNTIME_PASS\nInstall, gateway, touch preview, touch locomotion, background/resume.\nChanged world pixels: {changed:.3f}\nEmulator x86_64; physical ARM64 device unverified.\n')
     print('ANDROID_RUNTIME_PASS')
 
-if __name__=='__main__':main()
+if __name__=='__main__':
+    try:
+        main()
+    finally:
+        OUT.mkdir(parents=True,exist_ok=True)
+        try:
+            (OUT/'logcat.txt').write_text(adb('logcat','-d','-s','godot:V','AndroidRuntime:E','libc:F'))
+        except (OSError,subprocess.SubprocessError):
+            pass

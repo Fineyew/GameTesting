@@ -30,14 +30,14 @@ do not restart restoration or replace the working architecture.
 
 ## M0 still open
 
-1. Persist reproducible Android CI artifacts and verify install/startup on available Android runtime.
+1. Android CI now retains a signed ARM64 APK and passing renders (run34424052563).
+   The first emulator run exposed portrait orientation; the fix and rerun are in progress.
 2. Fix observed coplanar coastline/floor flicker and rerun visual checks; retain static mesh batching.
 3. Reconcile all canonical docs, record exact artifact provenance, test results and device limitations.
 4. Save an M0 completion checkpoint before broad M1 production.
 
-An earlier signed ARM64 APK was exported and signature-checked, but its local bytes
-were removed by workspace maintenance and were never retained remotely. Do not claim
-that APK is currently downloadable. Physical phone testing and the updated public host
+An earlier local APK was lost to workspace maintenance. A fresh APK is now retained
+in GitHub Actions artifact10131988899; final runtime validation is still pending. Physical phone testing and the updated public host
 remain **unverified**. No production deployment occurred.
 
 ## Placeholder / planned

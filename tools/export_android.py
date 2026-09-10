@@ -62,7 +62,7 @@ def export(emulator=False):
     finally:
         preset.write_text(original)
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
-    manifest={'source_commit':commit,'godot':'4.5.1','signing':'ephemeral debug identity; not a release key','artifacts':records}
+    manifest={'source_commit':os.environ.get('VT_SOURCE_COMMIT',commit),'tested_tree_commit':commit,'godot':'4.5.1','signing':'ephemeral debug identity; not a release key','artifacts':records}
     (BUILD/'build-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
     print('ANDROID_EXPORT_PASS')
 

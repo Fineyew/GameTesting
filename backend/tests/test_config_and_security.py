@@ -35,6 +35,19 @@ class RuntimeConfigTests(unittest.TestCase):
         validate_runtime_settings(settings)
 
 
+class ProductionStoreTests(unittest.TestCase):
+    def test_environment_case_cannot_bypass_postgres_requirement(self):
+        from unittest.mock import patch
+        from backend.app.main import create_app
+        for environment in ("production", "PRODUCTION", "staging", "STAGING"):
+            settings = Settings(environment=environment, player_store="json",
+                                jwt_secret="a-realistic-jwt-signing-key-with-32-chars",
+                                database_url="postgresql+asyncpg://prod_user:strong-db-passphrase-32-chars@db:5432/game")
+            with self.subTest(environment=environment), patch("backend.app.main.get_settings", return_value=settings):
+                with self.assertRaisesRegex(ValueError, "require PostgreSQL"):
+                    create_app()
+
+
 class JwtSecurityTests(unittest.TestCase):
     def test_extra_claims_cannot_override_reserved_claims(self) -> None:
         with self.assertRaisesRegex(ValueError, "reserved JWT claims"):
