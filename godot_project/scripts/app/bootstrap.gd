@@ -32,6 +32,8 @@ func _ready() -> void:
     get_viewport().scaling_3d_scale = config.get_value("graphics","scale",.75)
     _build_gateway()
     show_login()
+    if OS.has_feature("debug"):
+        print("VT_GATEWAY_READY")
     if "--preview" in OS.get_cmdline_user_args():
         start_preview()
 
@@ -214,6 +216,8 @@ func _play(character: Dictionary, offline: bool) -> void:
     add_child(session)
     session.return_requested.connect(return_to_gateway)
     session.begin(world,character,offline)
+    if offline and OS.has_feature("debug"):
+        print("VT_PREVIEW_READY")
 
 func return_to_gateway() -> void:
     if is_instance_valid(session):

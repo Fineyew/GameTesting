@@ -48,7 +48,7 @@ func _landscape() -> void:
     ReefKit.box(self,Vector3(42,.04,3.5),Vector3(0,.025,-4),Color("d4c295"))
     for i in 10:
         var angle = i*TAU/10
-        ReefKit.cylinder(self,7,4,Vector3(cos(angle)*20,-2,sin(angle)*18-1),Color("857b68"),5)
+        ReefKit.cylinder(self,7,4,Vector3(cos(angle)*20,-2.4,sin(angle)*18-1),Color("857b68"),5)
     for i in 8:
         var angle = i*TAU/8
         var at = Vector3(cos(angle)*85,-4+sin(i)*4,sin(angle)*78)
