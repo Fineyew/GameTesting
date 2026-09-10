@@ -9,7 +9,9 @@ The active work is `feature/android-foundation`, [draft PR #4](https://github.co
 Read [PROJECT_STATE](docs/PROJECT_STATE.md), [ARCHITECTURE](docs/ARCHITECTURE.md),
 [GAME_DESIGN](docs/GAME_DESIGN.md), [ROADMAP](docs/ROADMAP.md), [CONTENT_GUIDE](docs/CONTENT_GUIDE.md),
 [DECISIONS](docs/DECISIONS.md), [KNOWN_ISSUES](docs/KNOWN_ISSUES.md) and [CHANGELOG](CHANGELOG.md).
-Restoration and initial integration validation are complete. PROJECT_STATE records current gates.
+M0 engineering is complete: PostgreSQL/Godot integration, retained signed ARM64 export,
+inspected renders, and Android emulator touch/visible-resume checks pass. Physical phone
+validation remains unverified. PROJECT_STATE records exact CI/artifact evidence and next M1 scope.
 
 ## What is playable
 

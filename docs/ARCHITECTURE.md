@@ -34,7 +34,8 @@ independent of the HTTP character/economy state interface.
 
 The September foundation restoration is complete and checkpointed through `92eb3a3`.
 CI run 34400798944 executed both migrations, 24 tests, Godot smoke and client/API integration.
-Android export retention and device verification remain separate M0 gates.
+M0 engineering gates now pass through69457a4: retained signed ARM64 export and emulator
+installation/touch/visible resume. Physical ARM64 performance remains a separate release gate.
 PROJECT_STATE records actual restoration/verification, not design aspirations.
 Push stable feature-branch checkpoints during long sessions and update state
 before handoff. No secrets or build products belong in source control.

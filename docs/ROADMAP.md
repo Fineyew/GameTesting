@@ -2,7 +2,7 @@
 
 Updated 2026-09-10. Distinguish engineering gates from unverified physical-device/release gates.
 
-## M0 — foundation handoff (current)
+## M0 — foundation handoff (engineering complete)
 
 - [x] Restore and remotely checkpoint modular client, combat, presence and PostgreSQL adapter.
 - [x] Validate real PostgreSQL migrations, persistence and concurrent/retried actions in CI.
@@ -11,20 +11,23 @@ Updated 2026-09-10. Distinguish engineering gates from unverified physical-devic
 - [x] Reconcile PROJECT_STATE and CHANGELOG with completed CI evidence.
 - [x] Fix the observed coastline/floor overlap and inspect fresh renders.
 - [x] Automate, retain and signature-check an ARM64 APK; verify Android runtime install/start.
-- [ ] Verify visible world and touch locomotion after resume (stronger gate after run34424981946).
+- [x] Verify visible world and touch locomotion after resume (run34430377236 at69457a4).
 - [x] Record physical Android testing status, performance targets, remaining risks and build provenance.
-- [ ] Complete canonical documentation and checkpoint M0 source/artifacts remotely.
+- [x] Complete canonical documentation and checkpoint M0 source/artifacts remotely.
 
 M0 engineering completion requires a reproducible retained APK, automated checks and
 honest device-status documentation. Physical phone thermal/touch/network validation is
 an open release gate; never call an emulator or desktop result a physical-phone pass.
 No broad M1 content production before this engineering checkpoint.
 
-## M1 — authored vertical slice (planned)
+## M1 — authored vertical slice (next narrow increment)
 
 Start with a narrow content-framework increment: generic server-owned quest/dialogue
 execution, validated objectives/rewards and a small authored continuation of Mara's
-story. Reuse the existing catalog and aggregate transactions. Then make the remaining
+story. Scope the first increment to one follow-up: inspect the reeds, listen at the cistern
+entrance, then return to Mara. Require server-owned dialogue cursors, conditions, ordered
+objectives, proximity checks and once-only rewards; preserve existing saves and starter IDs.
+Reuse the existing catalog and aggregate transactions. Then make the remaining
 initial spells obtainable and add folio selection; expand content only after this works.
 
 Target: one town plus adventure region, 18 varied quests, 18 working obtainable spells,

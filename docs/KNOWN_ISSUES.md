@@ -32,8 +32,9 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
 
 ## Engineering
 
-- Android CI passes installation/touch/locomotion/process resume at2101aa4, but the retained
-  resume frame was black. A stronger presented-world/post-resume-touch gate is running.
+- M0 Android emulator checks pass at69457a4, including visible resume and repeat touch
+  locomotion. The earlier black transition screenshot is resolved by waiting for presented
+  frames; this was a test timing gap. Physical-device gates above remain open.
 
 - One process/room. No multi-worker routing, instanced party ownership, interest management
   or load test. Slow sends may stretch fixed ticks; cellular TCP behavior needs profiling.

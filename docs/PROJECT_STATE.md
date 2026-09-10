@@ -7,7 +7,7 @@ Read README → this file → ARCHITECTURE → relevant source before editing.
 
 **Restoration is complete**, saved through `92eb3a3`. Main remains at `bd98746`.
 [CI run 34400798944](https://github.com/Fineyew/GameTesting/actions/runs/34400798944)
-completed successfully: both backend and Godot jobs. Subsequent Android evidence is below;
+completed successfully: both backend and Godot jobs. **M0 engineering is now complete**;
 do not restart restoration or replace the working architecture.
 
 ## Implemented and tested
@@ -32,11 +32,13 @@ do not restart restoration or replace the working architecture.
 
 [CI run 34424981946](https://github.com/Fineyew/GameTesting/actions/runs/34424981946)
 for `2101aa4ac769748b4c7d2239e8a85058e0be822e` passed backend, Godot and Android jobs.
-The API35 x86_64 emulator installed the QA APK, entered preview with touch, moved through
-Dawnreef (22% changed world pixels), and survived background/resume without logged errors.
-Visual inspection found the resume screenshot was a black transition frame: the check is
-being strengthened to wait for presented terrain and verify touch movement after resume.
-Do not confuse process survival with confirmed resumed rendering.
+The API35 x86_64 emulator installed the QA APK, entered preview with touch and moved
+through Dawnreef. The initial resume assertion checked process survival only.
+[Stronger CI run 34430377236](https://github.com/Fineyew/GameTesting/actions/runs/34430377236)
+for `69457a4` passed all three jobs, including **visible world after background/resume and
+repeat touch locomotion**. Resumed screenshots were inspected. Runtime evidence artifact
+**10134331061**; repeated ARM64 export artifact **10134280020**. No gameplay/client source
+changed between these runs; only test/handoff files changed. No shader errors remain.
 
 Retained ARM64 artifact **10132315403**: version0.2.0, 27,897,336 bytes, signature verified,
 minimum API24/target35. SHA-256:
@@ -44,10 +46,14 @@ minimum API24/target35. SHA-256:
 Manifest source is `2101aa4`; tested PR merge tree is `daa6cb0`. Runtime evidence artifact
 **10132364170**. Both retained until 2026-12-09. Earlier failed-run artifacts are superseded.
 
-Remaining M0 steps: pass the stronger visible-resume check, complete canonical handoff and
-save the M0 checkpoint. Physical S25 Ultra/ARM64 testing, thermal/performance/mobile-network
-results and the updated public host remain **unverified**. No production deployment occurred.
-README contains the physical-device procedure. These remain explicit release gates.
+M0 completion criteria are satisfied: restored source, real PostgreSQL/Godot integration,
+retained signed APK, inspected renders and Android runtime checks, canonical handoff and
+explicit device limitations. This documentation commit is the M0 completion checkpoint;
+next work is only ROADMAP's narrow M1 quest/dialogue increment.
+
+Physical S25 Ultra/ARM64 testing, thermal/performance/mobile-network results and the updated
+public host remain **unverified**. No production deployment occurred. README contains the
+physical-device procedure. These remain explicit release gates, not silently passed tests.
 
 ## Placeholder / planned
 

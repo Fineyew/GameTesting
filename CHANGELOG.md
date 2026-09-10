@@ -1,15 +1,17 @@
 # Changelog
 
-## Unreleased — M0 handoff (2026-09-10)
+## 0.2.0 — M0 engineering handoff complete (2026-09-10)
 
-- Reconcile canonical status with the completed restoration and successful CI.
+- Reconcile canonical status and PR #4 with completed restoration and successful CI.
+- Complete M0 engineering: 25 backend/PostgreSQL tests, both migrations, Godot client/API
+  integration, inspected 87-draw-call renders, retained signed APK and Android runtime gates.
 - Retain signed ARM64 APKs, provenance, verification reports and actual render evidence in CI.
 - Fix coplanar coast/floor flicker; fresh desktop render measures 87 draw calls.
 - Correct Android landscape orientation. CI run34424981946 passes export, install, touch
   preview/locomotion and background/resume process survival.
 - Use ANGLE/SwiftShader after the legacy emulator GLES translator failed shader linking;
-  runtime checks now reject engine/render errors explicitly. Strengthen visible-resume
-  verification after inspecting the successful run's black transition screenshot.
+  runtime checks now reject engine/render errors explicitly. Run34430377236 at69457a4
+  also proves visible world recovery and repeat touch locomotion after resume.
 - Document a reproducible S25 Ultra install/online/thermal test procedure; physical results remain open.
 - Preserve existing JSON deployments by default; require an explicit PostgreSQL switch/import.
 - Close the environment-case bypass of the production PostgreSQL requirement, with regression coverage.
