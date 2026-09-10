@@ -177,6 +177,8 @@ class VerticalSliceService:
         character = self._require_character(account_id, character_id)
         if spell_key not in character.known_spells:
             raise VerticalSliceError("character does not know that spell")
+        if spell_key not in character.folio:
+            raise VerticalSliceError("spell is not prepared")
 
         if character.encounter.get("state") == "active":
             raise VerticalSliceError("finish the active encounter first")

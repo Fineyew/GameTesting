@@ -1,7 +1,7 @@
 from typing import Any
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Request, status
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field, StrictStr
 
 from backend.app.core.security import decode_access_token
 from backend.app.modules.vertical_slice.service import (
@@ -231,6 +231,27 @@ def encounter_action(character_id: str, payload: EncounterActionRequest, request
 class DialogueChoiceRequest(BaseModel):
     conversation_id: str = Field(min_length=1, max_length=40)
     option_key: str = Field(min_length=1, max_length=64)
+
+
+class PrepareFolioRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    spells: list[StrictStr] = Field(min_length=1, max_length=6)
+    expected_revision: int = Field(strict=True, ge=0)
+
+
+@router.post("/world/characters/{character_id}/folio")
+def prepare_folio(character_id: str, payload: PrepareFolioRequest, request: Request,
+                  idempotency_key: str = Header(min_length=8, max_length=80),
+                  account_id: str = Depends(current_account_id)):
+    try:
+        return request.app.state.folio.prepare(account_id, character_id, payload.spells,
+                                               payload.expected_revision, idempotency_key)
+    except AuthenticationError as exc:
+        raise HTTPException(403, str(exc)) from exc
+    except NotFoundError as exc:
+        raise HTTPException(404, str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(409, str(exc)) from exc
 
 
 def require_interaction(request, account_id, character_id, target):

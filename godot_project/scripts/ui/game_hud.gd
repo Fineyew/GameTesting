@@ -3,6 +3,7 @@ extends Control
 signal interact_requested
 signal journal_requested
 signal inventory_requested
+signal folio_requested
 signal settings_requested
 signal chat_requested
 signal recenter_requested
@@ -46,7 +47,7 @@ func _ready() -> void:
     spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
     top.add_child(spacer)
-    for spec in [["Journal",journal_requested],["Settings",settings_requested]]:
+    for spec in [["Folio",folio_requested],["Journal",journal_requested],["Settings",settings_requested]]:
         var action = TideUI.button(spec[0],spec[1].emit)
         action.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
         top.add_child(action)

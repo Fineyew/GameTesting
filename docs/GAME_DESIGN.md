@@ -39,8 +39,10 @@ bosses and crafting; important spells should have stories, not gambling-based ac
 
 ## Tidebeat combat and core loop
 
-Target folio: choose six learned spells, all available without a random hand draw.
-The current engine exposes all known starter spells; folio editing is not implemented.
+Implemented folio: prepare 1–6 distinct learned spells, all available without a random
+hand draw. Brace/Gather are universal and use no slots. Preparation is locked during an
+active encounter. New spells enter the learned collection, not the prepared folio.
+Old saves prepare their already-known spells automatically, without granting new ownership.
 A beat resolves the player's chosen action, the visible enemy response, then upkeep.
 Start with 3 Focus; regenerate 1 per beat, cap 6. Brace absorbs 6 incoming damage;
 Gather adds 2 Focus before upkeep. Intent knowledge, resource use and preparation matter.
@@ -48,7 +50,12 @@ Gather adds 2 Focus before upkeep. Intent knowledge, resource use and preparatio
 Implemented: Glimmer Spark (8 damage/1 Focus), Root Snare (6 damage and bind4/2 Focus),
 Tide Mend (heal8/2 Focus; never secretly attacks). Additional functioning definitions:
 Beacon Trace (mark next damage +6), Reed Aegis (guard10), Seam Lance (damage15/4 Focus).
-These three additional spells have no acquisition paths yet. Marks cap at 12; guard
+All six are now obtainable. After An Answer in the Reeds, Mara offers three short lessons:
+Reading the Afterlight (inspect the sealed cistern, return: Beacon Trace), What the Reeds
+Hold (study reeds, return: Reed Aegis), and A Measured Release (cast Beacon Trace, meet a
+10-damage intent with Reed Aegis, finish the lurker encounter, return: Seam Lance).
+Each lesson grants its named spell once, with no added XP/currency payout. Practice can
+span encounters; only successfully resolved casts count. The cistern remains sealed. Marks cap at 12; guard
 and bind currently affect the immediate response. The lurker has 32 Vigor and cycles
 4-damage,10-damage,0-damage announced intents. Defeat restores the player at the well;
 a 50-beat cap bounds stalled fights. Server transactions own outcomes and rewards.
@@ -71,7 +78,7 @@ combat needs participant ownership, ready timers and reconnect rules before impl
 | 50–60 min | Open the cistern investigation | Agency and a larger mystery |
 
 The account/creator/exploration/first combat quest and one short Mara investigation are
-implemented. An Answer in the Reeds sends the Wayfarer to listen at two existing landmarks
+implemented, followed by the three small spell lessons above. An Answer in the Reeds sends the Wayfarer to listen at two existing landmarks
 and return; it awards 40 XP/5 chits once. The cistern remains sealed. There is not yet an
 hour of authored content. Quests should frequently teach ecology, characters,
 locations or mechanics, instead of repeatedly asking for arbitrary kill totals.

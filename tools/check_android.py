@@ -31,6 +31,11 @@ def wait_for_world(name):
     # Require the authored green terrain (not the gray splash or a black resume frame).
     def visible():
         with Image.open(capture(name)) as frame:
+            # Android can present a rotated transition frame after returning from
+            # its portrait launcher. Wait for the app's landscape surface before
+            # comparing it; never rotate evidence or relax the world-match gate.
+            if frame.width <= frame.height:
+                return False
             pixels=list(frame.convert('RGB').resize((160,90)).getdata())
         green=sum(g>r*1.12 and g>b*1.08 and g>65 for r,g,b in pixels)/len(pixels)
         return green>.03
@@ -65,6 +70,14 @@ def main():
     adb('shell','input','tap',str(round(width*.80)),str(round(height*.83)))
     wait_for(lambda:'VT_PREVIEW_READY' in log())
     before=wait_for_world('dawnreef-before')
+    adb('shell','input','tap',str(round(width*.766)),str(round(height*.075)))
+    wait_for(lambda:'VT_FOLIO_READY' in log())
+    # Capture the actual touch-opened folio, then close with its touch target.
+    time.sleep(.5)
+    folio=capture('folio')
+    assert changed_world(before,folio)>.1,'folio panel did not visibly open'
+    adb('shell','input','tap',str(round(width*.715)),str(round(height*.167)))
+    wait_for(lambda:changed_world(before,capture('folio-closed'))<.15)
     adb('shell','input','swipe',str(round(width*.0875)),str(round(height*.844)),str(round(width*.0875)),str(round(height*.755)),'1800')
     time.sleep(.5)
     after=wait_for_world('dawnreef-after')
@@ -83,7 +96,7 @@ def main():
     logs=log()
     (OUT/'logcat.txt').write_text(logs)
     assert not re.search(r'ERROR:|SCRIPT ERROR|FATAL EXCEPTION|Fatal signal|ANR in '+re.escape(PACKAGE),logs),logs[-6000:]
-    (OUT/'result.txt').write_text(f'ANDROID_RUNTIME_PASS\nInstall, visible gateway, touch preview, touch locomotion, background/resume with visible world and repeat touch locomotion.\nChanged world pixels: {changed:.3f}\nEmulator x86_64; physical ARM64 device unverified.\n')
+    (OUT/'result.txt').write_text(f'ANDROID_RUNTIME_PASS\nInstall, visible gateway, touch preview, touch folio open/close, touch locomotion, background/resume with landscape visible world and repeat touch locomotion.\nChanged world pixels: {changed:.3f}\nEmulator x86_64; physical ARM64 device unverified.\n')
     print('ANDROID_RUNTIME_PASS')
 
 if __name__=='__main__':

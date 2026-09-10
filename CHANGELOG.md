@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.2.2 — M1.2 acquisition and folio (validation in progress, 2026-09-10)
+
+- Continue M0 at 1044f95 and M1.1 at 4efd3a6/d138214; preserve original content and player IDs.
+- Add three small Mara lessons awarding the three existing additional spells, once each.
+- Add validated cast objectives, six-slot persistent prepared folio and a touch Folio panel.
+- Validate ownership, duplicates, active combat and expected revisions; commit retry receipts
+  with state. Combat checks prepared spells while Brace/Gather remain universal.
+- Add old-save/forgery/concurrency/acquisition/API/Godot/PostgreSQL regression coverage.
+- Bump Android to 0.2.2/code 4; publish ARM64 only after the dependent validation jobs pass.
+- Fix resume-check timing for a rotated Android launcher-transition frame; preserve the
+  existing world-match threshold and post-resume touch requirement. Physical phone unverified.
+
 ## 0.2.1 — M1.1 story framework complete (2026-09-10)
 
 - Begin only after M0 checkpoint 1044f95. Preserve the combat engine, world protocol 1,

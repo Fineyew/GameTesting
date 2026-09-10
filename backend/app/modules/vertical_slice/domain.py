@@ -6,6 +6,7 @@ STARTING_ZONE_KEY = "dawnreef_atoll"
 STARTING_SPELL_KEYS = ("glimmer_spark", "root_snare", "tide_mend")
 LEVEL_XP_REQUIREMENT = 100
 STARTING_VIGOR = 30
+FOLIO_CAPACITY = 6
 
 
 @dataclass
@@ -50,6 +51,13 @@ class CharacterRecord:
     command_receipts: dict[str, Any] = field(default_factory=dict)
     equipment: dict[str, str] = field(default_factory=dict)
     dialogue_state: dict[str, Any] = field(default_factory=dict)
+    folio: list[str] | None = None
+    folio_revision: int = 0
+
+    def __post_init__(self) -> None:
+        # Additive schema-1 upgrade for both adapters. Never grant spell ownership.
+        if self.folio is None:
+            self.folio = list(dict.fromkeys(self.known_spells))[:FOLIO_CAPACITY]
 
     @classmethod
     def create(
@@ -72,6 +80,7 @@ class CharacterRecord:
         state.pop("command_receipts", None)
         state.pop("account_id", None)
         state.pop("dialogue_state", None)
+        state["folio_capacity"] = FOLIO_CAPACITY
         return state
 
 

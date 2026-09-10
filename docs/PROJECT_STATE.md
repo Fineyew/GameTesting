@@ -7,7 +7,7 @@ Read README → this file → ARCHITECTURE → relevant source before editing.
 
 **M0 engineering complete** at `1044f95`. **M1.1 complete**: one narrow quest/dialogue
 framework increment, code/APK source `4efd3a689d93e2ed2fa31647a2ff67affca67c5e`.
-This handoff changes documentation only. Main remains at `bd98746`; no merge/deployment.
+**M1.2 implemented, final validation in progress**; do not call it complete yet. Main remains at `bd98746`; no merge/deployment.
 Restoration is finished; never restart it or replace the working architecture.
 
 ## What works
@@ -24,11 +24,17 @@ Restoration is finished; never restart it or replace the working architecture.
   New dialogue/inspection APIs check ownership, live proximity and combat state.
 - Mara's original first quest plus **An Answer in the Reeds**: listen at reeds, then the
   sealed cistern, then return for 40 XP/5 chits. HUD/journal use objective data. Two quests,
-  one enemy, three learned spells; three more functioning definitions lack acquisition.
-- Server advertises `story_protocol=1`; client 0.2.1 checks it before login. Original starter
+  one enemy. M1.2 adds three Mara lessons (five quests total), making all six existing
+  spells obtainable, plus a persistent six-slot folio and server-observed cast objectives.
+- Server advertises `story_protocol=1` and `folio_protocol=1`; client 0.2.2 checks both before login. Original starter
   compatibility APIs remain. Old saves load with an empty optional dialogue cursor.
 
-## Tested evidence and Android artifact
+## Previous verified evidence and Android artifact
+
+The d138214 docs-only rerun 34432487711 passed backend/Godot but failed Android resume
+comparison on a portrait transition frame. The current check waits for landscape
+presentation without relaxing the view-match threshold. New M1.2 CI is pending.
+
 
 [CI run 34431891977](https://github.com/Fineyew/GameTesting/actions/runs/34431891977) at
 `4efd3a6`: **all three jobs passed**. 38 backend tests, 27 subtests, actual PostgreSQL and
@@ -60,15 +66,17 @@ The updated public host is not deployed/verified; online play needs this branch'
 README gives the local-server/USB-reverse and physical-device procedure. No release signing.
 
 Procedural art, simple gait/VFX and flat terrain remain placeholders; no finished audio.
-Folio editing/spell acquisition, equipment/vendors, harvesting/crafting, mounts, housing,
+Equipment/vendors, harvesting/crafting, mounts, housing,
 pets, dungeons/bosses, free chat/moderation and full account recovery/refresh lifecycle
 remain unfinished. Collect-item/repeatable quest execution and additional NPC visual
 bindings are future work. Existing JSON→PostgreSQL import/restore drills remain release gates.
 
 ## Next / build and test
 
-Next is ROADMAP M1.2: make existing additional spells obtainable and add validated folio
-selection. No bulk quest/spell/world production. Preserve M0 and M1.1 behavior/tests.
+Finish M1.2 validation/handoff: local 54 tests / 30 subtests and Godot smoke pass; five
+PostgreSQL tests await CI. Full Godot/API acquisition/folio/reconnect/earned-cast integration
+passes locally. Render/Android gates and new APK pending.
+Do not advance to M1.3 before this checkpoint. ROADMAP recommends one narrow vendor/equipment loop.
 
 `python -m pip install -r backend/requirements.lock`; `python -m pytest backend/tests -q`;
 `python -m tools.build_catalog`. Set GODOT_BIN to 4.5.1; run `python -m tools.check_godot`

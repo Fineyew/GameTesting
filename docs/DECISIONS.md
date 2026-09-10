@@ -7,7 +7,7 @@
 | D003 | Retain FastAPI/PostgreSQL/Docker/Nginx | Inexpensive self-hostable modular monolith; no new paid managed infrastructure. |
 | D004 | WebSocket presence alongside HTTP commands | Owner requires real visible multiplayer, superseding older deferral advice. |
 | D005 | One room owner, 20 Hz input authority/10 Hz snapshots | Simple measurable foundation;32 cap is not load certification. No multi-worker deployment yet. |
-| D006 | Tidebeat with visible intents and Focus | Tactical preparation without random hand draws; co-op and folio editing later. |
+| D006 | Tidebeat with visible intents and Focus | Tactical preparation without random hand draws; six-slot folio implemented in M1.2; co-op later. |
 | D007 | Aggregate transactions plus durable response receipts | Atomic rewards and protection from retries/concurrent actions. |
 | D008 | Additive PostgreSQL runtime row, JSON local compatibility | Preserve identity tables and old development saves; explicit migration/import before switching live stores. |
 | D009 | Argon2 with legacy login upgrade; versioned short sessions | Preserve accounts while improving credentials; full recovery/refresh-token lifecycle remains unfinished. |
@@ -17,3 +17,5 @@
 | D013 | Remote checkpoints and canonical state before handoff | Workspace maintenance can remove local files; conversation memory is not durable source. |
 | D014 | Retain Android CI artifacts and separate emulator QA build | Recoverable builds and runtime evidence; x86 emulator success cannot certify ARM64 phone performance. |
 | D015 | Server-owned dialogue cursor and catalog quest rules after M0 checkpoint 1044f95 | One optional cursor in the existing aggregate, immutable catalog, transactional progress/rewards; no new database or world server. |
+| D016 | Six-slot server-owned folio, explicit preparation, revision-checked updates | Preserve known spells/old saves, block combat edits and stale retries; universal Brace/Gather need no slot. |
+| D017 | Three small quest-based spell lessons, including server-observed casts | Meaningful sources for existing spells without changing completed rewards or generating more families/regions. |

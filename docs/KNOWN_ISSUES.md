@@ -8,7 +8,7 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
 - Physical Android install/touch/safe-area, 20-minute thermal/memory/battery, packet-loss,
   cellular/Wi-Fi switching and background/resume certification remain outstanding.
   CI emulator and desktop rendering cannot substitute for these measurements. The emulator
-  gate exercises offline exploration; the full online story is tested with Godot/API integration.
+  gate exercises offline exploration and folio touch; online progression is tested with Godot/API integration.
 - Recovery/email verification/opaque rotated refresh tokens/remembered secure credentials
   and admin account workflows are unfinished. Access-token renewal needs a valid token.
 - Existing JSON accounts require backup and explicit preserved-ID import before changing
@@ -20,8 +20,8 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
 
 ## Gameplay/art
 
-- One enemy and two quests; three learned spells. Three additional engine definitions have
-  no acquisition path. No editable folio, affinity-specific progression or cooperative combat.
+- One enemy and five quests, including three short lessons; six obtainable spells and an
+  editable six-slot folio. Affinity-specific progression and cooperative combat remain planned.
 - Catalog-driven Mara dialogue and one investigation now exist. Collect-item/repeatable
   quests, broader objective types and visual authoring tools remain planned. M1.1 integration
   and Android gates pass at 4efd3a6; additional NPC visual/interaction bindings need scene work.
@@ -50,3 +50,6 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
 - Structured telemetry/correlation/audit trails and full operational monitoring are incomplete.
 - Docker runtime/public deployment are unverified here; CI proves the application and database
   behavior in its isolated test environment, not the production topology.
+
+- M1.2 final CI/render/Android handoff is pending. The d138214 docs-only rerun failed on a
+  portrait launcher-transition screenshot; landscape presentation is now awaited explicitly.

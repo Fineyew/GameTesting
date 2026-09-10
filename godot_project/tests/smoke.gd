@@ -26,6 +26,24 @@ func run() -> void:
     app.session.show_inventory()
     assert(app.session.hud.modal)
     app.session.hud.close_panel()
+    await app.session.show_folio()
+    assert(app.session.hud.modal and app.session.folio_panel.choices.is_empty())
+    app.session.hud.close_panel()
+    # Presentation fixture only; online.gd separately earns/saves through the API.
+    var panel = app.session.hud.open_panel("Wayfarer's Folio")
+    var folio = FolioPanel.new()
+    panel.add_child(folio)
+    folio.build({"known_spells":["glimmer_spark","root_snare","tide_mend"],"folio":["glimmer_spark","tide_mend"],"folio_capacity":6},false)
+    assert(folio.choices.size() == 3 and not folio.choices.has("seam_lance"))
+    folio.toggle_spell("seam_lance")
+    assert(folio.selected.size() == 2)
+    folio.choices.root_snare.pressed.emit()
+    assert(folio.selected.size() == 3 and not folio.save_button.disabled)
+    await create_timer(.2).timeout
+    if DisplayServer.get_name() != "headless":
+        await RenderingServer.frame_post_draw
+        root.get_texture().get_image().save_png("user://folio.png")
+    app.session.hud.close_panel()
     app.session.show_settings()
     assert(app.session.hud.modal)
     app.return_to_gateway()

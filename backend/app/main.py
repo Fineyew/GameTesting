@@ -17,6 +17,7 @@ from backend.app.modules.vertical_slice.encounters import EncounterService
 from backend.app.modules.combat.engine import CombatEngine
 from backend.app.modules.quests.rules import QuestRules
 from backend.app.modules.vertical_slice.story import StoryService
+from backend.app.modules.vertical_slice.folio import FolioService
 from backend.app.modules.world.hub import WorldHub
 from backend.app.modules.world.router import router as world_router
 from backend.app.db.player_store import PostgresPlayerStore
@@ -43,6 +44,7 @@ def create_app() -> FastAPI:
         players = VerticalSliceService(store, quest_rules)
         app.state.vertical_slice_service = players
         app.state.story = StoryService(players, quest_rules)
+        app.state.folio = FolioService(players, app.state.content_catalog)
         app.state.encounters = EncounterService(players, CombatEngine(app.state.content_catalog), app.state.content_catalog)
         geometry = app.state.content_catalog.get_definition("zones", "dawnreef_atoll").rules["world"]
         app.state.world_hub = WorldHub(geometry, players)

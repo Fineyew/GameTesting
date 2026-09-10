@@ -14,6 +14,8 @@ var pending_action: Dictionary = {}
 var busy := false
 var refresh_elapsed := 0.0
 var dialogue: Dictionary = {}
+var pending_folio: Dictionary = {}
+var folio_panel: FolioPanel
 
 func begin(zone: DawnreefWorld, profile: Dictionary, offline: bool) -> void:
     world = zone
@@ -35,6 +37,7 @@ func begin(zone: DawnreefWorld, profile: Dictionary, offline: bool) -> void:
     hud.interact_requested.connect(interact)
     hud.journal_requested.connect(show_journal)
     hud.inventory_requested.connect(show_inventory)
+    hud.folio_requested.connect(show_folio)
     hud.settings_requested.connect(show_settings)
     hud.chat_requested.connect(show_chat)
     hud.recenter_requested.connect(camera.recenter)
@@ -157,6 +160,10 @@ func apply_dialogue_result(result: Dictionary) -> void:
         unavailable.add_child(TideUI.paragraph("Check your connection and stay near Mara, then speak again. Your saved quest progress is safe."))
         unavailable.add_child(TideUI.button("Speak again",open_dialogue))
         return
+    var newly_learned: Array = []
+    for key in result.character.get("known_spells",[]):
+        if key not in character.get("known_spells",[]):
+            newly_learned.append(GameData.display_name("spells",key))
     character = result.character
     hud.set_character(character,preview)
     dialogue = result.dialogue if result.get("dialogue") is Dictionary else {}
@@ -164,6 +171,9 @@ func apply_dialogue_result(result: Dictionary) -> void:
         hud.close_panel()
         return
     var panel = hud.open_panel(dialogue.speaker)
+    if not newly_learned.is_empty():
+        panel.add_child(TideUI.paragraph("SPELL LEARNED · " + ", ".join(newly_learned),24))
+        panel.add_child(TideUI.button("Open Folio to prepare",show_folio,true))
     panel.add_child(TideUI.paragraph(dialogue.text))
     for option in dialogue.options:
         panel.add_child(TideUI.button(option.text,choose_dialogue.bind(option.key),true))
@@ -288,6 +298,68 @@ func show_journal() -> void:
                 var done = progress.get("objectives",{}).get(objective.key,0)
                 panel.add_child(TideUI.paragraph("%s · %s/%s" % [objective.get("label",objective.key.replace("_"," ")),done,objective.quantity]))
     panel.add_child(TideUI.paragraph("Auralis is a world of floating reefs. The Lantern Wells keep them steady. Your Veilmark can hear what moves beneath them."))
+
+func show_folio() -> void:
+    if busy:
+        return
+    if character.get("encounter",{}).get("state") == "active":
+        show_combat()
+        return
+    if not pending_folio.is_empty():
+        folio_recovery()
+        return
+    if not preview:
+        busy = true
+        hud.open_panel("Opening Folio…").add_child(TideUI.paragraph("Reading your saved spells."))
+        var result = await ApiClient.get_json("/world/characters/"+character.id)
+        busy = false
+        if result.is_empty():
+            hud.open_panel("Folio unavailable").add_child(TideUI.button("Try again",show_folio))
+            return
+        character = result
+        hud.set_character(character,preview)
+        if character.get("encounter",{}).get("state") == "active":
+            show_combat()
+            return
+    var panel = hud.open_panel("Wayfarer's Folio")
+    folio_panel = FolioPanel.new()
+    panel.add_child(folio_panel)
+    folio_panel.build(character,preview)
+    folio_panel.prepare_requested.connect(prepare_folio)
+    if OS.is_debug_build():
+        print("VT_FOLIO_READY")
+
+func prepare_folio(spells: Array) -> void:
+    if busy or preview or not pending_folio.is_empty():
+        return
+    pending_folio = {"key":command_id(),"payload":{"spells":spells.duplicate(),"expected_revision":int(character.folio_revision)}}
+    await retry_folio()
+
+func retry_folio() -> void:
+    if busy or pending_folio.is_empty():
+        return
+    busy = true
+    hud.open_panel("Saving Folio…").add_child(TideUI.paragraph("Preparing your chosen spells."))
+    var result = await ApiClient.post_json("/world/characters/%s/folio" % character.id,pending_folio.payload,pending_folio.key)
+    busy = false
+    if result.is_empty():
+        folio_recovery()
+        return
+    pending_folio.clear()
+    # A replayed receipt can predate another session's change. Read current state.
+    await show_folio()
+
+func folio_recovery() -> void:
+    var panel = hud.open_panel("Folio not confirmed")
+    panel.add_child(TideUI.paragraph("The save was not confirmed. Retry the same selection, or reload saved spells if your folio or encounter changed."))
+    panel.add_child(TideUI.button("Retry save",retry_folio,true))
+    panel.add_child(TideUI.button("Reload saved spells",reload_folio))
+
+func reload_folio() -> void:
+    if busy:
+        return
+    pending_folio.clear()
+    await show_folio()
 
 func show_inventory() -> void:
     var panel = hud.open_panel("Wayfarer's bag")

@@ -131,7 +131,7 @@ func authenticate(registering: bool) -> void:
     status_label.text = "Checking server…"
     ApiClient.set_session(server_url,"")
     var info = await ApiClient.get_json("/server-info")
-    if info.is_empty() or info.get("world_protocol",0) != 1 or info.get("story_protocol",0) != 1:
+    if info.is_empty() or info.get("world_protocol",0) != 1 or info.get("story_protocol",0) != 1 or info.get("folio_protocol",0) != 1:
         if not info.is_empty():
             status_label.text = "Update the server for this game build, then try again."
         busy = false

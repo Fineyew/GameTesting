@@ -2,7 +2,7 @@
   "type": "dialogue",
   "key": "mara_first_meeting",
   "schema_version": 1,
-  "version": 2,
+  "version": 3,
   "display": {
     "name": "Mara First Meeting",
     "summary": "Introductory conversation at Dawnreef.",
@@ -95,11 +95,125 @@
         "options": []
       },
       "answer_found": {
-        "text": "Three notes in the reeds, and the same three under the gate? That is no storm. Someone built this place to listen. I will find the old plans before we open anything. Take these chits for your trouble.",
+        "text": "Three notes in the reeds, and the same three under the gate? That is no storm. Someone built this place to listen. I will find the old plans before we open anything. Take these chits for your trouble. The old plans describe a light that stays after a note ends. Trace that afterlight on the closed cistern gate, then bring its shape to me. That is how we begin Beacon Trace.",
+        "options": [
+          {
+            "key": "study_reading_the_afterlight",
+            "text": "Teach me to read the afterlight.",
+            "effects": [
+              {
+                "type": "offer_quest",
+                "quest_key": "reading_the_afterlight"
+              }
+            ]
+          }
+        ]
+      },
+      "tracing_afterlight": {
+        "text": "Watch the seam above the sealed gate as its answering light fades. Follow the last warm thread with your finger, without touching the lock. Bring that shape back; the gate stays closed.",
+        "options": []
+      },
+      "trace_learned": {
+        "text": "There: you kept the opening visible. Beacon Trace is yours. Prepare it in your Folio; the next damaging spell will consume its mark for 6 extra damage. Now study how the sunthread reeds bend together. Their shadows show a shield no single stem could hold.",
+        "options": [
+          {
+            "key": "study_what_the_reeds_hold",
+            "text": "Learn what the reeds hold.",
+            "effects": [
+              {
+                "type": "offer_quest",
+                "quest_key": "what_the_reeds_hold"
+              }
+            ]
+          }
+        ]
+      },
+      "studying_reeds": {
+        "text": "Look beneath the sunthread reeds, where their shadows cross. A heavy gust passes through the whole weave. Bring me that pattern, and we can shape it into Reed Aegis.",
+        "options": []
+      },
+      "aegis_learned": {
+        "text": "You let the pressure spread through the weave. Reed Aegis is yours: 2 Focus to absorb 10 damage this beat. Prepare it and Beacon Trace. Mark the lurker first, then meet its heavy, 10-damage intent with the aegis. Finish the encounter and return. I will teach you to release that pressure as Seam Lance.",
+        "options": [
+          {
+            "key": "study_a_measured_release",
+            "text": "Practice a measured release.",
+            "effects": [
+              {
+                "type": "offer_quest",
+                "quest_key": "a_measured_release"
+              }
+            ]
+          }
+        ]
+      },
+      "measuring_pressure": {
+        "text": "Open your Folio and prepare Beacon Trace and Reed Aegis. Mark the lurker, then use the aegis when its next intent shows 10 damage. Keep Tide Mend ready if you are hurt. Finish the encounter and return; a hurried cast will not teach this pattern.",
+        "options": []
+      },
+      "lance_learned": {
+        "text": "You found the opening, held the weight, and chose when to let it go. Seam Lance is yours: 4 Focus for 15 damage. Gather helps you build that Focus, and Beacon Trace strengthens the strike. Try your own folio. I will keep searching the plans before we open the cistern.",
         "options": []
       }
     },
     "entry_nodes": [
+      {
+        "node": "lance_learned",
+        "conditions": [
+          {
+            "type": "quest_completed",
+            "quest_key": "a_measured_release"
+          }
+        ]
+      },
+      {
+        "node": "measuring_pressure",
+        "conditions": [
+          {
+            "type": "quest_state",
+            "quest_key": "a_measured_release",
+            "state": "accepted"
+          }
+        ]
+      },
+      {
+        "node": "aegis_learned",
+        "conditions": [
+          {
+            "type": "quest_completed",
+            "quest_key": "what_the_reeds_hold"
+          }
+        ]
+      },
+      {
+        "node": "studying_reeds",
+        "conditions": [
+          {
+            "type": "quest_state",
+            "quest_key": "what_the_reeds_hold",
+            "state": "accepted"
+          }
+        ]
+      },
+      {
+        "node": "trace_learned",
+        "conditions": [
+          {
+            "type": "quest_completed",
+            "quest_key": "reading_the_afterlight"
+          }
+        ]
+      },
+      {
+        "node": "tracing_afterlight",
+        "conditions": [
+          {
+            "type": "quest_state",
+            "quest_key": "reading_the_afterlight",
+            "state": "accepted"
+          }
+        ]
+      },
       {
         "node": "answer_found",
         "conditions": [

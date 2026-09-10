@@ -94,3 +94,63 @@ def test_postgres_story_cursor_and_concurrent_turnin_are_durable(game):
         assert resumed.start(account, character, npc)['character']['wallet']['shell_chits'] == 19
     finally:
         other.engine.dispose()
+
+
+def test_postgres_folio_acquisition_and_retry_after_reload(game):
+    from backend.app.modules.vertical_slice.folio import FolioService
+    from backend.tests.test_folio import finish_investigation, learn_field_spells, offer, LANCE
+    service, encounters, account, character = game
+    story = StoryService(service, service.quest_rules)
+    finish_investigation((service, story, encounters, account, character))
+    learn_field_spells(service, story, account, character)
+    offer(story, account, character, LANCE)
+    folio = FolioService(service, encounters.catalog)
+    prepared = service.enter_world(account, character).known_spells
+    updated = folio.prepare(account, character, prepared, 0, 'pg-folio-first')
+    result = encounters.start(account, character, 'fog_thorn_lurker', 'pg-practice-start')
+    for beat, action in enumerate(['beacon_trace','reed_aegis','gather','glimmer_spark','reed_aegis','tide_mend','glimmer_spark','reed_aegis','gather','glimmer_spark','reed_aegis','tide_mend','glimmer_spark'], 1):
+        result = encounters.act(account, character, result['encounter']['id'], action, beat, f'pg-practice-{beat:04}')
+    assert result['encounter']['state'] == 'victory'
+    with ThreadPoolExecutor(4) as pool:
+        list(pool.map(lambda _: story.start(account, character, 'mara_lanternwright'), range(4)))
+    other = PostgresPlayerStore(os.environ['VT_TEST_DATABASE_URL'])
+    try:
+        resumed_players = VerticalSliceService(other, service.quest_rules)
+        resumed = FolioService(resumed_players, encounters.catalog)
+        assert resumed.prepare(account, character, prepared, 0, 'pg-folio-first') == updated
+        loaded = other.get_character(character)
+        assert loaded.known_spells.count('seam_lance') == 1 and len(loaded.known_spells) == 6
+        assert loaded.folio == prepared and loaded.wallet['shell_chits'] == 21
+        def prepare(index):
+            try:
+                resumed.prepare(account, character, ['seam_lance'], 1, f'pg-selection-{index:04}')
+                return 1
+            except ValueError:
+                return 0
+        with ThreadPoolExecutor(4) as pool:
+            assert sum(pool.map(prepare, range(4))) == 1
+        assert other.get_character(character).folio == ['seam_lance']
+        assert other.get_character(character).folio_revision == 2
+        combat = encounters.start(account, character, 'fog_thorn_lurker', 'pg-restricted-start')['encounter']
+        with pytest.raises(ValueError, match='not prepared'):
+            encounters.act(account, character, combat['id'], 'glimmer_spark', 1, 'pg-illegal-cast')
+    finally:
+        other.engine.dispose()
+
+
+def test_postgres_old_payload_initializes_folio_without_reset(game):
+    service, encounters, account, character = game
+    service.accept_quest(account, character, 'lantern_well_first_light')
+    active = encounters.start(account, character, 'fog_thorn_lurker', 'pg-old-save-start')
+    before = service.enter_world(account, character)
+    with service.store.engine.begin() as connection:
+        connection.execute(text("UPDATE character_runtime_states SET payload = payload - 'folio' - 'folio_revision' WHERE character_id = :id"), {'id':character})
+    other = PostgresPlayerStore(os.environ['VT_TEST_DATABASE_URL'])
+    try:
+        assert other.get_character(character) == before
+        assert other.list_characters(account)[0].folio == before.known_spells
+        result = encounters.act(account, character, active['encounter']['id'], 'glimmer_spark', 1, 'pg-old-save-cast')
+        assert result['encounter']['round'] == 2
+        assert other.get_character(character).folio == before.known_spells
+    finally:
+        other.engine.dispose()

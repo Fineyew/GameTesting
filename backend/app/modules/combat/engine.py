@@ -6,7 +6,7 @@ class CombatEngine:
     def __init__(self, catalog):
         self.catalog = catalog
 
-    def begin(self, enemy_key, vigor, known_spells):
+    def begin(self, enemy_key, vigor, prepared_spells):
         enemy = self.catalog.get_definition("enemies", enemy_key)
         intents = deepcopy(enemy.rules["intents"])
         return {"enemy_key": enemy_key, "enemy_name": enemy.display.name,
@@ -14,7 +14,7 @@ class CombatEngine:
                 "player_vigor": vigor, "player_max_vigor": 30, "focus": 3, "round": 1,
                 "state": "active", "mark": 0, "intent_index": 0, "intents": intents, "intent": intents[0],
                 "spells": {key: {"name": self.catalog.get_definition("spells", key).display.name,
-                                  **deepcopy(self.catalog.get_definition("spells", key).rules)} for key in known_spells},
+                                  **deepcopy(self.catalog.get_definition("spells", key).rules)} for key in prepared_spells},
                 "log": [f"{enemy.display.name} emerges from the mist."]}
 
     def resolve(self, original, action):

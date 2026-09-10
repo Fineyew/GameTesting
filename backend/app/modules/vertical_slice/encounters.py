@@ -35,7 +35,9 @@ class EncounterService:
                 return
             if enemy_key != "fog_thorn_lurker":
                 raise ValueError("encounter not available")
-            character.encounter = self.engine.begin(enemy_key, character.vigor, character.known_spells)
+            if any(s not in character.known_spells for s in character.folio):
+                raise ValueError("folio contains an unowned spell")
+            character.encounter = self.engine.begin(enemy_key, character.vigor, character.folio)
             character.encounter["id"] = str(uuid4())
         return self._command(account_id, character_id, key, {"start": enemy_key}, apply)
 
@@ -44,7 +46,12 @@ class EncounterService:
             encounter = character.encounter
             if encounter.get("id") != encounter_id or encounter.get("round") != expected_round:
                 raise ValueError("encounter changed; reload before acting")
+            if action not in {"brace", "gather"} and (action not in character.known_spells or action not in character.folio):
+                raise ValueError("spell is not prepared")
             character.encounter = self.engine.resolve(encounter, action)
+            if self.players.quest_rules and action not in {"brace", "gather"}:
+                self.players.quest_rules.advance(character, "cast_spell", action,
+                                                {"enemy_key": encounter["enemy_key"], "intent_power": encounter["intent"]["power"]})
             character.vigor = character.encounter["player_vigor"]
             if character.encounter["state"] == "victory":
                 self._reward(character, encounter["enemy_key"])

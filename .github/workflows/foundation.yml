@@ -67,6 +67,7 @@ jobs:
         run: python -m tools.check_online
 
   android:
+    needs: [backend, godot]
     env:
       VT_SOURCE_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
     runs-on: ubuntu-24.04
@@ -111,16 +112,6 @@ jobs:
         run: python -m tools.export_android --emulator
       - name: Render and draw-call gate
         run: xvfb-run -a python -m tools.check_render
-      - name: Retain installable ARM64 artifact and render evidence
-        uses: actions/upload-artifact@v4
-        with:
-          name: veilbound-tides-android-foundation
-          retention-days: 90
-          path: |
-            builds/veilbound-tides-0.2.1-android.apk
-            builds/veilbound-tides-0.2.1-android.apk.verification.txt
-            builds/build-manifest.json
-            builds/render-check/
       - name: Enable emulator KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -137,6 +128,16 @@ jobs:
           # The old swiftshader_indirect GLES translator failed uniform linking.
           emulator-options: -no-window -gpu swangle -noaudio -no-boot-anim -camera-back none
           script: python -m tools.check_android
+      - name: Retain installable ARM64 artifact and render evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: veilbound-tides-android-foundation
+          retention-days: 90
+          path: |
+            builds/veilbound-tides-0.2.2-android.apk
+            builds/veilbound-tides-0.2.2-android.apk.verification.txt
+            builds/build-manifest.json
+            builds/render-check/
       - name: Retain Android runtime evidence
         if: always()
         uses: actions/upload-artifact@v4

@@ -44,16 +44,17 @@ class QuestRules:
             return  # Reopening/retrying a conversation never resets old progress.
         if not self.conditions_met(character, quest.rules.get("start_conditions", [])):
             raise ValueError("quest requirements are not met")
-        if any(o["type"] not in {"defeat_enemy", "inspect_landmark", "talk_to_npc"} for o in quest.rules["objectives"]):
+        if any(o["type"] not in {"defeat_enemy", "inspect_landmark", "talk_to_npc", "cast_spell"} for o in quest.rules["objectives"]):
             raise ValueError("quest objective is not playable yet")
         character.quest_state[quest_key] = {
             "state": "accepted", "objectives": {o["key"]: 0 for o in quest.rules["objectives"]},
             "completed": False, "rewards_claimed": False,
         }
 
-    def advance(self, character, event_type, target):
+    def advance(self, character, event_type, target, context=None):
         """Apply a server-observed event once to each eligible active quest."""
-        target_fields = {"defeat_enemy": "enemy_key", "inspect_landmark": "interaction_key", "talk_to_npc": "npc_key"}
+        target_fields = {"defeat_enemy": "enemy_key", "inspect_landmark": "interaction_key", "talk_to_npc": "npc_key", "cast_spell": "spell_key"}
+        context = context or {}
         if event_type not in target_fields:
             raise ValueError("unsupported quest event")
         for key, progress in character.quest_state.items():
@@ -66,7 +67,10 @@ class QuestRules:
                 if done >= objective["quantity"]:
                     continue
                 in_zone = objective.get("zone_key", character.current_zone_key) == character.current_zone_key
-                if in_zone and objective["type"] == event_type and objective[target_fields[event_type]] == target:
+                cast_matches = event_type != "cast_spell" or (
+                    context.get("enemy_key") == objective.get("enemy_key", context.get("enemy_key"))
+                    and context.get("intent_power", -1) >= objective.get("intent_power_at_least", 0))
+                if in_zone and cast_matches and objective["type"] == event_type and objective[target_fields[event_type]] == target:
                     progress["objectives"][objective["key"]] = min(objective["quantity"], done + 1)
                 if quest.rules.get("ordered", False):
                     break  # A later objective cannot be pre-completed by a repeated request.
@@ -81,6 +85,10 @@ class QuestRules:
                 elif reward["type"] == "grant_item":
                     item = reward["item_key"]
                     character.inventory[item] = character.inventory.get(item, 0) + reward["quantity"]
+                elif reward["type"] == "learn_spell":
+                    spell = self.definition("spells", reward["spell_key"]).key
+                    if spell not in character.known_spells:
+                        character.known_spells.append(spell)
                 else:
                     raise ValueError("unsupported quest reward")
             progress.update(state="completed", completed=True, rewards_claimed=True)

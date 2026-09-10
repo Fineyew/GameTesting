@@ -9,7 +9,7 @@ for shape. Run `python -m tools.build_catalog` to validate and regenerate the de
 |---|---|
 | Spells | Focus costs 0–6; deal_damage(power), restore_vigor(amount), bind, guard, mark |
 | Enemies | Vigor and 1–12 repeating announced intents with integer power 0–30 |
-| Quests | NPC offers, level/quest conditions, ordered defeat/inspect/talk objectives, XP/item/currency rewards |
+| Quests | NPC offers, level/quest conditions, ordered defeat/inspect/talk/cast objectives, XP/item/currency/spell rewards |
 | Dialogue | Conditional entry nodes, options/branches, quest offers and server-owned cursor validation |
 | Zones | Shared planar bounds, expanded rectangular blockers and interaction positions |
 | Items | Names, server-owned quantities and reward grants |
@@ -18,8 +18,8 @@ for shape. Run `python -m tools.build_catalog` to validate and regenerate the de
 The catalog checks identity, references and handler names, plus selected numeric rules.
 It is immutable during a running process. A new data file is not automatically obtainable
 or playable: add and test an actual acquisition/interaction path before saying it works.
-The narrow dialogue/quest framework is implemented; folio selection and additional objective
-types remain next work. Preserve existing starter/objective keys and progress.
+The narrow dialogue/quest framework and server-owned folio selection are implemented. Broader objective types
+remain future work. The catalog currently has 26 definitions, including five playable quests. Preserve existing starter/objective keys and progress.
 
 The combat engine receives a catalog port; `vertical_slice/encounters.py` commits quest,
 inventory, XP, wallet and command receipts in one store transaction. Never grant rewards
@@ -61,7 +61,32 @@ collect_item remains a reserved definition type; accepting such a quest is rejec
 until a real inventory-event handler exists. Repeated/repeatable quests are not supported.
 
 Quest rewards allow only grant_experience(amount), grant_currency(currency_key,amount),
-and grant_item(item_key,quantity), positive integers up to 10000 per entry. Objectives
+grant_item(item_key,quantity), and learn_spell(spell_key). Numeric rewards require positive
+integers up to 10000 per entry. learn_spell accepts only type/spell_key, requires an existing
+spell definition, and adds ownership once; it never auto-prepares a spell. Objectives
 cap at 1000; discovery/talk quantities must be 1. The validator rejects negative/bool
 quantities, broken references/branches, malformed rule lists and direct dialogue rewards.
 Run catalog generation, backend tests and the actual Godot/API check after changes.
+
+## Spell lessons and folio authoring
+
+Use reading_the_afterlight, what_the_reeds_hold and a_measured_release as acquisition
+examples. Preserve the original two quests and their reward flags; do not append a reward
+to a completed quest expecting old characters to receive it. Add a gated continuation so
+existing M1.1 characters can earn new spells without resetting progress. Dialogue still
+only offers quests; learn_spell is forbidden as a direct conversation effect. The Folio
+shows acquisition hints by reading quest rewards, without another source mapping.
+
+cast_spell objectives require spell_key and quantity; optional enemy_key and
+intent_power_at_least (integer 0–30) constrain the target and announced response.
+Only a successful server combat resolution emits this event, within the cast/reward
+transaction. Rejected casts and repeated receipt replays emit nothing. Ordered objectives
+retain their order, including a subsequent defeat_enemy and talk_to_npc turn-in. There is
+no client endpoint for declaring a cast or learning a spell. The compatibility one-shot
+fight does not provide practice credit.
+
+Folio capacity is six server-owned slots; 1–6 unique known spell keys are required.
+Brace/Gather are universal actions, not spell definitions or selectable slots. Future
+spells need working effects and acquisition before inclusion; do not add new families
+merely to populate the collection. Run backend/PostgreSQL, Godot online, render and native
+Android gates after altering preparation or acquisition behavior.

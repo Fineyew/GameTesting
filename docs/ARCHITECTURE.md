@@ -64,7 +64,7 @@ Only five phrase IDs are allowed for local chat, with a 2s cooldown. No free tex
 
 HTTP `POST /world/characters/{id}/encounters` requires proximity and an Idempotency-Key.
 Actions submit encounter_id, action and expected_round to `/encounters/actions` with
-the same key on retries. The server checks ownership, spell knowledge and Focus; chooses
+the same key on retries. The server checks ownership, prepared folio membership, spell knowledge and Focus; chooses
 damage, outcomes and rewards. A transaction saves state and response receipt together.
 Matching retries replay the saved response; changed payloads with reused keys fail.
 Round and encounter IDs still reject old action replay after the 128-receipt retention cap.
@@ -147,3 +147,45 @@ It does not open the cistern dungeon or add harvesting, folios or additional spe
 M1.1 verification is complete at 4efd3a6/run 34431891977:38 backend tests with PostgreSQL,
 actual Godot online story traversal and retained Android export/touch/visible-resume
 evidence. APK/runtime artifact IDs and source hashes live in PROJECT_STATE.
+
+## M1.2 folio and acquisition
+
+`FolioService` is injected at the existing composition root; it shares the aggregate
+transaction/lock and receipt map with combat. POST `/world/characters/{id}/folio` takes
+only spells (1–6 unique catalog keys) and expected_revision (nonnegative integer), plus
+Idempotency-Key. Ownership, spell knowledge and inactive combat are validated server-side.
+Successful updates increment folio_revision and save state/receipt atomically. Matching
+retries replay the response; changed payloads fail. Revision checks reject stale writes
+even after the 128-receipt cap. Another session must reload before editing stale state.
+The client reloads current state after a successful receipt, since a replay may predate
+another update. A failed response retains the exact request/key for retry or explicit reload.
+
+CharacterRecord adds optional `folio` and `folio_revision=0` within schema 1. Missing/null
+folio becomes the first six distinct already-owned spells; existing IDs, quests, inventory,
+active encounters and receipts remain. Both JSON and PostgreSQL deserialize through the
+same dataclass; no DDL migration is needed. Back up before downgrade: older binaries need
+these new fields removed deliberately as well as the M1.1 cursor, without resetting players.
+`folio_capacity=6` is a public constant, not a writable character field.
+
+Encounter start snapshots only the prepared spell rules. Preparation is locked while an
+encounter is active; every non-universal action also checks current ownership/preparation.
+Existing M1.1 active encounters resume with their starter folio. Brace/Gather and Tidebeat
+Focus/intents/effects are unchanged; the legacy fight endpoint now enforces preparation.
+
+QuestRules adds learn_spell rewards and cast_spell observations (optional enemy/intent
+threshold), passed by EncounterService after legal resolution. The same transaction commits
+cast credit, combat results and receipts; the existing once-only quest flags protect spell
+acquisition. Learned spells are not automatically prepared. No new client authority or WS
+messages: world1/story1 remain, and server-info adds folio_protocol=1 checked before login.
+
+The client adds FolioPanel inside the existing HUD modal. Selection is a local draft until
+saved by the server; cards derive cost/effects/source hints from the catalog. Online Godot
+integration learns all three spells, changes folio through UI signals, reconnects, verifies
+rejection of an unprepared spell, and casts earned Seam Lance. Native QA opens/closes the
+folio by touch in preview; this is separate from authoritative online progression coverage.
+
+Android CI now waits for backend/Godot gates and publishes ARM64 artifacts only after
+render and emulator validation succeed. The docs-only d138214 rerun exposed a portrait
+launcher-transition screenshot during resume: the gate now waits for landscape presentation
+before applying the unchanged view-match threshold and repeat-touch check. It does not
+rotate evidence or certify physical-device behavior.

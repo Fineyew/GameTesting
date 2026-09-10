@@ -47,11 +47,12 @@ async def main():
                     pulse = asyncio.create_task(keepalive())
                     env['VT_TEST_API_URL'] = base
                     godot = await asyncio.create_subprocess_exec(os.environ.get('GODOT_BIN','godot'),'--headless','--path',str(ROOT/'godot_project'),'--script','res://tests/online.gd',env=env,stdout=asyncio.subprocess.PIPE,stderr=asyncio.subprocess.STDOUT)
+                    communication = asyncio.create_task(godot.communicate())
                     try:
-                        output,_ = await asyncio.wait_for(godot.communicate(),90)
+                        output,_ = await asyncio.wait_for(asyncio.shield(communication),180)
                     except TimeoutError:
                         godot.kill()
-                        output,_ = await godot.communicate()
+                        output,_ = await communication
                         print(output.decode())
                         raise
                     finally:

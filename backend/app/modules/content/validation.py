@@ -30,6 +30,7 @@ KNOWN_EFFECT_TYPES = {
     "grant_currency",
     "grant_experience",
     "grant_item",
+    "learn_spell",
     "offer_quest",
     "restore_vigor",
 }
@@ -45,6 +46,7 @@ KNOWN_OBJECTIVE_TYPES = {
     "defeat_enemy",
     "inspect_landmark",
     "talk_to_npc",
+    "cast_spell",
 }
 
 
@@ -277,7 +279,7 @@ def _validate_quest(path, rules, report):
         if not _bounded_integer(objective.get("quantity"), 1, 1000):
             report.errors.append(f"{path}: invalid objective quantity")
         kind = objective.get("type")
-        field = {"defeat_enemy": "enemy_key", "collect_item": "item_key", "talk_to_npc": "npc_key", "inspect_landmark": "interaction_key"}.get(kind)
+        field = {"defeat_enemy": "enemy_key", "collect_item": "item_key", "talk_to_npc": "npc_key", "inspect_landmark": "interaction_key", "cast_spell": "spell_key"}.get(kind)
         if field and not isinstance(objective.get(field), str):
             report.errors.append(f"{path}: objective requires {field}")
         if kind in {"inspect_landmark", "talk_to_npc"} and objective.get("quantity") != 1:
@@ -286,6 +288,8 @@ def _validate_quest(path, rules, report):
             zone = report.definitions.get(("zones", objective.get("zone_key")))
             if not zone or objective.get("interaction_key") not in zone.payload["rules"].get("discoveries", {}):
                 report.errors.append(f"{path}: unknown inspectable landmark")
+        if "intent_power_at_least" in objective and (kind != "cast_spell" or not _bounded_integer(objective["intent_power_at_least"], 0, 30)):
+            report.errors.append(f"{path}: invalid cast intent threshold")
     if type(rules.get("ordered", False)) is not bool:
         report.errors.append(f"{path}: ordered must be boolean")
     rewards = rules.get("rewards")
@@ -294,8 +298,13 @@ def _validate_quest(path, rules, report):
         return
     for reward in rewards:
         kind = reward.get("type")
-        if kind not in {"grant_experience", "grant_currency", "grant_item"}:
+        if kind not in {"grant_experience", "grant_currency", "grant_item", "learn_spell"}:
             report.errors.append(f"{path}: unsupported quest reward")
+        if kind == "learn_spell":
+            if set(reward) != {"type", "spell_key"}:
+                report.errors.append(f"{path}: learn_spell requires only a spell_key; no quantities or amounts")
+            _require_reference(path, "spells", reward.get("spell_key"), report)
+            continue
         if not _bounded_integer(reward.get("quantity" if kind == "grant_item" else "amount"), 1, 10000):
             report.errors.append(f"{path}: invalid quest reward amount")
         if kind == "grant_currency" and (not isinstance(reward.get("currency_key"), str) or not 1 <= len(reward["currency_key"]) <= 64):

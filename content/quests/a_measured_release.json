@@ -1,0 +1,64 @@
+{
+  "type": "quests",
+  "key": "a_measured_release",
+  "schema_version": 1,
+  "version": 1,
+  "display": {
+    "name": "A Measured Release",
+    "summary": "Show Mara you can read an opening and meet pressure before releasing it."
+  },
+  "tags": [
+    "dawnreef",
+    "spell_lesson"
+  ],
+  "assets": {},
+  "rules": {
+    "giver_npc_key": "mara_lanternwright",
+    "ordered": true,
+    "start_conditions": [
+      {
+        "type": "quest_completed",
+        "quest_key": "what_the_reeds_hold"
+      }
+    ],
+    "objectives": [
+      {
+        "key": "trace_opening",
+        "label": "Cast Beacon Trace against the lurker",
+        "type": "cast_spell",
+        "spell_key": "beacon_trace",
+        "enemy_key": "fog_thorn_lurker",
+        "quantity": 1
+      },
+      {
+        "key": "hold_pressure",
+        "label": "Cast Reed Aegis against an intent of 10 damage",
+        "type": "cast_spell",
+        "spell_key": "reed_aegis",
+        "enemy_key": "fog_thorn_lurker",
+        "intent_power_at_least": 10,
+        "quantity": 1
+      },
+      {
+        "key": "disperse_lurker",
+        "label": "Finish the practice encounter",
+        "type": "defeat_enemy",
+        "enemy_key": "fog_thorn_lurker",
+        "quantity": 1
+      },
+      {
+        "key": "return_to_mara",
+        "label": "Bring the pattern to Mara",
+        "type": "talk_to_npc",
+        "npc_key": "mara_lanternwright",
+        "quantity": 1
+      }
+    ],
+    "rewards": [
+      {
+        "type": "learn_spell",
+        "spell_key": "seam_lance"
+      }
+    ]
+  }
+}
