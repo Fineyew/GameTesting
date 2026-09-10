@@ -23,8 +23,13 @@ func run() -> void:
         await RenderingServer.frame_post_draw
         root.get_texture().get_image().save_png("user://dawnreef.png")
         print("DRAW_CALLS=",RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME))
-    app.session.show_inventory()
+    await app.session.show_inventory()
     assert(app.session.hud.modal)
+    await create_timer(.2).timeout
+    print("BROWSE_TOUCH_CENTER=",app.session.commerce_panel.browse_button.get_global_rect().get_center())
+    app.session.commerce_panel.browse_button.pressed.emit()
+    assert(app.session.commerce_panel.buy_buttons.buy_lanternkeeper_vest.disabled)
+    assert(app.session.commerce_panel.equip_buttons.is_empty())
     app.session.hud.close_panel()
     await app.session.show_folio()
     assert(app.session.hud.modal and app.session.folio_panel.choices.is_empty())
@@ -43,6 +48,32 @@ func run() -> void:
     if DisplayServer.get_name() != "headless":
         await RenderingServer.frame_post_draw
         root.get_texture().get_image().save_png("user://folio.png")
+    app.session.hud.close_panel()
+    # Server-shaped presentation fixture; real currency comes from online.gd's quests.
+    var supply = CommercePanel.preview_view({"wallet":{"shell_chits":14},"level":2},"dawnreef_supply_cart")
+    supply.shop.listings[0].can_buy = true
+    var vendor = CommercePanel.new()
+    app.session.hud.open_panel("Dawnreef Supply Cart").add_child(vendor)
+    vendor.build(supply,false)
+    assert(not vendor.buy_buttons.buy_lanternkeeper_vest.disabled)
+    assert(vendor.buy_buttons.buy_sunthread_bandage.disabled)
+    await create_timer(.2).timeout
+    if DisplayServer.get_name() != "headless":
+        await RenderingServer.frame_post_draw
+        root.get_texture().get_image().save_png("user://vendor.png")
+    var vest = supply.shop.listings[0].duplicate()
+    vest.owned = 1
+    vest.equipped = true
+    vest.current_guard = 1
+    vest.guard_delta = 0
+    var equipment = CommercePanel.new()
+    app.session.hud.open_panel("Bag & equipment").add_child(equipment)
+    equipment.build({"character":{"wallet":{"shell_chits":2},"level":2,"equipment":{"chest":"lanternkeeper_vest"}},"stats":{"guard":1},"items":[vest]},false,"Equipment saved.")
+    assert(equipment.unequip_button != null and equipment.equip_buttons.is_empty())
+    await create_timer(.2).timeout
+    if DisplayServer.get_name() != "headless":
+        await RenderingServer.frame_post_draw
+        root.get_texture().get_image().save_png("user://equipment.png")
     app.session.hud.close_panel()
     app.session.show_settings()
     assert(app.session.hud.modal)

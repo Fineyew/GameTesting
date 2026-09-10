@@ -207,6 +207,24 @@ def _validate_type_specific_references(
         _validate_quest(path, rules, report)
     if content_type == "dialogue":
         _validate_dialogue(path, rules, report)
+    if content_type == "items":
+        if not _bounded_integer(rules.get("stack_limit"), 1, 10000):
+            report.errors.append(f"{path}: invalid item stack limit")
+        if ("equipment", path.stem) in report.definitions:
+            report.errors.append(f"{path}: item and equipment keys must not collide")
+    if content_type == "equipment":
+        if rules.get("slot") != "chest" or rules.get("stack_limit") != 1 or type(rules.get("stack_limit")) is not int:
+            report.errors.append(f"{path}: equipment requires chest slot and stack_limit 1")
+        if not _bounded_integer(rules.get("required_level"), 1, 1000):
+            report.errors.append(f"{path}: invalid equipment level")
+        modifiers = rules.get("modifiers")
+        if not isinstance(modifiers, list) or len(modifiers) != 1 or any(
+            not isinstance(m, dict) or set(m) != {"stat", "operation", "value"} or m.get("stat") != "guard" or
+            m.get("operation") != "add" or not _bounded_integer(m.get("value"), 0, 3) for m in modifiers
+        ):
+            report.errors.append(f"{path}: equipment supports one additive guard modifier (0–3)")
+    if content_type == "shops":
+        _validate_shop(path, rules, report)
     if content_type == "spells":
         for cost in rules.get("costs", []):
             if cost.get("resource") != "focus" or type(cost.get("amount")) is not int or not 0 <= cost["amount"] <= 6:
@@ -249,6 +267,31 @@ def _validate_type_specific_references(
 
 def _bounded_integer(value, minimum, maximum):
     return type(value) is int and minimum <= value <= maximum
+
+
+def _validate_shop(path, rules, report):
+    npc = report.definitions.get(("npcs", rules.get("npc_key"))) if isinstance(rules.get("npc_key"), str) else None
+    zone = report.definitions.get(("zones", rules.get("zone_key"))) if isinstance(rules.get("zone_key"), str) else None
+    if not npc or npc.payload["rules"].get("shop_key") != path.stem or not zone or rules.get("npc_key") not in zone.payload["rules"].get("world", {}).get("interactions", {}):
+        report.errors.append(f"{path}: shop requires a matching NPC and world interaction")
+    listings = rules.get("listings")
+    if not isinstance(listings, list) or not 1 <= len(listings) <= 16 or any(not isinstance(row, dict) for row in listings):
+        report.errors.append(f"{path}: shop requires 1–16 listing objects")
+        return
+    keys = [row.get("key") for row in listings]
+    if any(not isinstance(k, str) or not 1 <= len(k) <= 64 for k in keys) or len(set(str(k) for k in keys)) != len(keys):
+        report.errors.append(f"{path}: duplicate or invalid listing keys")
+    for row in listings:
+        if not _bounded_integer(row.get("quantity"), 1, 100) or type(row.get("available")) is not bool:
+            report.errors.append(f"{path}: invalid listing quantity/availability")
+        if row.get("available") is False and (not isinstance(row.get("unavailable_reason"), str) or not row["unavailable_reason"].strip()):
+            report.errors.append(f"{path}: unavailable listing requires a reason")
+        price = row.get("price")
+        if not isinstance(price, list) or len(price) != 1 or any(
+            not isinstance(p, dict) or set(p) != {"currency_key", "amount"} or p.get("currency_key") != "shell_chits" or
+            not _bounded_integer(p.get("amount"), 1, 10000) for p in price
+        ):
+            report.errors.append(f"{path}: price requires one positive shell_chits amount (1–10000)")
 
 
 def _validate_rule_lists(path, value, report):

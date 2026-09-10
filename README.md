@@ -12,10 +12,12 @@ Read [PROJECT_STATE](docs/PROJECT_STATE.md), [ARCHITECTURE](docs/ARCHITECTURE.md
 M0 engineering is complete: PostgreSQL/Godot integration, retained signed ARM64 export,
 inspected renders, and Android emulator touch/visible-resume checks pass. Physical phone
 validation remains unverified. M1.1 and M1.2 are complete: reusable story rules, Mara's
-investigation, three earned spells and a persistent server-owned folio.
+investigation, three earned spells and a persistent server-owned folio. M1.3 adds the
+first vendor/equipment loop; complete CI/artifact validation is pending.
 [CI run 34437004626](https://github.com/Fineyew/GameTesting/actions/runs/34437004626) at d0c6048
 passes 59 tests, full Godot/API progression and Android Folio touch/visible-resume checks.
-PROJECT_STATE records exact source/artifact hashes; ROADMAP defines the narrow M1.3 scope.
+The M1.2 handoff at 56370e6 also passed all jobs in run 34437584787.
+PROJECT_STATE records current validation and source/artifact hashes.
 
 ## What is playable
 
@@ -25,7 +27,11 @@ see other connected players and use preset chat; follow Mara's branching dialogu
 fight the Fog-Thorn Lurker in server-owned Tidebeat turns and retain XP, currency and
 inventory rewards. Then trace a note through the reeds and sealed cistern entrance and
 return to Mara for a once-only reward. Continue three short lessons to earn Beacon Trace,
-Reed Aegis and Seam Lance; choose 1–6 learned spells in the Folio before combat. Resume an active encounter after reconnecting. Search the bag and
+Reed Aegis and Seam Lance; choose 1–6 learned spells in the Folio before combat. Buy the Lanternkeeper Vest from Mara’s supply cart for 12 earned shell chits, compare
+its +1 Guard and equip/unequip it through the Bag. It reduces each incoming Tidebeat hit
+by one while leaving robe appearance unchanged. Shopping requires proximity to Mara;
+equipment changes require no active encounter. Bandages remain unavailable for purchase
+until item use exists. Resume an active encounter after reconnecting. Search the bag and
 change FPS, shadows and render resolution. Offline exploration is explicitly a preview
 with no saved progression. This is not yet the complete 18-quest authored vertical slice.
 
@@ -49,8 +55,8 @@ Local mode defaults to JSON saves at `var/vertical_slice_save.json`, ignored by 
 Open `godot_project/project.godot` and press Play. Under **Server connection**, set
 `http://127.0.0.1:8000/api/v1`. HTTP is permitted only for localhost in editor/debug builds;
 shared servers require HTTPS. The inherited default `https://game.surveyroute.work/api/v1`
-has not been updated or verified operational in this session. World protocol 1, story protocol 1 and folio protocol 1 are required; the backend needs
-the M1.2 update before this client signs in.
+has not been updated or verified operational in this session. World protocol 1, story protocol 1 and folio protocol 1 and commerce protocol 1 are required; the backend needs
+the M1.3 update before this client signs in.
 
 To test an attached Android phone against your PC server, install the APK, run
 `adb reverse tcp:8000 tcp:8000`, and use the same localhost URL. This is a development
@@ -74,7 +80,7 @@ isolated database migrated to head. CI runs both migrations and the PostgreSQL t
 ## Android build and runtime checks
 
 Use the checked-in **Android** export preset: ARM64, INTERNET permission, app ID
-`work.surveyroute.veilboundtides`, version 0.2.2/code 4. Use Godot 4.5.1 export templates,
+`work.surveyroute.veilboundtides`, version 0.2.3/code 5. Use Godot 4.5.1 export templates,
 JDK17, Android SDK platform35 and build-tools35.0.0. See the
 [official engine export instructions](https://docs.godotengine.org/en/4.5/tutorials/export/exporting_for_android.html).
 The exported engine minimum is API24, target API35; minimum OS is not a device-performance guarantee.
@@ -104,14 +110,16 @@ With Android platform-tools and USB debugging enabled:
 
 ```bash
 adb devices
-adb install -r veilbound-tides-0.2.2-android.apk
+adb install -r veilbound-tides-0.2.3-android.apk
 adb reverse tcp:8000 tcp:8000
 ```
 
 Run the local backend above, select **Server connection** →
 `http://127.0.0.1:8000/api/v1`, create a test account and character, and complete Mara's
 quests and spell lessons while a second client is connected. Save a folio, reconnect,
-and verify that only prepared spells appear in combat. Verify touch movement/camera, landscape,
+and verify that only prepared spells appear in combat. Buy the vest with quest-earned
+chits, compare/equip it, reconnect, verify the saved balance/equipment and test Guard in
+combat; unequip it and confirm that robe appearance stays unchanged. Verify touch movement/camera, landscape,
 readable menus, cutout/navigation safe areas, reward persistence after sign-in, and
 reconnect after backgrounding. Test cellular/Wi-Fi switching against an accessible
 HTTPS test server separately; USB reverse does not simulate a mobile network.

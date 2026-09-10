@@ -53,6 +53,7 @@ class CharacterRecord:
     dialogue_state: dict[str, Any] = field(default_factory=dict)
     folio: list[str] | None = None
     folio_revision: int = 0
+    commerce_revision: int = 0
 
     def __post_init__(self) -> None:
         # Additive schema-1 upgrade for both adapters. Never grant spell ownership.

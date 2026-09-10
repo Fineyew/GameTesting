@@ -12,7 +12,8 @@ for shape. Run `python -m tools.build_catalog` to validate and regenerate the de
 | Quests | NPC offers, level/quest conditions, ordered defeat/inspect/talk/cast objectives, XP/item/currency/spell rewards |
 | Dialogue | Conditional entry nodes, options/branches, quest offers and server-owned cursor validation |
 | Zones | Shared planar bounds, expanded rectangular blockers and interaction positions |
-| Items | Names, server-owned quantities and reward grants |
+| Items/equipment | Server-owned quantities; chest gear, additive Guard, comparison/equip |
+| Shops | NPC-proximity purchases at catalog prices, availability and stack limits |
 | Other definitions | Validated/reference-linked examples; most are not runtime systems yet |
 
 The catalog checks identity, references and handler names, plus selected numeric rules.
@@ -90,3 +91,29 @@ Brace/Gather are universal actions, not spell definitions or selectable slots. F
 spells need working effects and acquisition before inclusion; do not add new families
 merely to populate the collection. Run backend/PostgreSQL, Godot online, render and native
 Android gates after altering preparation or acquisition behavior.
+
+## Dawnreef supplies and equipment
+
+M1.3 activates existing `shops/dawnreef_supply_cart` and `equipment/lanternkeeper_vest`;
+there are still 26 definitions. Increment versions when listings/prices/rules change.
+Do not change stable listing/item keys to fix display text. Items and equipment keys
+must not collide because the existing inventory map uses item keys across both categories.
+
+A shop declares `npc_key` and `zone_key`. The NPC must point back through `shop_key` and
+have an existing world interaction. Each of 1–16 listings has a unique key, item_key,
+quantity (bundle size 1–100), explicit boolean available and exactly one shell_chits price
+(integer 1–10000). Unavailable listings require unavailable_reason. The client requests
+1–10 bundles; the server multiplies price/count and checks the stack limit under lock.
+The current vest bundle is one and its stack_limit is one; quantity2 is rejected.
+The retained bandage listing is unavailable. Do not enable it before item use is playable.
+
+Equipment currently supports only chest, required_level 1–1000, stack_limit1 and one
+modifier `{stat: "guard", operation: "add", value: 0..3}`. The vest uses Guard1. Unsupported
+stats/operations, malformed prices/quantities, broken references and duplicate listing
+keys fail catalog validation. Other items require stack_limit 1–10000. Sell values remain
+metadata; there is no sale endpoint. Models/icons named in assets are still proposed bindings.
+
+Rules live in inventory/InventoryRules; orchestration lives in vertical_slice/CommerceService.
+The server returns comparison/owned/equipped/price data from one locked aggregate snapshot.
+Clients cannot grant items, send prices/stat modifiers or invent equipment ownership.
+Run the complete backend/PostgreSQL, Godot/API, render and Android gates after changes.

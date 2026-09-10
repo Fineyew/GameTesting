@@ -19,3 +19,6 @@
 | D015 | Server-owned dialogue cursor and catalog quest rules after M0 checkpoint 1044f95 | One optional cursor in the existing aggregate, immutable catalog, transactional progress/rewards; no new database or world server. |
 | D016 | Six-slot server-owned folio, explicit preparation, revision-checked updates | Preserve known spells/old saves, block combat edits and stale retries; universal Brace/Gather need no slot. |
 | D017 | Three small quest-based spell lessons, including server-observed casts | Meaningful sources for existing spells without changing completed rewards or generating more families/regions. |
+| D018 | One existing chest item with catalog Guard1, separate appearance | A meaningful earned purchase without stat bloat, new gear families or cosmetic penalties; no wearable mesh/transmog claim. |
+| D019 | Commerce revision + existing aggregate lock/receipts; catalog shop version | Atomic spend/grant, cross-connection overspend protection, safe retries after receipt eviction and stale-price rejection; reuse both adapters. |
+| D020 | Preserve unavailable bandage listing until item use is implemented | Avoid selling a nonfunctional consumable while retaining existing IDs and reward inventory; candidate narrow M1.4 scope. |

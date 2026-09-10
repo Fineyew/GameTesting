@@ -5,92 +5,81 @@ Read README → this file → ARCHITECTURE → relevant source before editing.
 
 ## Current checkpoint
 
-**M1.2 complete**, code/APK source `d0c604894ba768c6647b42ff19a76285d0e41bce`.
-Later handoffs add Android diagnostics and frame-state checks; the startup footer now
-shows 0.2.2. Gameplay/backend/content remain unchanged from the tested code checkpoint. M0 completed at 1044f95; M1.1 code 4efd3a6,
-handoff d138214. Main remains at bd98746; no merge or deployment. Restoration is finished.
-Continue the existing architecture and IDs; do not recreate systems from conversation memory.
+**M1.3 implemented; complete CI/artifact validation pending.** This candidate extends
+M1.2 code d0c6048/handoff56370e6. The latter's run34437584787 is now verified successful
+in all three jobs. M0 remains complete at1044f95; M1.1 at4efd3a6/d138214. Main remains
+bd98746. No merge or public deployment; preserve original IDs and all existing systems.
 
 ## What works
 
-- Godot 4.5.1 modular gateway/creator, appearance/affinity, third-person movement, orbit/
-  collision camera, touch controls, procedural Dawnreef, bag search and graphics settings.
-- Argon2 accounts, legacy hash upgrade and versioned access sessions/revocation/renewal.
-- Server-owned WebSocket movement/presence, interpolation/reconnect and preset chat.
-  One process/room, 32-player cap unbenchmarked. World protocol 1 remains unchanged.
-- Persistent Tidebeat encounters, visible intents, Focus and atomic/retry-safe combat rewards.
-- JSON development and PostgreSQL adapters; migrations 0001/0002 preserve original tables.
-- M1.1 catalog dialogue/branches/conditions, persisted server cursors, NPC quest offers,
-  ordered defeat/inspect/talk objectives, proximity checks and once-only economic rewards.
-- **M1.2:** three short Mara lessons after An Answer in the Reeds. Inspect the sealed cistern
-  and return for Beacon Trace; study reeds and return for Reed Aegis; demonstrate Trace,
-  Aegis against a 10-damage intent, finish the lurker encounter and return for Seam Lance.
-  Five playable quests, one enemy, six obtainable functioning spells; 26 catalog definitions.
-- Persistent folio: 1–6 distinct learned spells; Brace/Gather use no slots. New spells are
-  learned without auto-preparation. Server validates ownership/catalog/revision and blocks
-  edits in combat. Matching retries replay receipts; stale writes cannot replace newer folios.
-- Touch Folio panel with learned/prepared/unavailable states, costs/effects/source hints,
-  unsaved draft and retry/reload recovery. Encounters and the legacy fight enforce preparation.
-- Old JSON/JSONB saves initialize folio from already-owned spells, preserving IDs/progress/
-  active encounters. New optional fields need no DDL. Server-info advertises story1/folio1;
-  client 0.2.2 checks both before login. README explains the required backend update.
+- Modular Godot4.5.1 gateway/creator, appearance/affinity, third-person movement, camera,
+  touch controls, procedural Dawnreef, search/settings and explicit offline preview.
+- Argon2 accounts, legacy hash upgrade, versioned access sessions/revocation/renewal.
+- Server-owned WebSocket movement/presence/interpolation/reconnect and preset chat.
+  World protocol1 unchanged; one process/room, 32-player cap still unbenchmarked.
+- Persistent Tidebeat intents/Focus/turns, prepared spells and atomic/retry-safe rewards.
+- M1.1 catalog dialogue, persisted cursor, NPC quest offers and ordered objectives.
+- M1.2 Mara investigation and three lessons; five playable quests, one enemy, six
+  obtainable spells and 1–6 prepared folio. Ownership/revision/retry and combat locks.
+- JSON development and PostgreSQL aggregate adapters; existing migrations0001/0002.
+- **M1.3:** Mara's existing supply cart sells the Lanternkeeper Vest for12 earned shell
+  chits. One owned copy, one chest slot. Server Guard1 reduces each incoming hit by one,
+  adds to Brace/spell protection and never changes robe appearance or spell mechanics.
+- Atomic spend/grant, catalog prices/stock/level/stack validation, explicit equip/unequip,
+  persistent commerce revision and existing receipts. Combat blocks purchases/equipment
+  changes; new buys require live proximity to Mara. Matching retries can replay elsewhere.
+- Touch Bag/vendor panels inside the existing HUD: current chits/price/ownership/equipment,
+  Guard comparison, search, feedback, exact-request retry or reload. Preview cannot transact.
+- Existing item/vendor keys retained; still26 catalog definitions. Bandage listing stays
+  visible but unavailable until item use works. No other content increment was started.
+- Old saves default commerce_revision0 and missing equipment to empty; no DDL/reset.
+  Encounter snapshots without equipment_guard resolve with zero gear bonus. New client
+  0.2.3 requires commerce1 alongside world1/story1/folio1 before sign-in.
 
-## Tested evidence and Android artifact
+## Current validation
 
-[CI run 34437004626](https://github.com/Fineyew/GameTesting/actions/runs/34437004626), code d0c6048:
-**all three jobs passed**. 59 backend tests and 30 subtests; five real PostgreSQL tests and
-both migrations. Tests cover forged/unowned/duplicate folios, stale/retried/concurrent
-updates, rollback, old JSON/JSONB saves, prepared-only combat and once-only spell acquisition.
-Local: 54 passed, five PostgreSQL tests explicitly skipped, 30 subtests; two upstream warnings.
+Local candidate: **82 tests passed, 8 PostgreSQL tests explicitly skipped, 30 subtests**;
+2 upstream test deprecation warnings. Catalog validation/bundle, Godot import/smoke and
+full real Godot/API flow pass. The latter retains all M1.1/M1.2 progression and proves
+quest-earned vendor purchase, comparison, equip/unequip/reconnect and Guard in combat.
+New regression tests cover malformed/forged buys, insufficient funds, retries/conflicts,
+concurrent spending, rollback, ownership/level/active combat, JSON/JSONB compatibility.
 
-Godot import/smoke and full real client/API integration passed: account/creator, two-player
-presence, original dialogue/investigation, all three lessons, folio UI selection/save,
-reconnect, learned-but-unprepared rejection and an earned Seam Lance cast. Native Android
-coverage is touch exploration/folio preview and resume; online progression uses Godot/API.
+**Pending:** complete CI PostgreSQL (including cross-connection purchases and SQL rollback),
+render evidence review and Android install/Folio/Bag→vendor/touch/visible-resume gate.
+Candidate Android version0.2.3/code5; no new APK claimed until required gates pass.
+CI only publishes ARM64 after backend/Godot/render/native validation succeeds.
 
-Signed ARM64 debug APK **0.2.2/code 4**, 27,905,691 bytes, minimum API24/target35.
-Artifact **10136657783**, runtime evidence **10136658341**, retained until 2026-12-09.
-Manifest source d0c6048; tested PR merge tree 9a92f41b8612f8ff0ac6f61afc7df71ffd14bf11.
-SHA-256: `50673c6c7d9d10d7e8ae234b404ad0257787305898c7f114267c5890b6a371c2`.
-Downloaded APK hash/manifest/ABI/version, included lesson catalog and compiled Folio checked.
+Previous tested M1.2 artifact: ARM64 0.2.2/code4, source d0c6048, run34437004626,
+artifact10136657783/runtime10136658341, 27,905,691 bytes, minAPI24/target35.
+SHA256 `50673c6c7d9d10d7e8ae234b404ad0257787305898c7f114267c5890b6a371c2`.
+This is prior milestone evidence, not the M1.3 candidate. CHANGELOG/history retain M0/M1.1.
 
-API35 x86_64 emulator: install, visible gateway, touch Folio open/close, locomotion,
-background/resume to a landscape visible world and repeat touch movement passed. Desktop
-and native Folio/resume screenshots inspected; no engine/render errors. **89 draw calls**
-in the default desktop scene (150 budget), shadows off. Physical phone remains unverified.
-The d138214 docs-only rerun caught a portrait launcher-transition screenshot; the gate now
-waits for landscape before applying the unchanged view-match threshold and repeat touch.
-Documentation checkpoint 8105f4a also passed all jobs in run 34435465708 after one Android
-startup failure and an isolated retry. Its underlying cause is unverified; KNOWN_ISSUES
-records it. The test now retains full system logcat and a final frame for diagnosis. Run 34436332914
-then exposed a stale gateway used as an exploration baseline; the capture now checks the
-visible player HUD. Fresh validation of this check/footer correction passes at d0c6048;
-its exploration baseline, Folio, corrected version footer and resumed frames were inspected.
-Earlier M0/M1.1 evidence remains in history/CHANGELOG; source and saves are preserved.
+## Placeholder / unverified / planned
 
-## Unverified / placeholder / planned
-
-Physical S25 Ultra/ARM64 install/touch/safe areas, sustained FPS/thermal/memory/battery and
-cellular/Wi-Fi transitions remain **unverified release gates**. The updated public host is
-not deployed/verified; online play requires this branch's backend. No release signing.
+Physical S25 Ultra/ARM64 install/touch/safe areas, sustained FPS/thermal/memory/battery
+and cellular/Wi-Fi transitions remain **unverified release gates**. Public backend not
+updated/verified; use this branch's backend. Release signing/store publication unfinished.
 README gives local-server/USB reverse and physical-device procedures.
 
-Procedural art, simple gait/VFX and flat terrain are placeholders; no finished audio.
-Equipment/vendors, harvesting/crafting, mounts, housing, pets, dungeon/boss, co-op combat,
-free chat/moderation and full account recovery/refresh lifecycle remain unfinished.
-Collect-item/repeatable quests and additional NPC visual bindings remain future work.
+Procedural art, gait/VFX, flat terrain, supply-cart/vest asset bindings remain placeholders;
+no finished wearable vest mesh or audio. No full cosmetic override/transmog system.
+Item use/selling/trading, additional gear, gathering/crafting, mounts/housing/pets,
+dungeon/boss/co-op, free chat/moderation and account recovery remain unfinished.
 JSON→PostgreSQL import, backup/restore drills and load tests remain release gates.
+Intermittent emulator startup failure remains documented in KNOWN_ISSUES; full logs/final
+frames retained. Fixed landscape and presented-HUD checks remain unchanged.
 
 ## Next / build and test
 
-**Stop at M1.2.** Recommended narrow M1.3: one existing Dawnreef vendor/equipment loop with
-server-owned purchases/equipping, comparison and atomic/retry-safe currency/inventory.
-No bulk quest/spell/world generation. ROADMAP describes the boundary.
+Finish M1.3 CI/artifact/documentation checkpoint, then **stop before M1.4**. Recommended
+next small scope: server-owned out-of-combat Sunthread Bandage use (capped healing,
+atomic consumption/retries, clear Vigor UI), then enable its existing shop listing.
+No bulk content, additional families/regions, crafting/gathering or dungeon generation.
 
 `python -m pip install -r backend/requirements.lock`; `python -m pytest backend/tests -q`;
-`python -m tools.build_catalog`. Set GODOT_BIN to 4.5.1; run `python -m tools.check_godot`
-and `python -m tools.check_online`. CI provides migrated PostgreSQL and Android SDK35/
-JDK17/templates. README covers export/render/emulator and physical-device commands.
-Key paths: backend/app/modules/{vertical_slice,quests,combat,world}, backend/app/db,
-backend/tests/test_folio.py, content/quests, godot_project/scripts/ui/folio_panel.gd,
-tools and .github/workflows/foundation.yml. Preserve injected ports and aggregate locks.
+`python -m tools.build_catalog`. Set GODOT_BIN to4.5.1 and run `python -m tools.check_godot`
+and `python -m tools.check_online`. CI supplies migrated PostgreSQL16, SDK35/JDK17/templates.
+README covers export/render/emulator and physical-device commands.
+Key additions: inventory/rules.py, vertical_slice/commerce.py, test_commerce.py,
+scripts/ui/commerce_panel.gd. Preserve composition-root injection and aggregate locks.

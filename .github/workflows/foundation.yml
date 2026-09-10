@@ -134,8 +134,8 @@ jobs:
           name: veilbound-tides-android-foundation
           retention-days: 90
           path: |
-            builds/veilbound-tides-0.2.2-android.apk
-            builds/veilbound-tides-0.2.2-android.apk.verification.txt
+            builds/veilbound-tides-0.2.3-android.apk
+            builds/veilbound-tides-0.2.3-android.apk.verification.txt
             builds/build-manifest.json
             builds/render-check/
       - name: Retain Android runtime evidence

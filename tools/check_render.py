@@ -14,6 +14,6 @@ assert calls<=150,f'default scene exceeded draw-call budget: {calls}'
 destination=ROOT/'builds/render-check'
 destination.mkdir(parents=True,exist_ok=True)
 source=Path.home()/'.local/share/godot/app_userdata/Veilbound Tides'
-for name in ['gateway.png','dawnreef.png','folio.png']:
+for name in ['gateway.png','dawnreef.png','folio.png','vendor.png','equipment.png']:
     shutil.copy2(source/name,destination/name)
 (destination/'result.txt').write_text(output)

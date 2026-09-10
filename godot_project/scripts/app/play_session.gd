@@ -16,6 +16,11 @@ var refresh_elapsed := 0.0
 var dialogue: Dictionary = {}
 var pending_folio: Dictionary = {}
 var folio_panel: FolioPanel
+var commerce_panel: CommercePanel
+var commerce_view: Dictionary = {}
+var pending_commerce: Dictionary = {}
+var commerce_shop := ""
+var commerce_error := ""
 
 func begin(zone: DawnreefWorld, profile: Dictionary, offline: bool) -> void:
     world = zone
@@ -41,6 +46,7 @@ func begin(zone: DawnreefWorld, profile: Dictionary, offline: bool) -> void:
     hud.settings_requested.connect(show_settings)
     hud.chat_requested.connect(show_chat)
     hud.recenter_requested.connect(camera.recenter)
+    ApiClient.request_failed.connect(_commerce_failed)
     if not preview:
         connection = WorldConnection.new()
         add_child(connection)
@@ -120,6 +126,7 @@ func interact() -> void:
                 var panel = hud.open_panel("Mara Lanternwright")
                 panel.add_child(TideUI.paragraph("The well keeps Dawnreef steady above the Glimmerdeep. Tonight its light is answering something beneath the reef."))
                 panel.add_child(TideUI.paragraph("Sign in to help Mara and save your journey."))
+                panel.add_child(TideUI.button("Browse supplies",show_vendor))
             else:
                 open_dialogue()
         "fog_thorn_lurker":
@@ -179,6 +186,7 @@ func apply_dialogue_result(result: Dictionary) -> void:
         panel.add_child(TideUI.button(option.text,choose_dialogue.bind(option.key),true))
     if dialogue.options.is_empty():
         panel.add_child(TideUI.button("Until next time",hud.close_panel,true))
+    panel.add_child(TideUI.button("Browse Mara's supply cart",show_vendor))
 
 func inspect_landmark(key: String) -> void:
     if busy:
@@ -225,6 +233,8 @@ func show_combat() -> void:
     panel.add_child(TideUI.paragraph("Your Vigor %s / 30     Focus %s / 6\nLurker Vigor %s / %s     Beat %s" % [combat.player_vigor,combat.focus,combat.enemy_vigor,combat.enemy_max_vigor,combat.round],22))
     if combat.state == "active":
         panel.add_child(TideUI.paragraph("NEXT INTENT · %s · %s damage" % [combat.intent.name,combat.intent.power]))
+        if combat.get("equipment_guard",0) > 0:
+            panel.add_child(TideUI.paragraph("Equipment Guard · %s less damage per hit" % int(combat.equipment_guard),17))
         if not pending_action.is_empty():
             panel.add_child(TideUI.paragraph("The result was not received. Retry the same cast safely."))
             panel.add_child(TideUI.button("Retry cast",retry_action,true))
@@ -362,21 +372,102 @@ func reload_folio() -> void:
     await show_folio()
 
 func show_inventory() -> void:
-    var panel = hud.open_panel("Wayfarer's bag")
-    panel.add_child(TideUI.label("Shell chits · %s" % character.get("wallet",{}).get("shell_chits",0),22,TideUI.GOLD))
-    var search = TideUI.edit("Search your items")
-    panel.add_child(search)
-    var items = VBoxContainer.new()
-    panel.add_child(items)
-    for key in character.get("inventory",{}):
-        var item = TideUI.label("%s     × %s" % [GameData.display_name("items",key),character.inventory[key]])
-        items.add_child(item)
-    if items.get_child_count() == 0:
-        items.add_child(TideUI.paragraph("Your bag is empty. Quest rewards will appear here."))
-    search.text_changed.connect(func(value):
-        for item in items.get_children():
-            item.visible = value.to_lower() in item.text.to_lower())
-    panel.add_child(TideUI.paragraph("Equipment slots and item use are not available in this foundation build.",16))
+    await show_commerce("")
+
+func show_vendor() -> void:
+    await show_commerce(GameData.definition("npcs","mara_lanternwright").rules.shop_key)
+
+func show_commerce(shop_key: String, feedback := "") -> void:
+    if busy:
+        return
+    if character.get("encounter",{}).get("state") == "active":
+        show_combat()
+        return
+    if not pending_commerce.is_empty():
+        commerce_recovery()
+        return
+    commerce_shop = shop_key
+    commerce_error = ""
+    if preview:
+        commerce_view = CommercePanel.preview_view(character,shop_key)
+    else:
+        busy = true
+        hud.open_panel("Checking supplies…").add_child(TideUI.paragraph("Reading your saved bag and current prices."))
+        commerce_view = await ApiClient.get_json("/world/characters/%s/%s" % [character.id,"equipment" if shop_key.is_empty() else "shops/"+shop_key])
+        busy = false
+        if commerce_view.is_empty():
+            var failed = hud.open_panel("Supplies unavailable")
+            failed.add_child(TideUI.paragraph(commerce_error if not commerce_error.is_empty() else "Check your connection and try again."))
+            failed.add_child(TideUI.button("Try again",show_commerce.bind(shop_key,feedback)))
+            return
+        character = commerce_view.character
+        hud.set_character(character,preview)
+        if character.get("encounter",{}).get("state") == "active":
+            show_combat()
+            return
+    var panel = hud.open_panel("Bag & equipment" if shop_key.is_empty() else commerce_view.shop.name)
+    commerce_panel = CommercePanel.new()
+    panel.add_child(commerce_panel)
+    commerce_panel.build(commerce_view,preview,feedback)
+    commerce_panel.buy_requested.connect(buy_listing)
+    commerce_panel.equip_requested.connect(equip_item)
+    commerce_panel.vendor_requested.connect(show_vendor)
+    commerce_panel.bag_requested.connect(show_inventory)
+    if OS.is_debug_build():
+        print("VT_BAG_READY" if shop_key.is_empty() else "VT_VENDOR_READY")
+
+func buy_listing(listing_key: String) -> void:
+    if busy or preview or not pending_commerce.is_empty():
+        return
+    pending_commerce = {"key":command_id(),"path":"shops/%s/buy" % commerce_shop,"payload":{"listing_key":listing_key,"quantity":1,"shop_version":int(commerce_view.shop.version),"expected_revision":int(character.commerce_revision)}}
+    await retry_commerce()
+
+func equip_item(slot: String, item_key: Variant) -> void:
+    if busy or preview or not pending_commerce.is_empty():
+        return
+    pending_commerce = {"key":command_id(),"path":"equipment","payload":{"slot":slot,"item_key":item_key,"expected_revision":int(character.commerce_revision)}}
+    await retry_commerce()
+
+func retry_commerce() -> void:
+    if busy or pending_commerce.is_empty():
+        return
+    busy = true
+    commerce_error = ""
+    hud.open_panel("Saving supplies…").add_child(TideUI.paragraph("Waiting for confirmation."))
+    var result = await ApiClient.post_json("/world/characters/%s/%s" % [character.id,pending_commerce.path],pending_commerce.payload,pending_commerce.key)
+    busy = false
+    if result.is_empty():
+        commerce_recovery()
+        return
+    var outcome = result.outcome
+    var message = "Equipment saved."
+    if outcome.has("spent"):
+        message = "Purchase saved · %s ×%s · %s shell chits spent." % [GameData.display_name("equipment",outcome.item_key),int(outcome.quantity),int(outcome.spent)]
+    pending_commerce.clear()
+    # A saved receipt may predate another session's update; always read current state.
+    await show_commerce(commerce_shop,message)
+
+func commerce_recovery() -> void:
+    var panel = hud.open_panel("Change not confirmed")
+    panel.add_child(TideUI.paragraph(commerce_error if not commerce_error.is_empty() else "The result was not received. Retry the same command safely, or reload saved supplies."))
+    panel.add_child(TideUI.button("Retry same command",retry_commerce,true))
+    panel.add_child(TideUI.button("Reload saved supplies",reload_commerce))
+
+func reload_commerce() -> void:
+    if busy:
+        return
+    pending_commerce.clear()
+    await show_commerce(commerce_shop)
+
+func _commerce_failed(endpoint: String, status_code: int, message: String) -> void:
+    if "/equipment" not in endpoint and "/shops/" not in endpoint:
+        return
+    var body = JSON.parse_string(message)
+    commerce_error = "Connection interrupted. Retry safely or reload saved supplies."
+    if status_code == 401:
+        commerce_error = "Your session expired. Return to sign in; saved supplies are safe."
+    elif body is Dictionary and body.get("detail") is String:
+        commerce_error = body.detail.capitalize()
 
 func show_settings() -> void:
     var panel = hud.open_panel("Settings")

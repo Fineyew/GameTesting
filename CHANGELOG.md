@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.2.3 — M1.3 vendor/equipment (validation in progress, 2026-09-10)
+
+- Continue M1.2 at d0c6048/56370e6; its final handoff run34437584787 passed all jobs.
+- Activate existing Dawnreef Supply Cart and Lanternkeeper Vest for 12 earned chits.
+- Add server-owned atomic purchases, catalog prices, inventory/level/slot checks and
+  persistent commerce revisions with existing retry receipts and aggregate locks.
+- Equip/unequip the chest item; derive Guard1 from catalog/ownership at encounter start.
+  Preserve appearance, six-spell folio, Tidebeat rules without gear, story IDs and saves.
+- Add touch Bag/vendor panels, useful Guard comparison, state/feedback/search/retry UI.
+- Leave bandage purchase unavailable until item use exists; no broad content expansion.
+- Add JSON/PostgreSQL/API/old-save/concurrency/rollback and Godot interaction regressions.
+- Bump to Android0.2.3/code5; retain vendor/equipment renders and native Bag→vendor touch.
+  Full CI/artifact validation pending; physical phone remains unverified.
+
 ## 0.2.2 — M1.2 acquisition and folio complete (2026-09-10)
 
 - Code/APK checkpoint d0c6048 passes all jobs in run 34437004626: 59 tests / 30 subtests with

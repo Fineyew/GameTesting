@@ -65,6 +65,22 @@ Explore shared space → meet a character/discover a phenomenon → choose a que
 build/appearance → return to a social home → follow another lead. Future cooperative
 combat needs participant ownership, ready timers and reconnect rules before implementation.
 
+## First supplies and equipment (M1.3 implemented; validation tracked in PROJECT_STATE)
+
+Mara's existing Dawnreef Supply Cart sells one Lanternkeeper Vest for 12 shell chits.
+The first quest plus lurker victory yields 14, so the purchase follows helping the town.
+One owned copy, one chest slot, level 1 requirement. The vest's existing additive Guard1
+reduces every incoming Tidebeat hit by one, stacking with Brace/bind/spell protection
+and clamping damage at zero. This changes survivability, not Focus, spells or movement.
+Compare current/candidate Guard before buying or equipping; no random stat rolls.
+
+Buying puts the vest in the bag; equipping is explicit. Unequipping keeps ownership.
+Equipment changes are blocked during encounters. Stat equipment uses the existing
+`equipment` map; visual identity stays in `appearance` and is never overwritten by gear.
+The vest does not yet have a finished wearable mesh, and full cosmetic overrides/transmog
+are future work. Existing bandage stock is visible but unavailable until item use works;
+no selling, trading, crafting or additional gear categories are introduced in this increment.
+
 ## First hour target
 
 | Time | Experience | Purpose |

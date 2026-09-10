@@ -239,6 +239,56 @@ class PrepareFolioRequest(BaseModel):
     expected_revision: int = Field(strict=True, ge=0)
 
 
+class PurchaseRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    listing_key: StrictStr = Field(min_length=1, max_length=64)
+    quantity: int = Field(strict=True, ge=1, le=10)
+    shop_version: int = Field(strict=True, ge=1, lt=2**31)
+    expected_revision: int = Field(strict=True, ge=0, lt=2**63-1)
+
+
+class EquipmentRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    slot: StrictStr = Field(min_length=1, max_length=32)
+    item_key: StrictStr | None = Field(max_length=64)
+    expected_revision: int = Field(strict=True, ge=0, lt=2**63-1)
+
+
+def commerce_result(operation):
+    try:
+        return operation()
+    except AuthenticationError as exc:
+        raise HTTPException(403, str(exc)) from exc
+    except NotFoundError as exc:
+        raise HTTPException(404, str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(409, str(exc)) from exc
+
+
+@router.get("/world/characters/{character_id}/shops/{shop_key}")
+def shop_view(character_id: str, shop_key: str, request: Request, account_id: str = Depends(current_account_id)):
+    return commerce_result(lambda: request.app.state.commerce.view(account_id, character_id, shop_key))
+
+
+@router.post("/world/characters/{character_id}/shops/{shop_key}/buy")
+def buy_item(character_id: str, shop_key: str, payload: PurchaseRequest, request: Request,
+             idempotency_key: str = Header(min_length=8, max_length=80), account_id: str = Depends(current_account_id)):
+    return commerce_result(lambda: request.app.state.commerce.buy(account_id, character_id, shop_key,
+                           payload.listing_key, payload.quantity, payload.shop_version, payload.expected_revision, idempotency_key))
+
+
+@router.get("/world/characters/{character_id}/equipment")
+def equipment_view(character_id: str, request: Request, account_id: str = Depends(current_account_id)):
+    return commerce_result(lambda: request.app.state.commerce.view(account_id, character_id))
+
+
+@router.post("/world/characters/{character_id}/equipment")
+def equip_item(character_id: str, payload: EquipmentRequest, request: Request,
+               idempotency_key: str = Header(min_length=8, max_length=80), account_id: str = Depends(current_account_id)):
+    return commerce_result(lambda: request.app.state.commerce.equip(account_id, character_id,
+                           payload.slot, payload.item_key, payload.expected_revision, idempotency_key))
+
+
 @router.post("/world/characters/{character_id}/folio")
 def prepare_folio(character_id: str, payload: PrepareFolioRequest, request: Request,
                   idempotency_key: str = Header(min_length=8, max_length=80),

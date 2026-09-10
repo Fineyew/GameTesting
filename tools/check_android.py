@@ -90,6 +90,17 @@ def main():
     assert changed_world(before,folio)>.1,'folio panel did not visibly open'
     adb('shell','input','tap',str(round(width*.715)),str(round(height*.167)))
     wait_for(lambda:changed_world(before,capture('folio-closed'))<.15)
+    # Existing Bag navigation opens the same modular vendor panel used online.
+    adb('shell','input','tap',str(round(width*.932)),str(round(height*.833)))
+    wait_for(lambda:'VT_BAG_READY' in log())
+    wait_for(lambda:changed_world(before,capture('bag'))>.1)
+    bag=OUT/'bag.png'
+    # 640,236 in the 1280x720 logical HUD; smoke.gd records this button's bounds.
+    adb('shell','input','tap',str(round(width*.5)),str(round(height*236/720)))
+    wait_for(lambda:'VT_VENDOR_READY' in log())
+    wait_for(lambda:changed_world(bag,capture('vendor'))>.04)
+    adb('shell','input','tap',str(round(width*.715)),str(round(height*.167)))
+    wait_for(lambda:changed_world(before,capture('vendor-closed'))<.15)
     adb('shell','input','swipe',str(round(width*.0875)),str(round(height*.844)),str(round(width*.0875)),str(round(height*.755)),'1800')
     time.sleep(.5)
     after=wait_for_world('dawnreef-after')
@@ -108,7 +119,7 @@ def main():
     logs=log()
     (OUT/'logcat.txt').write_text(logs)
     assert not re.search(r'ERROR:|SCRIPT ERROR|FATAL EXCEPTION|Fatal signal|ANR in '+re.escape(PACKAGE),logs),logs[-6000:]
-    (OUT/'result.txt').write_text(f'ANDROID_RUNTIME_PASS\nInstall, visible gateway, touch preview, touch folio open/close, touch locomotion, background/resume with landscape visible world and repeat touch locomotion.\nChanged world pixels: {changed:.3f}\nEmulator x86_64; physical ARM64 device unverified.\n')
+    (OUT/'result.txt').write_text(f'ANDROID_RUNTIME_PASS\nInstall, visible gateway, touch preview, Folio open/close, Bag to vendor touch navigation, touch locomotion, background/resume with landscape visible world and repeat touch locomotion.\nChanged world pixels: {changed:.3f}\nEmulator x86_64; physical ARM64 device unverified.\n')
     print('ANDROID_RUNTIME_PASS')
 
 if __name__=='__main__':

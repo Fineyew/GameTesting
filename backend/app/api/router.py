@@ -21,6 +21,7 @@ async def server_info() -> dict[str, str | int]:
         "world_protocol": 1,
         "story_protocol": 1,
         "folio_protocol": 1,
+        "commerce_protocol": 1,
         "minimum_client_version": settings.minimum_client_version,
         "content_manifest_version": settings.content_manifest_version,
     }

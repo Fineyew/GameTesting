@@ -6,13 +6,13 @@ class CombatEngine:
     def __init__(self, catalog):
         self.catalog = catalog
 
-    def begin(self, enemy_key, vigor, prepared_spells):
+    def begin(self, enemy_key, vigor, prepared_spells, equipment_guard=0):
         enemy = self.catalog.get_definition("enemies", enemy_key)
         intents = deepcopy(enemy.rules["intents"])
         return {"enemy_key": enemy_key, "enemy_name": enemy.display.name,
                 "enemy_vigor": enemy.rules["stats"]["vigor"], "enemy_max_vigor": enemy.rules["stats"]["vigor"],
                 "player_vigor": vigor, "player_max_vigor": 30, "focus": 3, "round": 1,
-                "state": "active", "mark": 0, "intent_index": 0, "intents": intents, "intent": intents[0],
+                "state": "active", "mark": 0, "equipment_guard": equipment_guard, "intent_index": 0, "intents": intents, "intent": intents[0],
                 "spells": {key: {"name": self.catalog.get_definition("spells", key).display.name,
                                   **deepcopy(self.catalog.get_definition("spells", key).rules)} for key in prepared_spells},
                 "log": [f"{enemy.display.name} emerges from the mist."]}
@@ -57,7 +57,7 @@ class CombatEngine:
             state["state"] = "victory"
             state["log"].append("The lurker retreats. Rewards saved.")
         else:
-            incoming = max(0, state["intent"]["power"] - guard - binding)
+            incoming = max(0, state["intent"]["power"] - guard - binding - state.get("equipment_guard", 0))
             state["player_vigor"] = max(0, state["player_vigor"] - incoming)
             state["log"].append(f"{state['intent']['name']}: {incoming} damage.")
             if state["player_vigor"] == 0 or state["round"] >= 50:

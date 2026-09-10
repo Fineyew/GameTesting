@@ -63,7 +63,7 @@ func _build_gateway() -> void:
     var air = Control.new()
     air.custom_minimum_size.y = 36
     title_column.add_child(air)
-    title_column.add_child(TideUI.paragraph("DAWNREEF ATOLL\nSpell lessons · 0.2.2",16))
+    title_column.add_child(TideUI.paragraph("DAWNREEF ATOLL\nDawnreef supplies · 0.2.3",16))
     var panel = PanelContainer.new()
     panel.custom_minimum_size.x = 460
     panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -131,7 +131,7 @@ func authenticate(registering: bool) -> void:
     status_label.text = "Checking server…"
     ApiClient.set_session(server_url,"")
     var info = await ApiClient.get_json("/server-info")
-    if info.is_empty() or info.get("world_protocol",0) != 1 or info.get("story_protocol",0) != 1 or info.get("folio_protocol",0) != 1:
+    if info.is_empty() or info.get("world_protocol",0) != 1 or info.get("story_protocol",0) != 1 or info.get("folio_protocol",0) != 1 or info.get("commerce_protocol",0) != 1:
         if not info.is_empty():
             status_label.text = "Update the server for this game build, then try again."
         busy = false

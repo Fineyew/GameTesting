@@ -8,7 +8,7 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
 - Physical Android install/touch/safe-area, 20-minute thermal/memory/battery, packet-loss,
   cellular/Wi-Fi switching and background/resume certification remain outstanding.
   CI emulator and desktop rendering cannot substitute for these measurements. The emulator
-  gate exercises offline exploration and folio touch; online progression is tested with Godot/API integration.
+  gate exercises offline exploration, Folio and Bag/vendor touch; online progression is tested with Godot/API integration.
 - Recovery/email verification/opaque rotated refresh tokens/remembered secure credentials
   and admin account workflows are unfinished. Access-token renewal needs a valid token.
 - Existing JSON accounts require backup and explicit preserved-ID import before changing
@@ -25,7 +25,8 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
 - Catalog-driven Mara dialogue and one investigation now exist. Collect-item/repeatable
   quests, broader objective types and visual authoring tools remain planned. M1.1 integration
   and Android gates pass at 4efd3a6; additional NPC visual/interaction bindings need scene work.
-- Inventory search/quantities exist; equip/use/compare, vendors, gathering/crafting, mounts,
+- One vest vendor/equipment loop is implemented; full M1.3 gates are pending. Item use, selling,
+  trading, wearable vest mesh, additional gear slots, gathering/crafting, mounts,
   housing, pets, dungeon/boss and most social features are not implemented.
 - Procedural models, gait, primitive spell impacts and flat region remain placeholders.
   No finished audio framework, soundtrack, skeletal animation or production asset kit.

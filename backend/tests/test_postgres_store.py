@@ -154,3 +154,91 @@ def test_postgres_old_payload_initializes_folio_without_reset(game):
         assert other.get_character(character).folio == before.known_spells
     finally:
         other.engine.dispose()
+
+
+def test_postgres_purchase_equipment_receipts_and_rollback(game, monkeypatch):
+    from backend.app.modules.inventory.rules import InventoryRules
+    from backend.app.modules.vertical_slice.commerce import CommerceService
+    from backend.tests.test_commerce import earn_first_reward, buy, VEST
+    service, encounters, account, character = game
+    earn_first_reward(service, encounters, account, character)
+    rules = InventoryRules(encounters.catalog)
+    commerce = CommerceService(service, rules, lambda *_: True)
+    before = service.enter_world(account, character)
+    save = service.store.save_character
+    def fail_after_write(record):
+        save(record)  # SQL flush executes; enclosing transaction must roll it back.
+        raise ValueError('deliberate post-write failure')
+    with monkeypatch.context() as patch:
+        patch.setattr(service.store, 'save_character', fail_after_write)
+        with pytest.raises(ValueError, match='post-write'):
+            buy(commerce, account, character)
+    other = PostgresPlayerStore(os.environ['VT_TEST_DATABASE_URL'])
+    try:
+        assert other.get_character(character) == before
+        purchased = buy(commerce, account, character)
+        equipped = commerce.equip(account, character, 'chest', VEST, 1, 'pg-equip-first')
+        resumed = CommerceService(VerticalSliceService(other), rules, lambda *_: False)
+        assert buy(resumed, account, character) == purchased
+        assert resumed.equip(account, character, 'chest', VEST, 1, 'pg-equip-first') == equipped
+        assert other.get_character(character).wallet['shell_chits'] == 2
+        assert other.get_character(character).inventory[VEST] == 1
+        assert resumed.view(account, character)['stats']['guard'] == 1
+        with monkeypatch.context() as patch:
+            patch.setattr(service.store, 'save_character', fail_after_write)
+            with pytest.raises(ValueError, match='post-write'):
+                commerce.equip(account, character, 'chest', None, 2, 'pg-failed-unequip')
+        assert other.get_character(character).equipment == {'chest': VEST}
+        resumed.equip(account, character, 'chest', None, 2, 'pg-unequip-first')
+        assert service.enter_world(account, character).equipment == {}
+        assert service.enter_world(account, character).commerce_revision == 3
+    finally:
+        other.engine.dispose()
+
+
+def test_postgres_concurrent_purchases_across_connections_never_overspend(game):
+    from backend.app.modules.inventory.rules import InventoryRules
+    from backend.app.modules.vertical_slice.commerce import CommerceService
+    from backend.tests.test_commerce import earn_first_reward, buy, SHOP
+    service, encounters, account, character = game
+    earn_first_reward(service, encounters, account, character)
+    rules = InventoryRules(encounters.catalog)
+    # Repeatable item fixture isolates wallet concurrency from the one-vest ownership cap.
+    rules.shops[SHOP].rules['listings'][1]['available'] = True
+    other = PostgresPlayerStore(os.environ['VT_TEST_DATABASE_URL'])
+    try:
+        peers = [service, VerticalSliceService(other)]
+        commands = [CommerceService(peer, rules, lambda *_: True) for peer in peers]
+        def purchase(index):
+            for attempt in range(5):
+                revision = peers[index % 2].enter_world(account, character).commerce_revision
+                try:
+                    buy(commands[index % 2], account, character, revision, f'pg-buy-{index}-{attempt}', listing_key='buy_sunthread_bandage')
+                    return 1
+                except ValueError as error:
+                    if 'changed' not in str(error):
+                        return 0
+            return 0
+        with ThreadPoolExecutor(4) as pool:
+            assert sum(pool.map(purchase, range(4))) == 2
+        saved = other.get_character(character)
+        assert saved.wallet['shell_chits'] == 4 and saved.inventory['sunthread_bandage'] == 4
+        assert saved.commerce_revision == 2
+    finally:
+        other.engine.dispose()
+
+
+def test_postgres_old_equipment_payload_preserves_progress_and_active_encounter(game):
+    service, encounters, account, character = game
+    service.accept_quest(account, character, 'lantern_well_first_light')
+    encounters.start(account, character, 'fog_thorn_lurker', 'pg-old-gear-start')
+    before = service.enter_world(account, character)
+    with service.store.engine.begin() as connection:
+        connection.execute(text("UPDATE character_runtime_states SET payload = payload - 'commerce_revision' - 'equipment' WHERE character_id = :id"), {'id':character})
+    other = PostgresPlayerStore(os.environ['VT_TEST_DATABASE_URL'])
+    try:
+        assert other.get_character(character) == before
+        assert other.list_characters(account)[0].equipment == {}
+        assert other.get_character(character).commerce_revision == 0
+    finally:
+        other.engine.dispose()

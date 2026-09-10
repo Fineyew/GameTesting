@@ -43,7 +43,7 @@ before handoff. No secrets or build products belong in source control.
 ## Implemented interfaces and runtime constraints
 
 The composition root (`backend/app/main.py`) injects the immutable content catalog,
-player store, `CombatEngine`, `EncounterService`, `QuestRules`, `StoryService` and `WorldHub`. Existing boundary tests
+player store, `CombatEngine`, `EncounterService`, `QuestRules`, `StoryService`, `InventoryRules`, `CommerceService` and `WorldHub`. Existing boundary tests
 forbid cross-module internal imports and gameplay imports of database infrastructure.
 The PostgreSQL adapter implements the same aggregate-store contract as local JSON saves.
 
@@ -203,3 +203,54 @@ Exploration captures also require the player plaque and resting thumb control. T
 terrain alone cannot distinguish the gateway background from a newly entered world;
 ready logging can precede presentation on the emulator. This prevents using a gateway
 frame as a movement/Folio-close baseline while retaining the original comparison limits.
+
+## M1.3 vendor/equipment boundaries
+
+The composition root injects catalog-only `InventoryRules` into `CommerceService` and
+`EncounterService`. Rules stay in the inventory module; aggregate transactions stay in
+vertical_slice. No cross-module internal imports or database dependencies were added to
+gameplay. Both existing persistence adapters and migrations remain unchanged.
+
+GET `/world/characters/{id}/shops/{shop}` returns current prices, availability, owned/equipped
+state and Guard comparison. New buys require live proximity to the shop's catalog NPC,
+the correct zone and inactive combat. GET `/world/characters/{id}/equipment` returns the
+bag and derived equipment stats. Both views check ownership under the aggregate lock.
+
+POST `/shops/{shop}/buy` accepts only listing_key, quantity, shop_version and expected_revision.
+POST `/equipment` accepts only slot, item_key (null to unequip) and expected_revision. Both
+require Idempotency-Key. Strict integer bounds and forbidden extra fields reject arbitrary
+price, currency, inventory and stat claims. The immutable server catalog chooses grant,
+price, stack cap, level requirement and slot/stat legality. shop_version forces a price
+reload after a catalog update, preventing a stale displayed quote from being charged.
+
+A shared optional `commerce_revision=0` serializes successful buy/equip/unequip commands.
+Within the same existing character transaction: authenticate ownership, replay a matching
+receipt or reject a conflicting key, check revision/combat/proximity/rules, deduct/grant
+or equip, increment revision, save state and response together. No network calls occur
+under the database lock. PostgreSQL advisory transaction locks serialize independent
+connections; JSON retains its process lock, rollback copy and atomic file replacement.
+Matching retries can replay after leaving the shop; new purchases still require proximity.
+Revision checks reject stale commands after the shared 128-response receipt cap. Currency
+and inventory are re-read under lock even when another quest/combat action changed them.
+
+The existing equipment map persists slot→owned item key. No client or saved stat fields
+are trusted: Guard derives from validated owned/level-legal catalog equipment and is
+snapshotted at encounter creation. Old active encounters without equipment_guard resolve
+with zero gear bonus. Unequipping preserves the item. Appearance stays separate and is
+never changed by equipment; no mesh/transmog system is claimed. Schema1 optional fields
+preserve old saves without DDL. An M1.2 downgrade requires deliberate removal of
+commerce_revision and encounter equipment_guard after backup; it cannot support gear
+benefits. Never reset player IDs, quest/folio state, currencies or inventory.
+
+`commerce_protocol=1` is an additive server-info capability checked by client0.2.3 before
+login. World1/story1/folio1 are unchanged; public online play needs this branch's backend.
+CommercePanel lives inside the existing HUD modal and Bag/Mara navigation. It uses server
+views, search, large touch buttons, comparison, saved feedback and exact-request retry or
+reload. After a confirmed command it fetches current state, since a receipt may be old.
+Offline catalog views are explicitly nonpersistent previews with disabled buy/equip.
+
+The Godot/API gate earns currency, buys, equips, unequips, reconnects and proves Guard
+in actual combat while retaining the entire M1.1/M1.2 flow. Native Android additionally
+opens Bag→vendor by adb touch; it covers preview/navigation, not online transaction logic.
+Render evidence includes vendor and equipment panels. ARM64 publication remains after
+all backend/Godot/render/emulator gates; physical-device validation remains separate.

@@ -6,8 +6,9 @@ from uuid import uuid4
 
 
 class EncounterService:
-    def __init__(self, players, engine, catalog):
+    def __init__(self, players, engine, catalog, equipment_rules=None):
         self.players, self.engine, self.catalog = players, engine, catalog
+        self.equipment_rules = equipment_rules
 
     def _command(self, account_id, character_id, key, payload, apply):
         if not isinstance(key, str) or not 8 <= len(key) <= 80:
@@ -37,7 +38,8 @@ class EncounterService:
                 raise ValueError("encounter not available")
             if any(s not in character.known_spells for s in character.folio):
                 raise ValueError("folio contains an unowned spell")
-            character.encounter = self.engine.begin(enemy_key, character.vigor, character.folio)
+            guard = self.equipment_rules.guard(character) if self.equipment_rules else 0
+            character.encounter = self.engine.begin(enemy_key, character.vigor, character.folio, guard)
             character.encounter["id"] = str(uuid4())
         return self._command(account_id, character_id, key, {"start": enemy_key}, apply)
 

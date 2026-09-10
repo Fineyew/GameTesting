@@ -20,7 +20,7 @@ honest device-status documentation. Physical phone thermal/touch/network validat
 an open release gate; never call an emulator or desktop result a physical-phone pass.
 No broad M1 content production before this engineering checkpoint.
 
-## M1 — authored vertical slice (M1.2 complete)
+## M1 — authored vertical slice (M1.3 validation in progress)
 
 - [x] M1.1: catalog-owned NPC dialogue/branches/conditions with server-owned cursors.
 - [x] Validated quest offers, ordered defeat/inspect/talk objectives and once-only rewards.
@@ -42,11 +42,20 @@ checkpointed at 1044f95. No bulk content was produced; the cistern dungeon is st
 - [x] Complete PostgreSQL, render and Android runtime gates (59 tests, 89 draw calls).
 - [x] Retain verified ARM64 0.2.2/code 4, reconcile handoff and checkpoint M1.2.
 
-**Recommended next: M1.3 (not started)** — one equipment/vendor loop using the existing
-Dawnreef supply cart/item definitions: server-owned buy/equip, useful item comparison,
-atomic currency/inventory updates and retry/concurrency tests. Preserve the six-spell
-combat foundation. Do not start bulk quests/spells/worlds, a dungeon or a new discipline.
-Stop after the M1.2 checkpoint until the next authorized working session.
+**M1.3 implemented; full CI/artifact gates pending** — one Dawnreef supply loop.
+
+- [x] Reuse Mara's supply cart and Lanternkeeper Vest; 12-chit purchase, one chest slot, Guard1.
+- [x] Atomic server-owned buy/equip/unequip, ownership/price/stack/level validation.
+- [x] Persistent commerce revisions/receipts, old JSON/JSONB defaults and concurrency coverage.
+- [x] Touch Bag/vendor comparison, feedback/recovery and unchanged visual appearance.
+- [ ] Complete full PostgreSQL/Godot/API/render/Android gates and inspect evidence.
+- [ ] Retain ARM640.2.3/code5, reconcile canonical documents/PR and checkpoint.
+
+Stop after M1.3. Recommended narrow **M1.4 (not started)**: activate existing Sunthread
+Bandage use outside combat, with server-owned capped healing, atomic inventory consumption,
+revision/retry/old-save tests and clear Vigor/effect UI. Enable the existing bandage shop
+listing only once use is playable. No new recipes/gathering, gear families, quests, regions,
+spells or dungeon work in that proposed increment.
 
 Target: one town plus adventure region, 18 varied quests, 18 working obtainable spells,
 five enemies, eight recurring NPCs, one dungeon with a phased boss, equipment/vendor,

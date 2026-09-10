@@ -45,7 +45,7 @@ def export(emulator=False):
     original = preset.read_text()
     records=[]
     try:
-        targets=[('arm64','veilbound-tides-0.2.2-android.apk',original)]
+        targets=[('arm64','veilbound-tides-0.2.3-android.apk',original)]
         if emulator:
             targets.append(('x86_64-emulator-only','veilbound-tides-android-qa.apk',original.replace('architectures/arm64-v8a=true','architectures/arm64-v8a=false').replace('architectures/x86_64=false','architectures/x86_64=true')))
         for architecture,filename,configuration in targets:

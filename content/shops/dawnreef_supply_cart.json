@@ -2,27 +2,53 @@
   "type": "shops",
   "key": "dawnreef_supply_cart",
   "schema_version": 1,
-  "version": 1,
+  "version": 2,
   "display": {
     "name": "Dawnreef Supply Cart",
     "summary": "A compact field shop stocked for new Wayfarers.",
     "description": "Mara keeps spare supplies in a wheeled cart beside the Lantern Well."
   },
-  "tags": ["dawnreef", "starter"],
+  "tags": [
+    "dawnreef",
+    "starter"
+  ],
   "assets": {
     "icon": "res://assets/icons/shops/dawnreef_supply_cart.png"
   },
   "rules": {
     "listings": [
       {
+        "key": "buy_lanternkeeper_vest",
+        "item_key": "lanternkeeper_vest",
+        "quantity": 1,
+        "available": true,
+        "price": [
+          {
+            "currency_key": "shell_chits",
+            "amount": 12
+          }
+        ]
+      },
+      {
         "key": "buy_sunthread_bandage",
         "item_key": "sunthread_bandage",
         "quantity": 1,
-        "price": [{"currency_key": "shell_chits", "amount": 5}]
+        "price": [
+          {
+            "currency_key": "shell_chits",
+            "amount": 5
+          }
+        ],
+        "available": false,
+        "unavailable_reason": "Bandages are not for sale until item use is available."
       }
-    ]
+    ],
+    "npc_key": "mara_lanternwright",
+    "zone_key": "dawnreef_atoll"
   },
   "localization": {
-    "en": {"name": "Dawnreef Supply Cart"}
+    "en": {
+      "name": "Dawnreef Supply Cart"
+    }
   }
 }
