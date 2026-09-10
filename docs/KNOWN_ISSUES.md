@@ -62,3 +62,9 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
   The underlying startup cause remains unverified. Full system logcat and a final frame
   are now retained on test exit to help diagnose another occurrence. Do not weaken startup,
   error-log, visible-frame or touch gates to hide a failure. Failed runs publish no ARM64 APK.
+
+- The 9b66c0a native run caught a stale gateway screenshot used as the exploration baseline.
+  Folio close worked; the baseline capture was early. The check now requires the visible
+  player plaque/thumb control in exploration frames as well as landscape/terrain. Existing
+  comparison thresholds are unchanged; the captured failing frame is rejected by the new
+  predicate and captured exploration/resume frames are accepted. Fresh CI is pending.

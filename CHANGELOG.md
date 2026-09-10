@@ -21,6 +21,10 @@
   retry passes without changing game code or assertions. Retain full system logcat and a
   final frame for future startup diagnosis; the underlying cause remains unverified.
 
+- Correct the stale-gateway exploration baseline exposed by native Folio validation: wait
+  for the actual player HUD before comparing frames. Keep all comparison thresholds.
+- Correct the startup footer to 0.2.2; gameplay rules/content and save formats are unchanged.
+
 ## 0.2.1 — M1.1 story framework complete (2026-09-10)
 
 - Begin only after M0 checkpoint 1044f95. Preserve the combat engine, world protocol 1,

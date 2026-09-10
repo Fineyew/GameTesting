@@ -26,6 +26,16 @@ def capture(name):
     path.write_bytes(adb('exec-out','screencap','-p',binary=True))
     return path
 
+def has_exploration_hud(frame):
+    # The gateway also renders green terrain. Require the actual player plaque
+    # and resting thumb control before treating a frame as playable exploration.
+    rgb=frame.convert('RGB')
+    width,height=rgb.size
+    plaque=rgb.getpixel((round(width*.04),round(height*.095)))
+    thumb=rgb.getpixel((round(width*.0875),round(height*.844)))
+    return (plaque[0]<50 and plaque[1]<90 and plaque[2]<105
+            and thumb[0]>180 and thumb[1]>150 and thumb[2]<200 and thumb[0]>thumb[2]+30)
+
 def wait_for_world(name):
     # Engine-ready logging precedes shader compilation/presentation on software GPUs.
     # Require the authored green terrain (not the gray splash or a black resume frame).
@@ -35,6 +45,8 @@ def wait_for_world(name):
             # its portrait launcher. Wait for the app's landscape surface before
             # comparing it; never rotate evidence or relax the world-match gate.
             if frame.width <= frame.height:
+                return False
+            if name != 'gateway' and not has_exploration_hud(frame):
                 return False
             pixels=list(frame.convert('RGB').resize((160,90)).getdata())
         green=sum(g>r*1.12 and g>b*1.08 and g>65 for r,g,b in pixels)/len(pixels)

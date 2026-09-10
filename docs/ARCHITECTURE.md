@@ -198,3 +198,8 @@ The native test always retains filtered game logs, full system logcat and a fina
 including failures before the gateway marker. This follows an isolated startup failure on
 8105f4a (engine cleanup/emulator graphics-buffer errors); its Android-only rerun passed
 unchanged. The cause remains open in KNOWN_ISSUES, not hidden by relaxed assertions.
+
+Exploration captures also require the player plaque and resting thumb control. The green
+terrain alone cannot distinguish the gateway background from a newly entered world;
+ready logging can precede presentation on the emulator. This prevents using a gateway
+frame as a movement/Folio-close baseline while retaining the original comparison limits.
