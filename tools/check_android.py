@@ -104,7 +104,12 @@ if __name__=='__main__':
         main()
     finally:
         OUT.mkdir(parents=True,exist_ok=True)
+        # Retain startup evidence too: the engine may fail before its ready marker,
+        # and Android/EGL diagnostics can use tags outside the filtered game log.
+        # This harness runs only on an isolated emulator test profile (see README).
         try:
             (OUT/'logcat.txt').write_text(adb('logcat','-d','-s','godot:V','AndroidRuntime:E','libc:F'))
+            (OUT/'system-logcat.txt').write_text(adb('logcat','-d'))
+            capture('last-frame')
         except (OSError,subprocess.SubprocessError):
             pass

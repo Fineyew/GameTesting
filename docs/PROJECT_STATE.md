@@ -6,7 +6,7 @@ Read README → this file → ARCHITECTURE → relevant source before editing.
 ## Current checkpoint
 
 **M1.2 complete**, code/APK source `40fcfa7addaac98cd7f69329f38eb382d5c1d6dc`.
-This handoff changes documentation only. M0 completed at 1044f95; M1.1 code 4efd3a6,
+Later handoffs update documentation and Android test diagnostics only; game/APK code is unchanged. M0 completed at 1044f95; M1.1 code 4efd3a6,
 handoff d138214. Main remains at bd98746; no merge or deployment. Restoration is finished.
 Continue the existing architecture and IDs; do not recreate systems from conversation memory.
 
@@ -59,6 +59,9 @@ and native Folio/resume screenshots inspected; no engine/render errors. **89 dra
 in the default desktop scene (150 budget), shadows off. Physical phone remains unverified.
 The d138214 docs-only rerun caught a portrait launcher-transition screenshot; the gate now
 waits for landscape before applying the unchanged view-match threshold and repeat touch.
+Documentation checkpoint 8105f4a also passed all jobs in run 34435465708 after one Android
+startup failure and an isolated retry. Its underlying cause is unverified; KNOWN_ISSUES
+records it. The test now retains full system logcat and a final frame for diagnosis.
 Earlier M0/M1.1 evidence remains in history/CHANGELOG; source and saves are preserved.
 
 ## Unverified / placeholder / planned

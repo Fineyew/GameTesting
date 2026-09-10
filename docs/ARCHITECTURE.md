@@ -193,3 +193,8 @@ rotate evidence or certify physical-device behavior.
 M1.2 engineering verification is complete at 40fcfa7/run 34434861638: 59 tests with
 PostgreSQL, full Godot/API flow and signed ARM64/native Folio-touch/resume evidence.
 PROJECT_STATE records artifact IDs, exact hashes and the unverified physical-device gates.
+
+The native test always retains filtered game logs, full system logcat and a final frame,
+including failures before the gateway marker. This follows an isolated startup failure on
+8105f4a (engine cleanup/emulator graphics-buffer errors); its Android-only rerun passed
+unchanged. The cause remains open in KNOWN_ISSUES, not hidden by relaxed assertions.

@@ -17,6 +17,10 @@
 - Fix resume-check timing for a rotated Android launcher-transition frame; preserve the
   existing world-match threshold and post-resume touch requirement. Physical phone unverified.
 
+- Record the isolated Android startup failure on the documentation rerun; its fresh-runner
+  retry passes without changing game code or assertions. Retain full system logcat and a
+  final frame for future startup diagnosis; the underlying cause remains unverified.
+
 ## 0.2.1 — M1.1 story framework complete (2026-09-10)
 
 - Begin only after M0 checkpoint 1044f95. Preserve the combat engine, world protocol 1,

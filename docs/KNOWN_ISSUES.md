@@ -54,3 +54,11 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
 - M1.2 full gates pass at 40fcfa7/run 34434861638. The d138214 docs-only rerun failed on a
   portrait launcher-transition screenshot; waiting for landscape presentation resolved it
   without relaxing the view-match threshold. This is not physical-device certification.
+
+- Documentation checkpoint 8105f4a's first Android attempt timed out before gateway startup,
+  with an emulator graphics-buffer error and Godot `_start_success` cleanup error. The
+  identical game code passed the complete native gate at 40fcfa7. The isolated Android rerun
+  passed all native gates (run 34435465708, attempt 2), without changing game code or tests.
+  The underlying startup cause remains unverified. Full system logcat and a final frame
+  are now retained on test exit to help diagnose another occurrence. Do not weaken startup,
+  error-log, visible-frame or touch gates to hide a failure. Failed runs publish no ARM64 APK.
