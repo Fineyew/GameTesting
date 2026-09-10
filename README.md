@@ -86,6 +86,34 @@ phones. CI retains it as `veilbound-tides-android-foundation` with render eviden
 is 90 days. Debug keys are ephemeral; a differently signed later test APK can require
 uninstall/reinstall. Release signing and Play Store/AAB publication are not configured.
 
+### Physical phone handoff (still unverified)
+
+The owner's Galaxy S25 Ultra has not been available to this workspace. Install the
+**ARM64** APK from the successful CI run recorded in PROJECT_STATE; compare its SHA-256
+with `build-manifest.json` (`Get-FileHash <apk> -Algorithm SHA256` on Windows).
+With Android platform-tools and USB debugging enabled:
+
+```bash
+adb devices
+adb install -r veilbound-tides-0.2.0-android.apk
+adb reverse tcp:8000 tcp:8000
+```
+
+Run the local backend above, select **Server connection** →
+`http://127.0.0.1:8000/api/v1`, create a test account and character, and complete Mara's
+quest while a second client is connected. Verify touch movement/camera, landscape,
+readable menus, cutout/navigation safe areas, reward persistence after sign-in, and
+reconnect after backgrounding. Test cellular/Wi-Fi switching against an accessible
+HTTPS test server separately; USB reverse does not simulate a mobile network.
+
+Record device model/OS, source SHA/APK hash, quality preset, failures and logs. A 20-minute
+30 FPS session must measure frame pacing, memory (target 700 MB working/under1 GB peak),
+thermal throttling and battery use; measure network bandwidth and reconnect behavior.
+The desktop 87-draw-call observation does not establish these phone measurements.
+Use `adb logcat -d -s godot:V AndroidRuntime:E` for engine failures; scrub user data before
+sharing logs. Do not run `tools.check_android` on a personal phone: it changes emulator
+display/test-profile settings. Physical results stay open until actually recorded.
+
 ## PostgreSQL and deployment
 
 Important variables: `VT_PLAYER_STORE` (`json` or `postgres`), `VT_DATABASE_URL`,

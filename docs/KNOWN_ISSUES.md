@@ -32,6 +32,9 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
 
 ## Engineering
 
+- Android CI passes installation/touch/locomotion/process resume at2101aa4, but the retained
+  resume frame was black. A stronger presented-world/post-resume-touch gate is running.
+
 - One process/room. No multi-worker routing, instanced party ownership, interest management
   or load test. Slow sends may stretch fixed ticks; cellular TCP behavior needs profiling.
 - Receipt retention is 128 responses per character. Expected rounds/encounter IDs protect old

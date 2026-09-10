@@ -7,7 +7,7 @@ Read README → this file → ARCHITECTURE → relevant source before editing.
 
 **Restoration is complete**, saved through `92eb3a3`. Main remains at `bd98746`.
 [CI run 34400798944](https://github.com/Fineyew/GameTesting/actions/runs/34400798944)
-completed successfully: both backend and Godot jobs. M0 artifact/handoff work remains;
+completed successfully: both backend and Godot jobs. Subsequent Android evidence is below;
 do not restart restoration or replace the working architecture.
 
 ## Implemented and tested
@@ -22,24 +22,32 @@ do not restart restoration or replace the working architecture.
   expected-round checks and durable reward receipts. One quest, one enemy, three learned
   starter spells; six spell definitions total, three without acquisition paths.
 - JSON development saves plus PostgreSQL adapter and additive migration 0002.
-- CI: **24 tests passed** with a real PostgreSQL service, migrations 0001→0002,
+- CI: **25 tests passed** with a real PostgreSQL service, migrations 0001→0002,
   save/reload/concurrent action/retry/rollback checks; Godot import and smoke; actual
   Godot account→creation→two-player presence→movement→quest→combat→reward→reconnect.
-- Prior desktop render check passed and measured 87 draw calls with default shadows off;
-  this is a historical software-renderer observation, not Android performance certification.
+- Coastline/floor flicker is fixed; fresh desktop rendering passes at 87 draw calls with
+  shadows off. Landscape Android export, installation and touch locomotion pass in CI.
 
-## M0 still open
+## M0 evidence and final handoff
 
-1. Android CI now retains a signed ARM64 APK and passing renders (run34424052563).
-   Portrait orientation is fixed. Run34424598230 then exposed shader-link failures in
-   the emulator's legacy GLES translator. CI now uses ANGLE/SwiftShader; rerun pending.
-2. Coastline/floor overlap is fixed; fresh desktop renders pass at 87 draw calls.
-3. Reconcile all canonical docs, record exact artifact provenance, test results and device limitations.
-4. Save an M0 completion checkpoint before broad M1 production.
+[CI run 34424981946](https://github.com/Fineyew/GameTesting/actions/runs/34424981946)
+for `2101aa4ac769748b4c7d2239e8a85058e0be822e` passed backend, Godot and Android jobs.
+The API35 x86_64 emulator installed the QA APK, entered preview with touch, moved through
+Dawnreef (22% changed world pixels), and survived background/resume without logged errors.
+Visual inspection found the resume screenshot was a black transition frame: the check is
+being strengthened to wait for presented terrain and verify touch movement after resume.
+Do not confuse process survival with confirmed resumed rendering.
 
-An earlier local APK was lost to workspace maintenance. A fresh APK is now retained
-in GitHub Actions artifact10131988899; final runtime validation is still pending. Physical phone testing and the updated public host
-remain **unverified**. No production deployment occurred.
+Retained ARM64 artifact **10132315403**: version0.2.0, 27,897,336 bytes, signature verified,
+minimum API24/target35. SHA-256:
+`28c840ac633374c9c60bd47ba097bfba2de59bd7c74e062fa606a8765542668d`.
+Manifest source is `2101aa4`; tested PR merge tree is `daa6cb0`. Runtime evidence artifact
+**10132364170**. Both retained until 2026-12-09. Earlier failed-run artifacts are superseded.
+
+Remaining M0 steps: pass the stronger visible-resume check, complete canonical handoff and
+save the M0 checkpoint. Physical S25 Ultra/ARM64 testing, thermal/performance/mobile-network
+results and the updated public host remain **unverified**. No production deployment occurred.
+README contains the physical-device procedure. These remain explicit release gates.
 
 ## Placeholder / planned
 

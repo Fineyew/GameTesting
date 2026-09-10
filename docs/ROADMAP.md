@@ -9,9 +9,10 @@ Updated 2026-09-10. Distinguish engineering gates from unverified physical-devic
 - [x] Validate actual Godot client against API and a second connected player.
 - [x] Import/movement/UI smoke; static material batching and initial lighting adjustment.
 - [x] Reconcile PROJECT_STATE and CHANGELOG with completed CI evidence.
-- [ ] Fix the observed coastline/floor overlap and inspect fresh renders.
-- [ ] Automate, retain and signature-check an ARM64 APK; verify Android runtime install/start.
-- [ ] Record physical Android testing status, performance targets, remaining risks and build provenance.
+- [x] Fix the observed coastline/floor overlap and inspect fresh renders.
+- [x] Automate, retain and signature-check an ARM64 APK; verify Android runtime install/start.
+- [ ] Verify visible world and touch locomotion after resume (stronger gate after run34424981946).
+- [x] Record physical Android testing status, performance targets, remaining risks and build provenance.
 - [ ] Complete canonical documentation and checkpoint M0 source/artifacts remotely.
 
 M0 engineering completion requires a reproducible retained APK, automated checks and

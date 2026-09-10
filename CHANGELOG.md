@@ -1,15 +1,16 @@
 # Changelog
 
-- Android runtime validation caught blank frames caused by shader-link failures in the
-  CI emulator's legacy GLES translator. Use ANGLE/SwiftShader and fail explicitly on
-  engine/render errors; landscape orientation is confirmed, full runtime rerun pending.
-
 ## Unreleased — M0 handoff (2026-09-10)
 
 - Reconcile canonical status with the completed restoration and successful CI.
 - Retain signed ARM64 APKs, provenance, verification reports and actual render evidence in CI.
-- Fix coplanar coast/floor flicker; fresh desktop render measures87 draw calls.
-- Android emulator uncovered portrait orientation; correct the setting and rerun native checks.
+- Fix coplanar coast/floor flicker; fresh desktop render measures 87 draw calls.
+- Correct Android landscape orientation. CI run34424981946 passes export, install, touch
+  preview/locomotion and background/resume process survival.
+- Use ANGLE/SwiftShader after the legacy emulator GLES translator failed shader linking;
+  runtime checks now reject engine/render errors explicitly. Strengthen visible-resume
+  verification after inspecting the successful run's black transition screenshot.
+- Document a reproducible S25 Ultra install/online/thermal test procedure; physical results remain open.
 - Preserve existing JSON deployments by default; require an explicit PostgreSQL switch/import.
 - Close the environment-case bypass of the production PostgreSQL requirement, with regression coverage.
 

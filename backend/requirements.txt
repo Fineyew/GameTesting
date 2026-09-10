@@ -1,7 +1,0 @@
-fastapi
-uvicorn[standard]
-sqlalchemy
-asyncpg
-psycopg[binary]
-alembic
-argon2-cffi

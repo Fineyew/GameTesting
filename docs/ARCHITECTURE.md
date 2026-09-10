@@ -102,3 +102,10 @@ emulator and uses actual adb touch input to enter preview/move, background and r
 Logs/screenshots record the result. These are runtime/function checks, not physical ARM64
 performance certification. Source checkpoints persist in Git; downloadable artifacts
 must also be retained. Current startup has no pack download/repair/resume updater yet.
+
+CI uses the supported `swangle` emulator graphics mode (ANGLE over SwiftShader).
+The legacy `swiftshader_indirect` path produced GLES shader-link failures and blank
+frames, caught by screenshot comparisons. See Android's
+[graphics acceleration modes](https://developer.android.com/studio/run/emulator-acceleration).
+This changes the test driver, not the game's Compatibility renderer. The runtime gate
+rejects engine/render errors and requires visible movement from real touch input.

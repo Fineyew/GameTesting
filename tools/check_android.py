@@ -26,6 +26,25 @@ def capture(name):
     path.write_bytes(adb('exec-out','screencap','-p',binary=True))
     return path
 
+def wait_for_world(name):
+    # Engine-ready logging precedes shader compilation/presentation on software GPUs.
+    # Require the authored green terrain (not the gray splash or a black resume frame).
+    def visible():
+        with Image.open(capture(name)) as frame:
+            pixels=list(frame.convert('RGB').resize((160,90)).getdata())
+        green=sum(g>r*1.12 and g>b*1.08 and g>65 for r,g,b in pixels)/len(pixels)
+        return green>.03
+    wait_for(visible,45)
+    return OUT/(name+'.png')
+
+def changed_world(left_path,right_path):
+    with Image.open(left_path) as left,Image.open(right_path) as right:
+        width,height=left.size
+        region=(int(width*.3),int(height*.22),int(width*.7),int(height*.66))
+        difference=ImageChops.difference(left.convert('RGB').crop(region),right.convert('RGB').crop(region)).convert('L')
+        histogram=difference.histogram()
+        return sum(histogram[13:])/sum(histogram)
+
 def main():
     OUT.mkdir(parents=True,exist_ok=True)
     adb('shell','wm','size','720x1280')
@@ -38,35 +57,33 @@ def main():
     adb('shell','monkey','-p',PACKAGE,'-c','android.intent.category.LAUNCHER','1')
     def log():return adb('logcat','-d','-s','godot:V','AndroidRuntime:E','libc:F')
     wait_for(lambda:'VT_GATEWAY_READY' in log())
-    time.sleep(4)
-    gateway=capture('gateway')
+    gateway=wait_for_world('gateway')
     assert 'ERROR:' not in log(), 'Godot engine/render error; inspect android-check/logcat.txt'
     with Image.open(gateway) as image:width,height=image.size
     assert width>height,'expected landscape'
     # Real touch on the current 1280x720 logical preview button, then joystick drag.
     adb('shell','input','tap',str(round(width*.80)),str(round(height*.83)))
     wait_for(lambda:'VT_PREVIEW_READY' in log())
-    time.sleep(1)
-    before=capture('dawnreef-before')
+    before=wait_for_world('dawnreef-before')
     adb('shell','input','swipe',str(round(width*.0875)),str(round(height*.844)),str(round(width*.0875)),str(round(height*.755)),'1800')
     time.sleep(.5)
-    after=capture('dawnreef-after')
-    region=(int(width*.3),int(height*.22),int(width*.7),int(height*.66))
-    with Image.open(before) as left,Image.open(after) as right:
-        difference=ImageChops.difference(left.convert('RGB').crop(region),right.convert('RGB').crop(region)).convert('L')
-        histogram=difference.histogram()
-        changed=sum(histogram[13:])/sum(histogram)
+    after=wait_for_world('dawnreef-after')
+    changed=changed_world(before,after)
     assert changed>.025,f'touch movement did not visibly change world: {changed}'
     adb('shell','input','keyevent','KEYCODE_HOME')
     time.sleep(1)
     adb('shell','monkey','-p',PACKAGE,'-c','android.intent.category.LAUNCHER','1')
-    time.sleep(2)
     assert adb('shell','pidof',PACKAGE).strip(),'process missing after resume'
-    capture('resumed')
+    resumed=wait_for_world('resumed')
+    assert changed_world(after,resumed)<.15,'world view changed unexpectedly across resume'
+    adb('shell','input','swipe',str(round(width*.0875)),str(round(height*.844)),str(round(width*.125)),str(round(height*.844)),'1800')
+    time.sleep(.5)
+    resumed_move=wait_for_world('resumed-moved')
+    assert changed_world(resumed,resumed_move)>.025,'touch locomotion failed after resume'
     logs=log()
     (OUT/'logcat.txt').write_text(logs)
     assert not re.search(r'ERROR:|SCRIPT ERROR|FATAL EXCEPTION|Fatal signal|ANR in '+re.escape(PACKAGE),logs),logs[-6000:]
-    (OUT/'result.txt').write_text(f'ANDROID_RUNTIME_PASS\nInstall, gateway, touch preview, touch locomotion, background/resume.\nChanged world pixels: {changed:.3f}\nEmulator x86_64; physical ARM64 device unverified.\n')
+    (OUT/'result.txt').write_text(f'ANDROID_RUNTIME_PASS\nInstall, visible gateway, touch preview, touch locomotion, background/resume with visible world and repeat touch locomotion.\nChanged world pixels: {changed:.3f}\nEmulator x86_64; physical ARM64 device unverified.\n')
     print('ANDROID_RUNTIME_PASS')
 
 if __name__=='__main__':
