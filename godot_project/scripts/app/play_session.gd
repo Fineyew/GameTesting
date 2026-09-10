@@ -1,0 +1,301 @@
+class_name PlaySession
+extends Node
+signal return_requested
+var world: DawnreefWorld
+var character: Dictionary
+var preview := false
+var player: WayfarerController
+var camera: OrbitRig
+var hud: GameHUD
+var connection: WorldConnection
+var remotes: Dictionary = {}
+var nearest := ""
+var pending_action: Dictionary = {}
+var busy := false
+var refresh_elapsed := 0.0
+
+func begin(zone: DawnreefWorld, profile: Dictionary, offline: bool) -> void:
+    world = zone
+    character = profile
+    preview = offline
+    player = preload("res://scenes/player/wayfarer.tscn").instantiate()
+    world.add_child(player)
+    player.setup(character.get("appearance",{}),world.geometry)
+    var at = character.get("position",{"x":0,"z":4})
+    player.position = Vector3(at.x,.1,at.z)
+    player.networked = not preview
+    camera = OrbitRig.new()
+    world.add_child(camera)
+    camera.target = player
+    camera.arm.add_excluded_object(player.get_rid())
+    hud = GameHUD.new()
+    add_child(hud)
+    hud.set_character(character,preview)
+    hud.interact_requested.connect(interact)
+    hud.journal_requested.connect(show_journal)
+    hud.inventory_requested.connect(show_inventory)
+    hud.settings_requested.connect(show_settings)
+    hud.chat_requested.connect(show_chat)
+    hud.recenter_requested.connect(camera.recenter)
+    if not preview:
+        connection = WorldConnection.new()
+        add_child(connection)
+        connection.snapshot_received.connect(_snapshot)
+        connection.state_changed.connect(func(message): hud.connection_label.text = message)
+        connection.start(character.id)
+        if character.get("encounter",{}).get("state") == "active":
+            show_combat()
+
+func _process(delta: float) -> void:
+    if not is_instance_valid(player):
+        return
+    var axis = hud.stick.axis
+    axis += Vector2(float(Input.is_physical_key_pressed(KEY_D) or Input.is_physical_key_pressed(KEY_RIGHT))-float(Input.is_physical_key_pressed(KEY_A) or Input.is_physical_key_pressed(KEY_LEFT)),float(Input.is_physical_key_pressed(KEY_S) or Input.is_physical_key_pressed(KEY_DOWN))-float(Input.is_physical_key_pressed(KEY_W) or Input.is_physical_key_pressed(KEY_UP)))
+    if not Input.get_connected_joypads().is_empty():
+        var pad = Input.get_connected_joypads()[0]
+        var joy = Vector2(Input.get_joy_axis(pad,JOY_AXIS_LEFT_X),Input.get_joy_axis(pad,JOY_AXIS_LEFT_Y))
+        if joy.length() > .2:
+            axis += joy
+    axis = axis.limit_length().rotated(-camera.yaw)
+    var fighting = character.get("encounter",{}).get("state") == "active"
+    player.enabled = not hud.modal and not fighting and (preview or connection.connected)
+    player.input_axis = axis
+    camera.enabled = not hud.modal
+    if connection:
+        connection.axis = axis if player.enabled else Vector2.ZERO
+    nearest = ""
+    var distance = 3.2
+    for key in world.geometry.interactions:
+        var at = world.geometry.interactions[key]
+        var candidate = Vector2(player.position.x-at[0],player.position.z-at[1]).length()
+        if candidate < distance:
+            nearest = key
+            distance = candidate
+    hud.interaction.text = {"mara_lanternwright":"Talk to Mara","fog_thorn_lurker":"Encounter","sunthread_reeds":"Inspect reeds","saltglass_cistern":"Inspect gate"}.get(nearest,"Explore")
+    for remote in remotes.values():
+        var before = remote.avatar.position
+        remote.avatar.position = before.lerp(remote.target,minf(1,delta*10))
+        var motion = remote.avatar.position-before
+        remote.avatar.walking = motion.length() > .003
+        if remote.avatar.walking:
+            remote.avatar.rotation.y = lerp_angle(remote.avatar.rotation.y,atan2(-motion.x,-motion.z),delta*10)
+    if not preview:
+        refresh_elapsed += delta
+        if refresh_elapsed > 600:
+            refresh_elapsed = 0
+            _refresh_auth()
+
+func _snapshot(frame: Dictionary) -> void:
+    var present: Array = []
+    for remote in frame.get("players",[]):
+        if remote.id == character.id:
+            player.reconcile(Vector3(remote.x,0,remote.z))
+            continue
+        present.append(remote.id)
+        if not remotes.has(remote.id):
+            var avatar = WayfarerAvatar.new()
+            world.add_child(avatar)
+            avatar.build(remote.appearance)
+            avatar.position = Vector3(remote.x,0,remote.z)
+            var name_label = ReefKit.label(avatar,remote.name,Vector3(0,2.3,0))
+            remotes[remote.id] = {"avatar":avatar,"label":name_label,"target":avatar.position}
+        remotes[remote.id].target = Vector3(remote.x,0,remote.z)
+        remotes[remote.id].label.text = remote.name + ("\n" + remote.bubble if not remote.bubble.is_empty() else "")
+    for identity in remotes.keys():
+        if not identity in present:
+            remotes[identity].avatar.queue_free()
+            remotes.erase(identity)
+    hud.connection_label.text = "Connected · %s Wayfarer%s nearby" % [frame.players.size(),"s" if frame.players.size()!=1 else ""]
+
+func interact() -> void:
+    if busy:
+        return
+    match nearest:
+        "mara_lanternwright":
+            var panel = hud.open_panel("Mara Lanternwright")
+            panel.add_child(TideUI.paragraph("The well keeps Dawnreef steady above the Glimmerdeep. Tonight its light is answering something beneath the reef. I have never heard it do that before."))
+            if preview:
+                panel.add_child(TideUI.paragraph("Sign in to help Mara and save your journey."))
+            elif character.get("quest_state",{}).get("lantern_well_first_light",{}).get("completed",false):
+                panel.add_child(TideUI.paragraph("You drove the lurker away, but listen—the well is still answering. That sound is coming from the Saltglass Cistern."))
+            elif not character.get("quest_state",{}).has("lantern_well_first_light"):
+                panel.add_child(TideUI.button("Help restore the First Light",accept_quest,true))
+            else:
+                panel.add_child(TideUI.paragraph("The fog-thorn creature has settled east of the well. Watch what it is preparing before you cast."))
+        "fog_thorn_lurker":
+            if preview:
+                hud.open_panel("A creature in the mist").add_child(TideUI.paragraph("Combat and rewards require an online character. Return to sign in when your server is available."))
+            else:
+                start_encounter()
+        "sunthread_reeds":
+            hud.open_panel("Sunthread reeds").add_child(TideUI.paragraph("The reeds hold a warm shimmer even after sunset. Gathering and crafting are planned; this patch has no harvest action yet."))
+        "saltglass_cistern":
+            hud.open_panel("Saltglass Cistern").add_child(TideUI.paragraph("A low note rises from behind the sealed gate. The dungeon beyond is planned and is not playable in this build."))
+        _:
+            hud.quest_label.text = "Move close to Mara, the lurker, the reeds, or the cistern gate."
+
+func accept_quest() -> void:
+    busy = true
+    var result = await ApiClient.post_json("/world/characters/%s/quests/lantern_well_first_light/accept" % character.id,{})
+    busy = false
+    if not result.is_empty():
+        character = result
+        hud.set_character(character,preview)
+        hud.close_panel()
+
+func command_id() -> String:
+    return Crypto.new().generate_random_bytes(16).hex_encode()
+
+func start_encounter() -> void:
+    busy = true
+    hud.open_panel("Entering encounter…").add_child(TideUI.paragraph("Listening for the creature's first intent."))
+    var result = await ApiClient.post_json("/world/characters/%s/encounters" % character.id,{"enemy_key":"fog_thorn_lurker"},command_id())
+    busy = false
+    if not result.is_empty():
+        character = result.character
+        show_combat()
+    else:
+        hud.open_panel("Encounter unavailable").add_child(TideUI.paragraph("Check the connection, move close to the lurker, then try again."))
+
+func show_combat() -> void:
+    var combat = character.get("encounter",{})
+    if combat.is_empty():
+        return
+    var panel = hud.open_panel("Tidebeat · " + combat.enemy_name)
+    panel.add_child(TideUI.paragraph("Your Vigor %s / 30     Focus %s / 6\nLurker Vigor %s / %s     Beat %s" % [combat.player_vigor,combat.focus,combat.enemy_vigor,combat.enemy_max_vigor,combat.round],22))
+    if combat.state == "active":
+        panel.add_child(TideUI.paragraph("NEXT INTENT · %s · %s damage" % [combat.intent.name,combat.intent.power]))
+        if not pending_action.is_empty():
+            panel.add_child(TideUI.paragraph("The result was not received. Retry the same cast safely."))
+            panel.add_child(TideUI.button("Retry cast",retry_action,true))
+            panel.add_child(TideUI.button("Reload encounter",reload_character))
+        else:
+            var grid = GridContainer.new()
+            grid.columns = 2
+            panel.add_child(grid)
+            for key in combat.spells:
+                var spell = combat.spells[key]
+                var cost = 0
+                for entry in spell.get("costs",[]):
+                    cost += entry.amount
+                var button = TideUI.button("%s · %s Focus" % [spell.name,cost],cast.bind(key))
+                button.disabled = cost > combat.focus
+                button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+                grid.add_child(button)
+            grid.add_child(TideUI.button("Brace · block 6",cast.bind("brace")))
+            grid.add_child(TideUI.button("Gather · +2 Focus",cast.bind("gather")))
+    else:
+        panel.add_child(TideUI.label("Victory · rewards saved" if combat.state=="victory" else "Recovered at the Lantern Well",22,TideUI.GOLD))
+        panel.add_child(TideUI.button("Return to Dawnreef",hud.close_panel,true))
+    panel.add_child(TideUI.paragraph("\n".join(combat.log.slice(-4)),17))
+
+func cast(action: String) -> void:
+    if busy:
+        return
+    pending_action = {"key":command_id(),"payload":{"encounter_id":character.encounter.id,"action":action,"expected_round":character.encounter.round}}
+    retry_action()
+
+func retry_action() -> void:
+    if busy or pending_action.is_empty():
+        return
+    busy = true
+    hud.open_panel("Casting…").add_child(TideUI.paragraph("Your action is being resolved."))
+    var result = await ApiClient.post_json("/world/characters/%s/encounters/actions" % character.id,pending_action.payload,pending_action.key)
+    busy = false
+    if not result.is_empty():
+        world.spell_impact(pending_action.payload.action)
+        pending_action.clear()
+        character = result.character
+        hud.set_character(character,preview)
+    show_combat()
+
+func reload_character() -> void:
+    if busy:
+        return
+    busy = true
+    var result = await ApiClient.get_json("/world/characters/"+character.id)
+    busy = false
+    if not result.is_empty():
+        character = result
+        pending_action.clear()
+        show_combat()
+
+func show_journal() -> void:
+    if character.get("encounter",{}).get("state") == "active":
+        show_combat()
+        return
+    var panel = hud.open_panel("Journal · Dawnreef")
+    panel.add_child(TideUI.paragraph("FIRST LIGHT AT THE LANTERN WELL\n" + hud.quest_label.text))
+    panel.add_child(TideUI.paragraph("Auralis is a world of floating reefs. The Lantern Wells keep them steady. Your Veilmark can hear what moves beneath them."))
+
+func show_inventory() -> void:
+    var panel = hud.open_panel("Wayfarer's bag")
+    panel.add_child(TideUI.label("Shell chits · %s" % character.get("wallet",{}).get("shell_chits",0),22,TideUI.GOLD))
+    var search = TideUI.edit("Search your items")
+    panel.add_child(search)
+    var items = VBoxContainer.new()
+    panel.add_child(items)
+    for key in character.get("inventory",{}):
+        var item = TideUI.label("%s     × %s" % [GameData.display_name("items",key),character.inventory[key]])
+        items.add_child(item)
+    if items.get_child_count() == 0:
+        items.add_child(TideUI.paragraph("Your bag is empty. Quest rewards will appear here."))
+    search.text_changed.connect(func(value):
+        for item in items.get_children():
+            item.visible = value.to_lower() in item.text.to_lower())
+    panel.add_child(TideUI.paragraph("Equipment slots and item use are not available in this foundation build.",16))
+
+func show_settings() -> void:
+    var panel = hud.open_panel("Settings")
+    var frames = TideUI.option(["Battery · 30 FPS","Smooth · 60 FPS"])
+    frames.select(1 if Engine.max_fps==60 else 0)
+    frames.item_selected.connect(func(index): Engine.max_fps = 60 if index else 30; save_settings())
+    panel.add_child(frames)
+    var shadow = CheckButton.new()
+    shadow.text = "Character and world shadows"
+    shadow.custom_minimum_size.y = 56
+    shadow.button_pressed = world.sun.shadow_enabled
+    shadow.toggled.connect(func(value): world.sun.shadow_enabled = value; save_settings())
+    panel.add_child(shadow)
+    var scale_option = TideUI.option(["Render resolution · 75%","Render resolution · 100%"])
+    scale_option.select(1 if get_viewport().scaling_3d_scale > .9 else 0)
+    scale_option.item_selected.connect(func(index): get_viewport().scaling_3d_scale = 1.0 if index else .75; save_settings())
+    panel.add_child(scale_option)
+    panel.add_child(TideUI.paragraph("Frame targets still require testing on physical Android devices. Camera recenter is always available beside the movement controls.",17))
+    panel.add_child(TideUI.button("Return to sign in",return_requested.emit))
+
+func save_settings() -> void:
+    var config = ConfigFile.new()
+    config.load("user://settings.cfg")
+    config.set_value("graphics","fps",Engine.max_fps)
+    config.set_value("graphics","shadows",world.sun.shadow_enabled)
+    config.set_value("graphics","scale",get_viewport().scaling_3d_scale)
+    config.save("user://settings.cfg")
+
+func show_chat() -> void:
+    var panel = hud.open_panel("Say something")
+    if preview:
+        panel.add_child(TideUI.paragraph("Nearby chat is available when connected to the world."))
+        return
+    for pair in [["hello","Hello, Wayfarer!"],["help","Could you lend a light?"],["thanks","Thank you!"],["follow","Let's explore together."],["farewell","Safe tides!"]]:
+        panel.add_child(TideUI.button(pair[1],_say.bind(pair[0])))
+
+func _say(phrase: String) -> void:
+    connection.say(phrase)
+    hud.close_panel()
+
+func _refresh_auth() -> void:
+    var result = await ApiClient.post_json("/auth/refresh",{})
+    if not result.is_empty():
+        ApiClient.access_token = result.access_token
+        connection.start(character.id)
+
+func _exit_tree() -> void:
+    if connection:
+        connection.stop()
+    for remote in remotes.values():
+        remote.avatar.queue_free()
+    if is_instance_valid(player):
+        player.queue_free()
+    if is_instance_valid(camera):
+        camera.queue_free()

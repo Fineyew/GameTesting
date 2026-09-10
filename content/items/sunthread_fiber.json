@@ -1,0 +1,22 @@
+{
+  "type": "items",
+  "key": "sunthread_fiber",
+  "schema_version": 1,
+  "version": 1,
+  "display": {
+    "name": "Sunthread Fiber",
+    "summary": "A warm golden fiber gathered from Dawnreef reeds.",
+    "description": "Sunthread fiber is a lightweight crafting material used by lantern caretakers and field scouts."
+  },
+  "tags": ["material", "gathered", "dawnreef"],
+  "assets": {
+    "icon": "res://assets/icons/items/sunthread_fiber.png"
+  },
+  "rules": {
+    "stack_limit": 99,
+    "sell_value": [{"currency_key": "shell_chits", "amount": 1}]
+  },
+  "localization": {
+    "en": {"name": "Sunthread Fiber"}
+  }
+}

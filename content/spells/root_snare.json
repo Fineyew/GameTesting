@@ -1,0 +1,47 @@
+{
+  "type": "spells",
+  "key": "root_snare",
+  "schema_version": 1,
+  "version": 2,
+  "display": {
+    "name": "Root Snare",
+    "summary": "A tactical binding spell that damages and slows a single foe.",
+    "description": "The Wayfarer calls up bright reed-roots from the reef soil to hold a nearby enemy in place."
+  },
+  "tags": [
+    "starter",
+    "combat",
+    "nature"
+  ],
+  "assets": {
+    "icon": "res://assets/icons/spells/root_snare.png",
+    "vfx": "res://assets/vfx/root_snare.tscn"
+  },
+  "rules": {
+    "targeting": {
+      "team": "enemy",
+      "count": 1
+    },
+    "costs": [
+      {
+        "resource": "focus",
+        "amount": 2
+      }
+    ],
+    "effects": [
+      {
+        "type": "deal_damage",
+        "power": 6
+      },
+      {
+        "type": "bind",
+        "amount": 4
+      }
+    ]
+  },
+  "localization": {
+    "en": {
+      "name": "Root Snare"
+    }
+  }
+}

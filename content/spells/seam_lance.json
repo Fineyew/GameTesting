@@ -1,0 +1,28 @@
+{
+  "type": "spells",
+  "key": "seam_lance",
+  "schema_version": 1,
+  "version": 1,
+  "display": {
+    "name": "Seam Lance",
+    "summary": "Release stored pressure for a decisive strike."
+  },
+  "tags": [
+    "combat"
+  ],
+  "assets": {},
+  "rules": {
+    "costs": [
+      {
+        "resource": "focus",
+        "amount": 4
+      }
+    ],
+    "effects": [
+      {
+        "type": "deal_damage",
+        "power": 15
+      }
+    ]
+  }
+}

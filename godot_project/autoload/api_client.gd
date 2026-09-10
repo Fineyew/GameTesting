@@ -1,0 +1,102 @@
+extends Node
+
+signal request_failed(endpoint: String, status_code: int, message: String)
+
+var base_url := ""
+var access_token := ""
+var request_timeout_seconds := 15.0
+
+
+func set_session(new_base_url: String, token: String) -> void:
+    base_url = ""
+    access_token = ""
+    if not _is_allowed_base_url(new_base_url):
+        request_failed.emit("session", 0, "API base URL must use HTTPS outside editor-local testing")
+        return
+    base_url = new_base_url.trim_suffix("/")
+    access_token = token
+
+
+func get_json(endpoint: String) -> Dictionary:
+    if base_url.is_empty():
+        request_failed.emit(endpoint, 0, "API base URL is not configured")
+        return {}
+
+    var request := HTTPRequest.new()
+    request.timeout = request_timeout_seconds
+    add_child(request)
+
+    var headers := _auth_headers()
+    var err := request.request("%s%s" % [base_url, _normalize_endpoint(endpoint)], headers, HTTPClient.METHOD_GET)
+    if err != OK:
+        request.queue_free()
+        request_failed.emit(endpoint, 0, "Unable to start request")
+        return {}
+
+    var result: Array = await request.request_completed
+    request.queue_free()
+    return _parse_response(endpoint, result)
+
+
+func post_json(endpoint: String, payload: Dictionary, idempotency_key := "") -> Dictionary:
+    if base_url.is_empty():
+        request_failed.emit(endpoint, 0, "API base URL is not configured")
+        return {}
+
+    var request := HTTPRequest.new()
+    request.timeout = request_timeout_seconds
+    add_child(request)
+
+    var headers := _auth_headers()
+    headers.append("Content-Type: application/json")
+    if not idempotency_key.is_empty():
+        headers.append("Idempotency-Key: %s" % idempotency_key)
+
+    var body := JSON.stringify(payload)
+    var err := request.request("%s%s" % [base_url, _normalize_endpoint(endpoint)], headers, HTTPClient.METHOD_POST, body)
+    if err != OK:
+        request.queue_free()
+        request_failed.emit(endpoint, 0, "Unable to start request")
+        return {}
+
+    var result: Array = await request.request_completed
+    request.queue_free()
+    return _parse_response(endpoint, result)
+
+
+func _auth_headers() -> PackedStringArray:
+    var headers := PackedStringArray()
+    if not access_token.is_empty():
+        headers.append("Authorization: Bearer %s" % access_token)
+    return headers
+
+
+func _normalize_endpoint(endpoint: String) -> String:
+    if endpoint.begins_with("/"):
+        return endpoint
+    return "/%s" % endpoint
+
+
+func _is_allowed_base_url(candidate_url: String) -> bool:
+    if candidate_url.begins_with("https://"):
+        return true
+    if OS.has_feature("editor") or OS.has_feature("debug"):
+        var local = RegEx.new()
+        local.compile("^http://(127\\.0\\.0\\.1|localhost)(:[0-9]+)?(/|$)")
+        return local.search(candidate_url) != null
+    return false
+
+
+func _parse_response(endpoint: String, result: Array) -> Dictionary:
+    var status_code: int = result[1]
+    var body: PackedByteArray = result[3]
+    var text := body.get_string_from_utf8()
+    var parsed = JSON.parse_string(text) if not text.is_empty() else {}
+
+    if status_code < 200 or status_code >= 300:
+        request_failed.emit(endpoint, status_code, text)
+        return {}
+
+    if typeof(parsed) == TYPE_DICTIONARY:
+        return parsed
+    return {"data": parsed}

@@ -1,0 +1,22 @@
+{
+  "type": "items",
+  "key": "clean_reed_cloth",
+  "schema_version": 1,
+  "version": 1,
+  "display": {
+    "name": "Clean Reed Cloth",
+    "summary": "Plain cloth pressed from soft Dawnreef reeds.",
+    "description": "A practical crafting material used for bandages, wraps, and small field repairs."
+  },
+  "tags": ["material", "crafted", "dawnreef"],
+  "assets": {
+    "icon": "res://assets/icons/items/clean_reed_cloth.png"
+  },
+  "rules": {
+    "stack_limit": 99,
+    "sell_value": [{"currency_key": "shell_chits", "amount": 1}]
+  },
+  "localization": {
+    "en": {"name": "Clean Reed Cloth"}
+  }
+}
