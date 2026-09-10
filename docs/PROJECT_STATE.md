@@ -45,8 +45,16 @@ quest-earned vendor purchase, comparison, equip/unequip/reconnect and Guard in c
 New regression tests cover malformed/forged buys, insufficient funds, retries/conflicts,
 concurrent spending, rollback, ownership/level/active combat, JSON/JSONB compatibility.
 
-**Pending:** complete CI PostgreSQL (including cross-connection purchases and SQL rollback),
-render evidence review and Android install/Folio/Bag→vendor/touch/visible-resume gate.
+CI run34439273721 at19ac379 passed **90 tests / 30 subtests**, including all eight real
+PostgreSQL tests and migrations, plus the complete Godot/API gate. Export and desktop
+render passed (89 draw calls). The first Android attempt failed at gateway visibility:
+a Pixel Launcher ANR dialog covered the rendered game (artifact10137449675). The identical
+Android-only rerun passed startup/navigation/movement/resume but failed on a real native
+panel lifecycle error (artifact10137587989). GameHUD now hides/queues old controls instead
+of detaching them during input; fresh full CI is pending. Godot gates reject engine errors
+and smoke dispatches actual GUI mouse events. No M1.3 ARM64 artifact is published yet.
+**Pending:** render evidence review and successful native install/Folio/Bag→vendor/touch/
+visible-resume validation, followed by artifact verification and final handoff.
 Candidate Android version0.2.3/code5; no new APK claimed until required gates pass.
 CI only publishes ARM64 after backend/Godot/render/native validation succeeds.
 

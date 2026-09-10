@@ -12,7 +12,12 @@
 - Leave bandage purchase unavailable until item use exists; no broad content expansion.
 - Add JSON/PostgreSQL/API/old-save/concurrency/rollback and Godot interaction regressions.
 - Bump to Android0.2.3/code5; retain vendor/equipment renders and native Bag→vendor touch.
-  Full CI/artifact validation pending; physical phone remains unverified.
+  PostgreSQL/backend90 tests and Godot/API pass in run34439273721. Initial native validation
+  failed on a Pixel Launcher ANR overlay, retained in artifact10137449675; identical rerun
+  reached native navigation and caught an input-time panel-detachment error. Hide/queue
+  retiring controls so Godot can finish input dispatch; strengthen all Godot error gates
+  and dispatch GUI input in smoke. Fresh full validation pending; no M1.3 ARM64 published.
+  Physical phone remains unverified.
 
 ## 0.2.2 — M1.2 acquisition and folio complete (2026-09-10)
 

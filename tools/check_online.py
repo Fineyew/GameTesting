@@ -58,7 +58,7 @@ async def main():
                     finally:
                         pulse.cancel()
                     print(output.decode())
-                    assert godot.returncode == 0 and b'GODOT_ONLINE_PASS' in output and b'SCRIPT ERROR' not in output
+                    assert godot.returncode == 0 and b'GODOT_ONLINE_PASS' in output and b'ERROR:' not in output and b'SCRIPT ERROR' not in output
         finally:
             server.terminate()
             await server.wait()

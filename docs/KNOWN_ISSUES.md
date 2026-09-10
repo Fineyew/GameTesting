@@ -70,3 +70,19 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
   comparison thresholds are unchanged; the captured failing frame is rejected by the new
   predicate and captured exploration/resume frames are accepted. Full CI passes at d0c6048
   (run 34437004626); the new exploration baseline and native Folio/resume frames were inspected.
+
+- M1.3 run34439273721's first Android attempt reached VT_GATEWAY_READY but failed the
+  visible-gateway gate. Retained artifact10137449675 shows Android's “Pixel Launcher
+  isn't responding” modal dimming the rendered game. Godot's filtered log has no engine
+  error. The identical Android-only rerun cleared startup; the underlying launcher/runner
+  cause remains unverified. No ARM64 artifact was published from that failed attempt.
+  Keep this evidence and the unchanged assertions; do not dismiss errors to claim a pass.
+
+- That M1.3 rerun exposed a real panel lifecycle error on Bag→vendor touch navigation:
+  synchronous remove_child detached the pressed control before Godot finished input
+  dispatch (can_process: !is_inside_tree). Native movement/resume completed, but the
+  unchanged engine-error assertion correctly failed; artifact10137587989 retains evidence.
+  GameHUD now hides retiring controls and queue_free defers their removal until the frame
+  ends. GUI-dispatched mouse clicks supplement smoke coverage; native adb touch remains
+  the regression for this Android path. All Godot gates now reject engine ERROR messages,
+  not only SCRIPT ERROR. Fresh full CI is pending for this correction.

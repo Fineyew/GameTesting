@@ -108,7 +108,9 @@ func _ready() -> void:
 func open_panel(title: String) -> VBoxContainer:
     panel_title.text = title
     for child in panel_content.get_children():
-        panel_content.remove_child(child)
+        # Touch dispatch can still hold the emitting control after its callback.
+        # Hide it now; queue_free keeps it in the tree until dispatch has finished.
+        child.hide()
         child.queue_free()
     modal = true
     stick.release()

@@ -3,6 +3,20 @@ extends SceneTree
 func _init() -> void:
     call_deferred("run")
 
+func click_control(button: Button) -> void:
+    # Dispatch through the GUI, not only pressed.emit(): input can still hold the
+    # old panel when its callback replaces it. Native Android caught this path.
+    var at = button.get_global_rect().get_center()
+    for down in [true,false]:
+        var event = InputEventMouseButton.new()
+        event.position = at
+        event.global_position = at
+        event.button_index = MOUSE_BUTTON_LEFT
+        event.button_mask = MOUSE_BUTTON_MASK_LEFT if down else 0
+        event.pressed = down
+        root.push_input(event,true)
+        await process_frame
+
 func run() -> void:
     var app = load("res://scenes/app/bootstrap.tscn").instantiate()
     root.add_child(app)
@@ -27,7 +41,7 @@ func run() -> void:
     assert(app.session.hud.modal)
     await create_timer(.2).timeout
     print("BROWSE_TOUCH_CENTER=",app.session.commerce_panel.browse_button.get_global_rect().get_center())
-    app.session.commerce_panel.browse_button.pressed.emit()
+    await click_control(app.session.commerce_panel.browse_button)
     assert(app.session.commerce_panel.buy_buttons.buy_lanternkeeper_vest.disabled)
     assert(app.session.commerce_panel.equip_buttons.is_empty())
     app.session.hud.close_panel()

@@ -254,3 +254,10 @@ in actual combat while retaining the entire M1.1/M1.2 flow. Native Android addit
 opens Bag→vendor by adb touch; it covers preview/navigation, not online transaction logic.
 Render evidence includes vendor and equipment panels. ARM64 publication remains after
 all backend/Godot/render/emulator gates; physical-device validation remains separate.
+
+Modal replacement hides retiring controls and queues their deletion; it does not detach
+controls synchronously inside a button callback. Android input dispatch can still refer
+to the pressed control after the callback returns. This follows Godot's
+[queue_free lifecycle](https://docs.godotengine.org/en/4.5/classes/class_node.html#class-node-method-queue-free).
+The native Bag→vendor gate caught the previous can_process error; smoke now dispatches
+GUI mouse input and all Godot gates reject engine errors as well as script failures.

@@ -8,5 +8,5 @@ for args, marker in [(['--editor','--quit'],None),(['--script','res://tests/smok
     result = subprocess.run([godot,'--headless','--path',str(ROOT/'godot_project'),*args],capture_output=True,text=True,timeout=60)
     output = result.stdout + result.stderr
     print(output)
-    if result.returncode or 'SCRIPT ERROR' in output or (marker and marker not in output):
+    if result.returncode or 'ERROR:' in output or 'SCRIPT ERROR' in output or (marker and marker not in output):
         raise SystemExit(1)
