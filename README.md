@@ -11,11 +11,11 @@ Read [PROJECT_STATE](docs/PROJECT_STATE.md), [ARCHITECTURE](docs/ARCHITECTURE.md
 [DECISIONS](docs/DECISIONS.md), [KNOWN_ISSUES](docs/KNOWN_ISSUES.md) and [CHANGELOG](CHANGELOG.md).
 M0 engineering is complete: PostgreSQL/Godot integration, retained signed ARM64 export,
 inspected renders, and Android emulator touch/visible-resume checks pass. Physical phone
-validation remains unverified. M1.1 is also complete: reusable story rules and one Mara
-investigation. [CI run 34431891977](https://github.com/Fineyew/GameTesting/actions/runs/34431891977)
-passes 38 tests, real Godot/API story integration and Android runtime checks. PROJECT_STATE
-records exact source/artifact hashes. M1.2 acquisition/folio is implemented and undergoing
-the full gates; no new APK is certified until that run succeeds.
+validation remains unverified. M1.1 and M1.2 are complete: reusable story rules, Mara's
+investigation, three earned spells and a persistent server-owned folio.
+[CI run 34434861638](https://github.com/Fineyew/GameTesting/actions/runs/34434861638) at 40fcfa7
+passes 59 tests, full Godot/API progression and Android Folio touch/visible-resume checks.
+PROJECT_STATE records exact source/artifact hashes; ROADMAP defines the narrow M1.3 scope.
 
 ## What is playable
 
@@ -119,7 +119,7 @@ HTTPS test server separately; USB reverse does not simulate a mobile network.
 Record device model/OS, source SHA/APK hash, quality preset, failures and logs. A 20-minute
 30 FPS session must measure frame pacing, memory (target 700 MB working/under1 GB peak),
 thermal throttling and battery use; measure network bandwidth and reconnect behavior.
-The desktop 87-draw-call observation does not establish these phone measurements.
+The desktop 89-draw-call observation does not establish these phone measurements.
 Use `adb logcat -d -s godot:V AndroidRuntime:E` for engine failures; scrub user data before
 sharing logs. Do not run `tools.check_android` on a personal phone: it changes emulator
 display/test-profile settings. Physical results stay open until actually recorded.

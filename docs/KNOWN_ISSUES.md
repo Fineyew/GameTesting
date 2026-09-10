@@ -51,5 +51,6 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
 - Docker runtime/public deployment are unverified here; CI proves the application and database
   behavior in its isolated test environment, not the production topology.
 
-- M1.2 final CI/render/Android handoff is pending. The d138214 docs-only rerun failed on a
-  portrait launcher-transition screenshot; landscape presentation is now awaited explicitly.
+- M1.2 full gates pass at 40fcfa7/run 34434861638. The d138214 docs-only rerun failed on a
+  portrait launcher-transition screenshot; waiting for landscape presentation resolved it
+  without relaxing the view-match threshold. This is not physical-device certification.

@@ -1,7 +1,12 @@
 # Changelog
 
-## 0.2.2 — M1.2 acquisition and folio (validation in progress, 2026-09-10)
+## 0.2.2 — M1.2 acquisition and folio complete (2026-09-10)
 
+- Code/APK checkpoint 40fcfa7 passes all jobs in run 34434861638: 59 tests / 30 subtests with
+  PostgreSQL/migrations, full Godot/API acquisition/folio/reconnect/earned-cast integration,
+  89-draw-call render and Android Folio touch/locomotion/visible-resume checks.
+- Retain ARM64 artifact 10135899991 (0.2.2/code 4) and runtime evidence 10135900260;
+  exact APK SHA-256/source provenance is in PROJECT_STATE. Screenshots inspected.
 - Continue M0 at 1044f95 and M1.1 at 4efd3a6/d138214; preserve original content and player IDs.
 - Add three small Mara lessons awarding the three existing additional spells, once each.
 - Add validated cast objectives, six-slot persistent prepared folio and a touch Folio panel.

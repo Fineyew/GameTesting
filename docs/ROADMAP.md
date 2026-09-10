@@ -20,7 +20,7 @@ honest device-status documentation. Physical phone thermal/touch/network validat
 an open release gate; never call an emulator or desktop result a physical-phone pass.
 No broad M1 content production before this engineering checkpoint.
 
-## M1 — authored vertical slice (M1.2 in validation)
+## M1 — authored vertical slice (M1.2 complete)
 
 - [x] M1.1: catalog-owned NPC dialogue/branches/conditions with server-owned cursors.
 - [x] Validated quest offers, ordered defeat/inspect/talk objectives and once-only rewards.
@@ -31,7 +31,7 @@ No broad M1 content production before this engineering checkpoint.
 M1.1 code/APK source 4efd3a6 passed all jobs in run 34431891977 (38 tests). M0 remains
 checkpointed at 1044f95. No bulk content was produced; the cistern dungeon is still sealed.
 
-**M1.2 — implemented; final CI/artifact handoff pending**
+**M1.2 complete** — code/APK source 40fcfa7, all gates passed in run 34434861638.
 
 - [x] Three short Mara lessons make Beacon Trace, Reed Aegis and Seam Lance obtainable.
 - [x] Six-slot persistent folio, ownership/catalog/duplicate checks, stale-write/retry guards.
@@ -39,8 +39,8 @@ checkpointed at 1044f95. No bulk content was produced; the cistern dungeon is st
 - [x] Touch Folio panel, costs/effects/source hints, learned/prepared distinction and safe retry UI.
 - [x] JSON old-save/retry/authority coverage and Godot folio smoke checks.
 - [x] Complete extended Godot/API acquisition, folio and earned-spell combat integration.
-- [ ] Complete PostgreSQL, render and Android runtime gates.
-- [ ] Retain verified ARM64 0.2.2/code 4, reconcile handoff and checkpoint M1.2.
+- [x] Complete PostgreSQL, render and Android runtime gates (59 tests, 89 draw calls).
+- [x] Retain verified ARM64 0.2.2/code 4, reconcile handoff and checkpoint M1.2.
 
 **Recommended next: M1.3 (not started)** — one equipment/vendor loop using the existing
 Dawnreef supply cart/item definitions: server-owned buy/equip, useful item comparison,
