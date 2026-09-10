@@ -1,4 +1,4 @@
-# Veilbound Tides - Mobile RPG Architecture Prototype
+# Veilbound Tides — Android-first online RPG foundation
 
 This repository contains the architecture plan and initial scaffold for an original mobile-first online 3D fantasy RPG built with:
 
@@ -112,10 +112,16 @@ https://game.surveyroute.work/api/v1
 
 The client has a mobile-oriented account gateway, character hall, basic character creation/customization choices, top profile/status area, quest tracker, mini-map readout, bottom six-slot action bar, expandable secondary menu tray, readable character/quest/inventory HUD, themed fantasy UI panels, and a stylized placeholder 3D Dawnreef Commons with a lantern well, paths, reeds, crystals, market/training/dock/travel-gate landmarks, player, NPC, and enemy markers. Existing accounts return to a saved Wayfarer card before entering the world. Move the player marker with WASD, arrow keys, or the virtual joystick; primary controls sit above a scrollable HUD so mobile-sized screens do not cut off actions. Tapping visible NPC/enemy/gate areas in the world view opens interactions, and contextual Talk/Fight buttons appear when near Mara or the Fog-Thorn enemy. Talk opens a short Mara dialogue with an accept-quest choice that changes after quest progress, and Fight opens a small combat panel with Glimmer Spark, Root Snare, and Tide Mend actions. The enemy marker pulses on combat resolution and dims after the starter threat is completed. It can register/login, create a character, enter the world, accept the starter quest, fight the starter enemy, save, logout, and display the current character state.
 
-## September 2026 continuation
+## Current continuation status
 
-Read [current project state](docs/PROJECT_STATE.md), [current architecture](docs/ARCHITECTURE.md),
-[roadmap](docs/ROADMAP.md), and [changelog](CHANGELOG.md) before changing this project.
-The September Android foundation is being restored on `feature/android-foundation`
-after an interrupted transient workspace; the original main branch is preserved.
-Do not confuse older descriptions above with completion of the expanded MMO slice.
+Restoration is complete on `feature/android-foundation` in [draft PR #4](https://github.com/Fineyew/GameTesting/pull/4).
+[CI](https://github.com/Fineyew/GameTesting/actions/runs/34400798944) passed PostgreSQL migrations,
+24 tests, Godot smoke and real client/API integration. Read [PROJECT_STATE](docs/PROJECT_STATE.md),
+[ARCHITECTURE](docs/ARCHITECTURE.md), [ROADMAP](docs/ROADMAP.md) and [CHANGELOG](CHANGELOG.md).
+
+The descriptions above record the original legacy slice. The active main scene is now
+`godot_project/scenes/app/bootstrap.tscn`; preserve the legacy scene. Use Godot 4.5.1 and
+`python -m pip install -r backend/requirements.lock`. Full tests use pytest; unittest alone
+omits the newer integration tests. Run `python -m tools.check_godot` and `python -m tools.check_online`
+with `GODOT_BIN` set. The updated public server is not deployed or verified; use a local
+0.2.0 server or the explicitly labeled offline exploration preview.

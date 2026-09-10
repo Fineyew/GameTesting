@@ -7,12 +7,12 @@ this document and explicit current owner instructions govern subsequent changes.
 ## September direction
 
 The owner explicitly requires real visible multiplayer presence, superseding the
-older recommendation to defer WebSocket infrastructure. Add a versioned, low-rate
-WebSocket world channel while retaining HTTP for accounts/content/durable combat
+older recommendation to defer WebSocket infrastructure. The implemented versioned, low-rate
+WebSocket world channel retains HTTP for accounts/content/durable combat
 commands. One process owns a capped room initially; multiple independent workers
 must not be enabled until room ownership and session routing are externalized.
 
-The inherited JSON save is a development/compatibility adapter. The new PostgreSQL
+The inherited JSON save is a development/compatibility adapter. The PostgreSQL
 adapter reuses account/character identity tables and adds one locked runtime-state
 row per character containing the current slice aggregate and retry receipts.
 Normalize into module tables through migrations when actual feature boundaries
@@ -32,7 +32,9 @@ independent of the HTTP character/economy state interface.
 
 ## Continuity
 
-The interrupted September work is being restored from recorded source patches.
+The September foundation restoration is complete and checkpointed through `92eb3a3`.
+CI run 34400798944 executed both migrations, 24 tests, Godot smoke and client/API integration.
+Android export retention and device verification remain separate M0 gates.
 PROJECT_STATE records actual restoration/verification, not design aspirations.
 Push stable feature-branch checkpoints during long sessions and update state
 before handoff. No secrets or build products belong in source control.

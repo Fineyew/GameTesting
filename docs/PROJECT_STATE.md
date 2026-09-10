@@ -1,36 +1,58 @@
 # Veilbound Tides — project state
 
-Updated 2026-09-09. Read README, this file, ARCHITECTURE, then relevant source.
+Updated 2026-09-10. Branch `feature/android-foundation`; draft PR [#4](https://github.com/Fineyew/GameTesting/pull/4).
+Read README → this file → ARCHITECTURE → relevant source before editing.
 
-## Recovery checkpoint
+## Current checkpoint
 
-The September Android foundation session was interrupted before its local feature
-branch or artifacts were uploaded. Its transient workspace did not survive.
-GitHub main at `bd98746` remains intact. The exact source patches are recorded in
-the conversation and are being restored onto `feature/android-foundation`.
-Do not replace the original world, APIs, or legacy client from memory.
+**Restoration is complete**, saved through `92eb3a3`. Main remains at `bd98746`.
+[CI run 34400798944](https://github.com/Fineyew/GameTesting/actions/runs/34400798944)
+completed successfully: both backend and Godot jobs. M0 artifact/handoff work remains;
+do not restart restoration or replace the working architecture.
 
-## Present in the recovered baseline
+## Implemented and tested
 
-- Godot account gateway, character hall and local placeholder Dawnreef scene.
-- FastAPI registration/login, single character, starter quest/combat/save loop.
-- JSON player persistence; PostgreSQL schema and Alembic infrastructure only.
-- Content catalog and reference/module-boundary tests.
-- Docker, Nginx and deployment runbooks.
+- Modular Godot 4.5.1 client: gateway, creator, third-person capsule movement, orbit/
+  spring-arm camera, touch stick, Dawnreef scene, HUD, searchable bag and settings.
+- Accounts with Argon2 and legacy PBKDF2 upgrade; character appearance/affinity;
+  short access sessions, logout revocation and valid-session renewal.
+- Real WebSocket player presence, input authority/collision, snapshots, interpolation,
+  reconnection and five preset local phrases. One room/process, 32-player cap unbenchmarked.
+- Persisted Tidebeat turns, announced enemy intent, Focus, defense/healing/damage,
+  expected-round checks and durable reward receipts. One quest, one enemy, three learned
+  starter spells; six spell definitions total, three without acquisition paths.
+- JSON development saves plus PostgreSQL adapter and additive migration 0002.
+- CI: **24 tests passed** with a real PostgreSQL service, migrations 0001→0002,
+  save/reload/concurrent action/retry/rollback checks; Godot import and smoke; actual
+  Godot account→creation→two-player presence→movement→quest→combat→reward→reconnect.
+- Prior desktop render check passed and measured 87 draw calls with default shadows off;
+  this is a historical software-renderer observation, not Android performance certification.
 
-## Recorded before interruption; restoration/checks pending
+## M0 still open
 
-- Modular third-person client and original primitive art; touch stick/orbit camera.
-- Authoritative WebSocket presence; preset local phrases.
-- Persisted deterministic combat rounds and retry receipts; Argon2 passwords.
-- PostgreSQL player-store adapter and second migration.
-- Six spell definitions, creation appearance/affinity, searchable satchel.
-- 22 backend tests and Godot smoke previously passed; these are historical results.
-- A signed ARM64 Android APK previously exported; it is not presently available.
+1. Persist reproducible Android CI artifacts and verify install/startup on available Android runtime.
+2. Fix observed coplanar coastline/floor flicker and rerun visual checks; retain static mesh batching.
+3. Reconcile all canonical docs, record exact artifact provenance, test results and device limitations.
+4. Save an M0 completion checkpoint before broad M1 production.
 
-## Next
+An earlier signed ARM64 APK was exported and signature-checked, but its local bytes
+were removed by workspace maintenance and were never retained remotely. Do not claim
+that APK is currently downloadable. Physical phone testing and the updated public host
+remain **unverified**. No production deployment occurred.
 
-Restore the recorded files, rerun checks, and save the feature branch remotely.
-Then fix overbright lighting and draw calls, test the complete client/server path,
-finish PostgreSQL validation and provide a fresh APK. No production deployment
-has been performed. Existing game hosting is not verified operational.
+## Placeholder / planned
+
+Procedural art, simple avatar gait/VFX and scripted Mara dialogue. No finished audio,
+large authored region, generic branching quests/dialogue, folio editor, equipment/vendor
+transactions, gathering/crafting, mounts, housing, pets, dungeon/boss or full moderation.
+Account recovery, rotated refresh tokens and physical-device/performance release gates remain.
+
+## Build and test
+
+From repo root: `python -m pip install -r backend/requirements.lock`,
+`python -m pytest backend/tests -q`, `python -m tools.build_catalog`.
+Set `GODOT_BIN` to Godot 4.5.1; run `python -m tools.check_godot` and
+`python -m tools.check_online`. PostgreSQL tests skip without `VT_TEST_DATABASE_URL`;
+CI supplies a migrated isolated database. See README for service/client setup.
+Important paths: `backend/app/modules/{vertical_slice,combat,world}`, `backend/app/db`,
+`godot_project/scripts`, `content`, `tools`, `.github/workflows/foundation.yml`.
