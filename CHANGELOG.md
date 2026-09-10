@@ -1,5 +1,9 @@
 # Changelog
 
+- Android runtime validation caught blank frames caused by shader-link failures in the
+  CI emulator's legacy GLES translator. Use ANGLE/SwiftShader and fail explicitly on
+  engine/render errors; landscape orientation is confirmed, full runtime rerun pending.
+
 ## Unreleased — M0 handoff (2026-09-10)
 
 - Reconcile canonical status with the completed restoration and successful CI.

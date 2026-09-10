@@ -40,6 +40,7 @@ def main():
     wait_for(lambda:'VT_GATEWAY_READY' in log())
     time.sleep(4)
     gateway=capture('gateway')
+    assert 'ERROR:' not in log(), 'Godot engine/render error; inspect android-check/logcat.txt'
     with Image.open(gateway) as image:width,height=image.size
     assert width>height,'expected landscape'
     # Real touch on the current 1280x720 logical preview button, then joystick drag.
@@ -64,7 +65,7 @@ def main():
     capture('resumed')
     logs=log()
     (OUT/'logcat.txt').write_text(logs)
-    assert not re.search(r'SCRIPT ERROR|FATAL EXCEPTION|Fatal signal|ANR in '+re.escape(PACKAGE),logs),logs[-6000:]
+    assert not re.search(r'ERROR:|SCRIPT ERROR|FATAL EXCEPTION|Fatal signal|ANR in '+re.escape(PACKAGE),logs),logs[-6000:]
     (OUT/'result.txt').write_text(f'ANDROID_RUNTIME_PASS\nInstall, gateway, touch preview, touch locomotion, background/resume.\nChanged world pixels: {changed:.3f}\nEmulator x86_64; physical ARM64 device unverified.\n')
     print('ANDROID_RUNTIME_PASS')
 

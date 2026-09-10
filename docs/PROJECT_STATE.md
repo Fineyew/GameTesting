@@ -31,8 +31,9 @@ do not restart restoration or replace the working architecture.
 ## M0 still open
 
 1. Android CI now retains a signed ARM64 APK and passing renders (run34424052563).
-   The first emulator run exposed portrait orientation; the fix and rerun are in progress.
-2. Fix observed coplanar coastline/floor flicker and rerun visual checks; retain static mesh batching.
+   Portrait orientation is fixed. Run34424598230 then exposed shader-link failures in
+   the emulator's legacy GLES translator. CI now uses ANGLE/SwiftShader; rerun pending.
+2. Coastline/floor overlap is fixed; fresh desktop renders pass at 87 draw calls.
 3. Reconcile all canonical docs, record exact artifact provenance, test results and device limitations.
 4. Save an M0 completion checkpoint before broad M1 production.
 
