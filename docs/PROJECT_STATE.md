@@ -16,8 +16,12 @@ Preserve original IDs, accounts/saves and all working systems.
 The owner authorized implementation on this branch. Original editable GLBs/Blender sources
 now replace the small well/cart area, one Wayfarer and Mara; imported idle/walk/cast,
 Glimmer presentation, ground/contact shading and existing HUD styling are integrated.
-Headless Godot/import/rig/VFX smoke and art budgets pass locally. Full current CI, actual
-render inspection and Android0.2.4/code6 validation are pending. No M1.4 APK is verified yet.
+Headless Godot/import/rig/VFX smoke and art budgets pass locally. Candidate b5b90a5/run34478939955 passed backend90/30 subtests, PostgreSQL, Godot/API
+and desktop render74 calls/81,654 primitives/15,182,467 texture bytes. Native touch and
+menu navigation reached resume, then the unchanged <15% match gate failed (19.35% changed).
+Artifact10152976777 retains frames/logs; no ARM64 artifact published. Inspection also
+found dropped kit-node transforms. Transform preservation, pause input/velocity clearing,
+settled pre-background capture and matching before/after routes are now being validated.
 Owner art-direction acceptance and real-phone thermal/touch validation remain open; do
 not mark M1.4 complete or begin M1.5 until its roadmap gate is satisfied.
 
@@ -96,9 +100,9 @@ Intermittent emulator/launcher startup reliability remains open in KNOWN_ISSUES.
 
 ## Next / build and test
 
-**Stop at M1.3.** Recommended narrow M1.4: server-owned out-of-combat Sunthread Bandage
-use with capped healing, atomic consumption/retries and clear Vigor UI; enable its existing
-shop listing only once functional. No bulk content or new regions/families/dungeon/crafting.
+Finish M1.4 art/render/native validation and owner/physical-device review first.
+The revised roadmap edec97b moves the still-unstarted Sunthread Bandage loop to M1.5.
+Preserve all completed M0–M1.3 behavior; no bulk content or new regions/families/dungeon/crafting.
 
 `python -m pip install -r backend/requirements.lock`; `python -m pytest backend/tests -q`;
 `python -m tools.build_catalog`. Set GODOT_BIN to4.5.1; run `python -m tools.check_godot`

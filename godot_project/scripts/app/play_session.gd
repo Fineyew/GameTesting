@@ -22,6 +22,21 @@ var pending_commerce: Dictionary = {}
 var commerce_shop := ""
 var commerce_error := ""
 var short_spell_effects := false
+var application_active := true
+
+func _notification(what: int) -> void:
+    if what == NOTIFICATION_APPLICATION_PAUSED or what == NOTIFICATION_APPLICATION_FOCUS_OUT:
+        application_active = false
+        if is_instance_valid(player):
+            hud.stick.release()
+            player.input_axis = Vector2.ZERO
+            player.velocity.x = 0
+            player.velocity.z = 0
+            camera.finger = -1
+        if is_instance_valid(connection):
+            connection.axis = Vector2.ZERO
+    elif what == NOTIFICATION_APPLICATION_RESUMED or what == NOTIFICATION_APPLICATION_FOCUS_IN:
+        application_active = true
 
 func begin(zone: DawnreefWorld, profile: Dictionary, offline: bool) -> void:
     world = zone
@@ -72,9 +87,9 @@ func _process(delta: float) -> void:
             axis += joy
     axis = axis.limit_length().rotated(-camera.yaw)
     var fighting = character.get("encounter",{}).get("state") == "active"
-    player.enabled = not busy and not hud.modal and not fighting and (preview or connection.connected)
+    player.enabled = application_active and not busy and not hud.modal and not fighting and (preview or connection.connected)
     player.input_axis = axis
-    camera.enabled = not busy and not hud.modal
+    camera.enabled = application_active and not busy and not hud.modal
     if connection:
         connection.axis = axis if player.enabled else Vector2.ZERO
     nearest = ""

@@ -9,7 +9,11 @@
   add a saved short-effects/no-camera-cut setting. No server rules or protocols changed.
 - Add ground/contact shading and compatible HUD borders; preserve collision geometry.
 - Add source/GLB budgets, rig/VFX smoke and retained render/triangle/texture evidence.
-- Local import/headless checks pass. Full CI/render/Android0.2.4/code6 validation pending;
+- Candidate b5b90a5/run34478939955 passes backend90/30, Godot/API and desktop74-call render.
+  Native resume comparison failed at19.35%; artifact10152976777 retained, no ARM64 published.
+  Preserve imported kit transforms, clear pause movement and require a settled baseline
+  while retaining all existing native movement/resume thresholds. Add matching route movies
+  and keep render diagnostics on failures. Corrected full validation is pending;
   no new APK is certified yet. Owner art-direction and physical-phone acceptance remain open.
 
 ## 0.2.3 — M1.3 vendor/equipment complete (2026-09-10)

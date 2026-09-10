@@ -50,8 +50,11 @@ func run() -> void:
     await session.start_encounter()
     assert(session.character.encounter.state == "active","server proximity rejected encounter")
     for beat in 4:
+        session.short_spell_effects = beat == 1
         session.cast("glimmer_spark")
         await until(func(): return not session.busy)
+        assert(session.hud.visible and session.camera.camera.current,"Cast presentation did not restore navigation")
+    session.short_spell_effects = false
     assert(session.character.encounter.state == "victory","combat did not resolve")
     assert(session.character.wallet.shell_chits == 14,"reward mismatch")
     var identity = session.character.id

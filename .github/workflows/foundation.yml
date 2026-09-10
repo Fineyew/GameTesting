@@ -109,11 +109,13 @@ jobs:
           python -c 'import os,subprocess; sdk=os.environ["ANDROID_HOME"]; subprocess.run([sdk+"/cmdline-tools/latest/bin/sdkmanager","--sdk_root="+sdk,"--licenses"],input="y\n"*100,text=True,check=True)'
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$ANDROID_HOME" 'platform-tools' 'build-tools;35.0.0' 'platforms;android-35'
           sudo apt-get update
-          sudo apt-get install -y xvfb
+          sudo apt-get install -y xvfb ffmpeg
       - name: Export and verify ARM64 and emulator APKs
         run: python -m tools.export_android --emulator
       - name: Render and draw-call gate
         run: xvfb-run -a python -m tools.check_render
+      - name: Matching before and after benchmark routes
+        run: xvfb-run -a python -m tools.record_benchmark
       - name: Enable emulator KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -147,3 +149,10 @@ jobs:
           name: android-runtime-evidence
           retention-days: 90
           path: builds/android-check/
+      - name: Retain render diagnostics even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dawnreef-render-evidence
+          retention-days: 90
+          path: builds/render-check/

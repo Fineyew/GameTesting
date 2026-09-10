@@ -2,6 +2,7 @@
 Requires an already booted emulator/device; x86_64 QA APK is NOT the ARM64 deliverable.
 """
 import re
+import shutil
 import subprocess
 import time
 from pathlib import Path
@@ -62,6 +63,23 @@ def changed_world(left_path,right_path):
         histogram=difference.histogram()
         return sum(histogram[13:])/sum(histogram)
 
+def wait_for_settled_world(name):
+    # A resting thumb does not prove the last deceleration/camera frame was presented
+    # on a slow software GPU. Keep the first frame and require two stable comparisons.
+    # The original movement >.025 and resumed-world <.15 assertions remain unchanged.
+    current=wait_for_world(name)
+    shutil.copy2(current,OUT/(name+'-initial.png'))
+    stable=0
+    def settled():
+        nonlocal stable
+        sample=capture(name+'-sample')
+        difference=changed_world(current,sample)
+        stable=stable+1 if difference<.015 else 0
+        shutil.copy2(sample,current)
+        return stable>=2
+    wait_for(settled,15)
+    return current
+
 def main():
     OUT.mkdir(parents=True,exist_ok=True)
     adb('shell','wm','size','720x1280')
@@ -103,7 +121,7 @@ def main():
     wait_for(lambda:changed_world(before,capture('vendor-closed'))<.15)
     adb('shell','input','swipe',str(round(width*.0875)),str(round(height*.844)),str(round(width*.0875)),str(round(height*.755)),'1800')
     time.sleep(.5)
-    after=wait_for_world('dawnreef-after')
+    after=wait_for_settled_world('dawnreef-after')
     changed=changed_world(before,after)
     assert changed>.025,f'touch movement did not visibly change world: {changed}'
     adb('shell','input','keyevent','KEYCODE_HOME')

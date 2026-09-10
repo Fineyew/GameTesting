@@ -8,6 +8,12 @@ static func capture(tree: SceneTree, name: String) -> void:
         tree.root.get_texture().get_image().save_png("user://"+name+".png")
 
 static func check(app: Node, tree: SceneTree) -> void:
+    for child in app.world.get_children():
+        if child is DawnreefArt:
+            var well = child.get_node("LanternWell") as MeshInstance3D
+            var bounds = well.transform * well.get_aabb()
+            assert(bounds.position.y >= -.01 and bounds.end.y > 3.3 and bounds.end.y < 3.6,
+                "Imported well must keep its walkable floor and upright floating vanes")
     var actor = app.session.player.avatar as WayfarerAvatar
     var skeleton = actor.find_child("Skeleton3D",true,false) as Skeleton3D
     assert(skeleton != null and skeleton.get_bone_count() == 13)
@@ -42,11 +48,33 @@ static func check(app: Node, tree: SceneTree) -> void:
     var impacts = {"count":0}
     effect.impact.connect(func(): impacts.count += 1)
     effect.begin(origin,target)
-    await tree.create_timer(.32).timeout
-    await capture(tree,"glimmer")
-    await tree.create_timer(.8).timeout
+    await tree.create_timer(1.25).timeout
     assert(impacts.count == 1 and not is_instance_valid(effect),"Spell must impact once and release its nodes")
     app.session.camera.camera.make_current()
     frame.queue_free()
     app.session.hud.show()
+    # Exercise the real presentation method with a clearly isolated preview fixture.
+    # online.gd separately proves it is reached only after an authoritative receipt.
+    var before_position = app.session.player.position
+    app.session.player.position = Vector3(10,0,-8)
+    app.session.busy = true
+    app.session.present_glimmer()
+    await tree.create_timer(.3).timeout
+    assert(not app.session.player.enabled and not app.session.hud.visible)
+    await capture(tree,"glimmer")
+    await tree.create_timer(.85).timeout
+    assert(app.session.hud.visible and app.session.camera.camera.current)
+    app.session.busy = false
+    app.session.player.position = before_position
+    app.session.hud.stick.axis = Vector2.RIGHT
+    app.session.player.velocity.x = 4.8
+    app.session.notification(Node.NOTIFICATION_APPLICATION_PAUSED)
+    assert(app.session.hud.stick.axis == Vector2.ZERO and app.session.player.velocity.x == 0)
+    var paused_position = app.session.player.position
+    await tree.create_timer(.25).timeout
+    assert(not app.session.player.enabled)
+    assert(Vector2(paused_position.x,paused_position.z).distance_to(Vector2(app.session.player.position.x,app.session.player.position.z)) < .001)
+    app.session.notification(Node.NOTIFICATION_APPLICATION_RESUMED)
+    await tree.process_frame
+    assert(app.session.application_active)
     print("GODOT_ART_PASS")

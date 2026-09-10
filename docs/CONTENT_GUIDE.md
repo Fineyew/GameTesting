@@ -152,3 +152,9 @@ The strict smoke test samples actual imported bone motion, a single VFX impact/c
 then records gameplay/benchmark/Mara/Wayfarer/Glimmer frames under a real display. The
 existing online gate still earns/casts/buys through the real API. A screenshot fixture
 cannot stand in for progression, a walkthrough review or physical-phone measurement.
+
+`xvfb-run -a python -m tools.record_benchmark` records matching before/after MP4 routes
+from M1.3 de9d7a3 and current source with pinned camera/control/.75/no-shadow settings.
+It requires FFmpeg and may fetch the named baseline into Git; it extracts to a temporary
+project and never switches the working branch. These are offline Movie Maker captures,
+not real-time benchmarks. Source provenance is retained beside the recordings.

@@ -296,3 +296,10 @@ updates authoritative character state, freezes movement while busy and then play
 bounded visual before returning to the combat panel. The effect cannot calculate damage
 or grant progress. Pending commands retain existing retry rules. A saved local setting
 shortens effects and avoids the temporary camera cut. No schema/HTTP/WS changes.
+
+M1.4 validation also records the same preview route against preserved M1.3 and the current
+source, at identical camera/control/quality settings. Movie Maker recordings demonstrate
+art/motion only; fixed capture FPS cannot establish runtime frame pacing. On application
+pause/focus loss, PlaySession clears input and horizontal velocity; the existing server
+stale-input timeout and reconciliation remain authoritative. Native QA settles two
+consecutive pre-background frames before the unchanged resume/movement assertions.

@@ -90,3 +90,10 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
   the regression for this Android path. All Godot gates now reject engine ERROR messages,
   not only SCRIPT ERROR. Fresh full CI passes atde9d7a3/run34440512749, including the
   same native touch path and visible resume; screenshots inspected. No assertions weakened.
+
+- M1.4 candidate b5b90a5/run34478939955 passed backend/Godot/API/render but failed the
+  native resume image comparison (19.35% changed, limit15%). Artifact10152976777 shows
+  a small camera/position advance with no engine errors, plus a separate kit-transform
+  import defect that tilted trees/well. Corrections are under validation: retain authored
+  transforms, clear motion on application pause, and settle the pre-background capture.
+  Keep the failed evidence and all movement/resume thresholds; no ARM64 was published.

@@ -9,7 +9,7 @@ func _ready() -> void:
     var library = KIT.instantiate()
     for child in library.get_children():
         if child is MeshInstance3D:
-            pieces[child.name] = child.mesh
+            pieces[child.name] = {"mesh":child.mesh,"transform":child.transform}
     library.free()
     place("LanternWell",Vector3(0,0,-5))
     # Existing first building: a shop room and covered front supply display.
@@ -42,9 +42,7 @@ func place(key: String, at: Vector3, size := Vector3.ONE, turn := 0.0) -> MeshIn
     assert(pieces.has(key),"Missing Dawnreef art piece: " + key)
     var instance = MeshInstance3D.new()
     instance.name = key
-    instance.mesh = pieces[key]
-    instance.position = at
-    instance.scale = size
-    instance.rotation.y = turn
+    instance.mesh = pieces[key].mesh
+    instance.transform = Transform3D(Basis(Vector3.UP,turn).scaled(size),at) * pieces[key].transform
     add_child(instance)
     return instance
