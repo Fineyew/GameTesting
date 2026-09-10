@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.1 — M1.1 story framework (validation in progress)
+
+- Begin only after M0 checkpoint1044f95. Preserve the combat engine, world protocol1,
+  persistence adapters, original IDs and Android CI gates.
+- Add catalog-driven NPC dialogue with persisted/rotating server cursor IDs, prerequisites,
+  ordered objectives, proximity checks and transactional once-only quest rewards.
+- Wire Mara's existing graph and one follow-up, An Answer in the Reeds, into Godot.
+  Journal/HUD now read quest/objective data. Existing first-quest saves remain valid.
+- Add story/API/authoring/old-save/concurrency tests and a real PostgreSQL story gate.
+  Local35 tests, Godot smoke and the extended live client/API story pass; CI reruns pending.
+
 ## 0.2.0 — M0 engineering handoff complete (2026-09-10)
 
 - Reconcile canonical status and PR #4 with completed restoration and successful CI.

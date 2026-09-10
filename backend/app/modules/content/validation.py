@@ -37,11 +37,14 @@ KNOWN_EFFECT_TYPES = {
 KNOWN_CONDITION_TYPES = {
     "character_level_at_least",
     "quest_completed",
+    "quest_state",
 }
 
 KNOWN_OBJECTIVE_TYPES = {
     "collect_item",
     "defeat_enemy",
+    "inspect_landmark",
+    "talk_to_npc",
 }
 
 
@@ -134,7 +137,8 @@ def _validate_references(report: ContentValidationReport) -> None:
         payload = loaded.payload
         rules = payload.get("rules", {})
         path = loaded.path
-
+        if not _validate_rule_lists(path, rules, report):
+            continue
         _validate_handlers(path, rules, report)
         _validate_common_references(path, rules, report)
         _validate_type_specific_references(path, payload.get("type"), rules, report)
@@ -146,6 +150,12 @@ def _validate_handlers(path: Path, rules: dict[str, Any], report: ContentValidat
             condition_type = condition.get("type")
             if condition_type not in KNOWN_CONDITION_TYPES:
                 report.errors.append(f"{path}: unknown condition type '{condition_type}'")
+            elif condition_type == "character_level_at_least" and not _bounded_integer(condition.get("value"), 1, 1000):
+                report.errors.append(f"{path}: invalid minimum level")
+            elif condition_type == "quest_state" and condition.get("state") not in {"not_started", "accepted", "completed"}:
+                report.errors.append(f"{path}: invalid quest state condition")
+            if condition_type in {"quest_completed", "quest_state"} and not isinstance(condition.get("quest_key"), str):
+                report.errors.append(f"{path}: quest condition requires quest_key")
 
     for field in ("effects", "rewards", "use_effects"):
         for effect in _walk_dicts_by_key(rules, field):
@@ -168,6 +178,7 @@ def _validate_common_references(path: Path, rules: dict[str, Any], report: Conte
         "loot_table_key": "loot_tables",
         "mount_key": "mounts",
         "npc_key": "npcs",
+        "giver_npc_key": "npcs",
         "quest_key": "quests",
         "recipe_key": "crafting",
         "shop_key": "shops",
@@ -190,6 +201,10 @@ def _validate_type_specific_references(
     rules: dict[str, Any],
     report: ContentValidationReport,
 ) -> None:
+    if content_type == "quests":
+        _validate_quest(path, rules, report)
+    if content_type == "dialogue":
+        _validate_dialogue(path, rules, report)
     if content_type == "spells":
         for cost in rules.get("costs", []):
             if cost.get("resource") != "focus" or type(cost.get("amount")) is not int or not 0 <= cost["amount"] <= 6:
@@ -205,6 +220,9 @@ def _validate_type_specific_references(
         if not 1 <= len(intents) <= 12 or any(type(i.get("power")) is not int or not 0 <= i["power"] <= 30 for i in intents):
             report.errors.append(f"{path}: invalid enemy intents")
     if content_type == "zones":
+        for key, discovery in rules.get("discoveries", {}).items():
+            if key not in rules.get("world", {}).get("interactions", {}) or not isinstance(discovery, dict) or not discovery.get("text") or not discovery.get("title"):
+                report.errors.append(f"{path}: invalid discovery '{key}'")
         for node_key in rules.get("gathering_nodes", []):
             _require_reference(path, "gathering", node_key, report)
         for npc_key in rules.get("npcs", []):
@@ -215,11 +233,104 @@ def _validate_type_specific_references(
     if content_type == "npcs":
         for quest_key in rules.get("available_quests", []):
             _require_reference(path, "quests", quest_key, report)
+        dialogue = report.definitions.get(("dialogue", rules.get("dialogue_key")))
+        if dialogue:
+            for effect in _walk_dicts_by_key(dialogue.payload["rules"], "effects"):
+                if effect.get("type") == "offer_quest" and effect.get("quest_key") not in rules.get("available_quests", []):
+                    report.errors.append(f"{path}: dialogue offers a quest not assigned to this NPC")
 
     if content_type == "dungeons":
         for room in rules.get("rooms", []):
             for enemy_key in room.get("enemy_keys", []):
                 _require_reference(path, "enemies", enemy_key, report)
+
+
+def _bounded_integer(value, minimum, maximum):
+    return type(value) is int and minimum <= value <= maximum
+
+
+def _validate_rule_lists(path, value, report):
+    valid = True
+    if isinstance(value, dict):
+        for key, child in value.items():
+            if key in {"conditions", "start_conditions", "unlock_conditions", "effects", "rewards", "use_effects", "objectives", "entry_nodes"}:
+                if not isinstance(child, list) or any(not isinstance(entry, dict) for entry in child):
+                    report.errors.append(f"{path}: {key} must be a list of objects")
+                    valid = False
+            valid = _validate_rule_lists(path, child, report) and valid
+    elif isinstance(value, list):
+        for child in value:
+            valid = _validate_rule_lists(path, child, report) and valid
+    return valid
+
+
+def _validate_quest(path, rules, report):
+    _require_reference(path, "npcs", rules.get("giver_npc_key"), report)
+    objectives = rules.get("objectives")
+    if not isinstance(objectives, list) or not 1 <= len(objectives) <= 16 or any(not isinstance(o, dict) for o in objectives):
+        report.errors.append(f"{path}: quests need 1–16 objective objects")
+        return
+    keys = [o.get("key") for o in objectives]
+    if any(not isinstance(k, str) or not k for k in keys) or len(set(str(k) for k in keys)) != len(keys):
+        report.errors.append(f"{path}: objective keys must be unique nonempty strings")
+    for objective in objectives:
+        if not _bounded_integer(objective.get("quantity"), 1, 1000):
+            report.errors.append(f"{path}: invalid objective quantity")
+        kind = objective.get("type")
+        field = {"defeat_enemy": "enemy_key", "collect_item": "item_key", "talk_to_npc": "npc_key", "inspect_landmark": "interaction_key"}.get(kind)
+        if field and not isinstance(objective.get(field), str):
+            report.errors.append(f"{path}: objective requires {field}")
+        if kind in {"inspect_landmark", "talk_to_npc"} and objective.get("quantity") != 1:
+            report.errors.append(f"{path}: discovery/dialogue objectives must have quantity1")
+        if kind == "inspect_landmark":
+            zone = report.definitions.get(("zones", objective.get("zone_key")))
+            if not zone or objective.get("interaction_key") not in zone.payload["rules"].get("discoveries", {}):
+                report.errors.append(f"{path}: unknown inspectable landmark")
+    if type(rules.get("ordered", False)) is not bool:
+        report.errors.append(f"{path}: ordered must be boolean")
+    rewards = rules.get("rewards")
+    if not isinstance(rewards, list) or len(rewards) > 16 or any(not isinstance(r, dict) for r in rewards):
+        report.errors.append(f"{path}: invalid quest rewards")
+        return
+    for reward in rewards:
+        kind = reward.get("type")
+        if kind not in {"grant_experience", "grant_currency", "grant_item"}:
+            report.errors.append(f"{path}: unsupported quest reward")
+        if not _bounded_integer(reward.get("quantity" if kind == "grant_item" else "amount"), 1, 10000):
+            report.errors.append(f"{path}: invalid quest reward amount")
+        if kind == "grant_currency" and (not isinstance(reward.get("currency_key"), str) or not 1 <= len(reward["currency_key"]) <= 64):
+            report.errors.append(f"{path}: invalid reward currency")
+        if kind == "grant_item" and not isinstance(reward.get("item_key"), str):
+            report.errors.append(f"{path}: item reward requires item_key")
+
+
+def _validate_dialogue(path, rules, report):
+    nodes = rules.get("nodes")
+    if not isinstance(nodes, dict) or not 1 <= len(nodes) <= 32 or rules.get("start_node") not in nodes:
+        report.errors.append(f"{path}: dialogue requires valid nodes/start_node")
+        return
+    for entry in rules.get("entry_nodes", []):
+        if not isinstance(entry, dict) or entry.get("node") not in nodes:
+            report.errors.append(f"{path}: invalid dialogue entry node")
+    for node in nodes.values():
+        if not isinstance(node, dict) or not isinstance(node.get("text"), str) or not node["text"].strip():
+            report.errors.append(f"{path}: dialogue node requires text")
+            continue
+        options = node.get("options", [])
+        if not isinstance(options, list) or len(options) > 8 or any(not isinstance(o, dict) for o in options):
+            report.errors.append(f"{path}: invalid dialogue options")
+            continue
+        keys = [o.get("key") for o in options]
+        if any(not isinstance(k, str) or not k for k in keys) or len(set(str(k) for k in keys)) != len(keys):
+            report.errors.append(f"{path}: dialogue choice keys must be unique")
+        for option in options:
+            if not isinstance(option.get("text"), str) or not option["text"].strip():
+                report.errors.append(f"{path}: dialogue choice requires text")
+            if option.get("next_node") is not None and option["next_node"] not in nodes:
+                report.errors.append(f"{path}: missing next_node")
+            for effect in option.get("effects", []):
+                if effect.get("type") != "offer_quest":
+                    report.errors.append(f"{path}: dialogue may offer quests, not grant rewards directly")
 
 
 def _require_reference(

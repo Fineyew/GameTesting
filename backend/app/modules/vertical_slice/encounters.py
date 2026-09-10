@@ -58,6 +58,15 @@ class EncounterService:
         character.defeated_enemies[enemy_key] = character.defeated_enemies.get(enemy_key, 0) + 1
         character.experience += 25
         character.wallet["shell_chits"] = character.wallet.get("shell_chits", 0) + 2
+        if self.players.quest_rules:
+            self.players.quest_rules.advance(character, "defeat_enemy", enemy_key)
+        else:
+            self._legacy_quest_rewards(character, enemy_key)
+        while character.experience >= 100 * character.level:
+            character.level += 1
+
+    def _legacy_quest_rewards(self, character, enemy_key):
+        """Compatibility for standalone legacy service callers without injected rules."""
         for key, progress in character.quest_state.items():
             if progress.get("rewards_claimed") or progress.get("state") != "accepted":
                 continue
@@ -78,5 +87,3 @@ class EncounterService:
                 elif kind == "grant_item":
                     item = reward["item_key"]
                     character.inventory[item] = character.inventory.get(item, 0) + reward["quantity"]
-        while character.experience >= 100 * character.level:
-            character.level += 1

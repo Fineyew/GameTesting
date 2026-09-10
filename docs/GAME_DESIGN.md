@@ -70,8 +70,10 @@ combat needs participant ownership, ready timers and reconnect rules before impl
 | 40–50 min | Help a resident in another neighborhood | Local culture and a meaningful side quest |
 | 50–60 min | Open the cistern investigation | Agency and a larger mystery |
 
-Only the account/creator/exploration/first combat quest loop is implemented. There is
-not yet an hour of authored content. Quests should frequently teach ecology, characters,
+The account/creator/exploration/first combat quest and one short Mara investigation are
+implemented. An Answer in the Reeds sends the Wayfarer to listen at two existing landmarks
+and return; it awards40 XP/5 chits once. The cistern remains sealed. There is not yet an
+hour of authored content. Quests should frequently teach ecology, characters,
 locations or mechanics, instead of repeatedly asking for arbitrary kill totals.
 
 ## Art, UI, audio and performance

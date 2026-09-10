@@ -2,7 +2,7 @@
   "type": "zones",
   "key": "dawnreef_atoll",
   "schema_version": 1,
-  "version": 2,
+  "version": 3,
   "display": {
     "name": "Dawnreef Atoll",
     "summary": "A bright starter reef where lantern-stone keeps the sky-island stable.",
@@ -84,6 +84,16 @@
           18,
           -18
         ]
+      }
+    },
+    "discoveries": {
+      "sunthread_reeds": {
+        "title": "A note held in sunthread",
+        "text": "You let the reeds settle. Three low notes remain after the wind fades; the last seems to pull toward the sealed cistern. Nothing here needs to be harvested."
+      },
+      "saltglass_cistern": {
+        "title": "An answer beneath the gate",
+        "text": "Beyond the sealed stone, the same three notes return in reverse. A narrow line of light wakes in an old hinge, then fades. You leave the gate closed. Mara should hear about this."
       }
     }
   },

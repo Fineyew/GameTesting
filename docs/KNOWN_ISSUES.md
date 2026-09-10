@@ -19,9 +19,11 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
 
 ## Gameplay/art
 
-- One enemy and one quest; three learned spells. Three additional engine definitions have
+- One enemy and two quests; three learned spells. Three additional engine definitions have
   no acquisition path. No editable folio, affinity-specific progression or cooperative combat.
-- Mara dialogue is scripted context text. Generic branching dialogue/quest execution is next.
+- Catalog-driven Mara dialogue and one investigation now exist. Collect-item/repeatable
+  quests, broader objective types and visual authoring tools remain planned. M1.1 integration
+  and Android reruns are in progress; see PROJECT_STATE.
 - Inventory search/quantities exist; equip/use/compare, vendors, gathering/crafting, mounts,
   housing, pets, dungeon/boss and most social features are not implemented.
 - Procedural models, gait, primitive spell impacts and flat region remain placeholders.

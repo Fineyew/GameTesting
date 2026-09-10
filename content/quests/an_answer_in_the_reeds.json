@@ -1,0 +1,67 @@
+{
+  "type": "quests",
+  "key": "an_answer_in_the_reeds",
+  "schema_version": 1,
+  "version": 1,
+  "display": {
+    "name": "An Answer in the Reeds",
+    "summary": "Follow a shared note from the reeds to the sealed cistern.",
+    "description": "The lurker is gone, yet the well still answers. Mara asks you to listen before anyone touches the old mechanism."
+  },
+  "tags": [
+    "dawnreef",
+    "investigation"
+  ],
+  "assets": {},
+  "rules": {
+    "giver_npc_key": "mara_lanternwright",
+    "ordered": true,
+    "start_conditions": [
+      {
+        "type": "quest_completed",
+        "quest_key": "lantern_well_first_light"
+      }
+    ],
+    "objectives": [
+      {
+        "key": "hear_reeds",
+        "label": "Listen to the sunthread reeds",
+        "type": "inspect_landmark",
+        "zone_key": "dawnreef_atoll",
+        "interaction_key": "sunthread_reeds",
+        "quantity": 1
+      },
+      {
+        "key": "hear_cistern",
+        "label": "Listen at the sealed cistern entrance",
+        "type": "inspect_landmark",
+        "zone_key": "dawnreef_atoll",
+        "interaction_key": "saltglass_cistern",
+        "quantity": 1
+      },
+      {
+        "key": "tell_mara",
+        "label": "Tell Mara what you heard",
+        "type": "talk_to_npc",
+        "npc_key": "mara_lanternwright",
+        "quantity": 1
+      }
+    ],
+    "rewards": [
+      {
+        "type": "grant_experience",
+        "amount": 40
+      },
+      {
+        "type": "grant_currency",
+        "currency_key": "shell_chits",
+        "amount": 5
+      }
+    ]
+  },
+  "localization": {
+    "en": {
+      "name": "An Answer in the Reeds"
+    }
+  }
+}

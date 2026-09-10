@@ -226,3 +226,48 @@ def encounter_action(character_id: str, payload: EncounterActionRequest, request
         return result
     except ValueError as exc:
         raise HTTPException(409, str(exc)) from exc
+
+
+class DialogueChoiceRequest(BaseModel):
+    conversation_id: str = Field(min_length=1, max_length=40)
+    option_key: str = Field(min_length=1, max_length=64)
+
+
+def require_interaction(request, account_id, character_id, target):
+    # Ownership first; coordinates and node IDs supplied by clients are never trusted.
+    try:
+        request.app.state.vertical_slice_service._require_character(account_id, character_id)
+    except AuthenticationError as exc:
+        raise HTTPException(403, str(exc)) from exc
+    except NotFoundError as exc:
+        raise HTTPException(404, str(exc)) from exc
+    if not request.app.state.world_hub.near(character_id, target):
+        raise HTTPException(409, "move closer while connected")
+
+
+@router.post("/world/characters/{character_id}/npcs/{npc_key}/dialogue")
+def start_dialogue(character_id: str, npc_key: str, request: Request, account_id: str = Depends(current_account_id)):
+    require_interaction(request, account_id, character_id, npc_key)
+    try:
+        return request.app.state.story.start(account_id, character_id, npc_key)
+    except ValueError as exc:
+        raise HTTPException(409, str(exc)) from exc
+
+
+@router.post("/world/characters/{character_id}/npcs/{npc_key}/dialogue/choose")
+def choose_dialogue(character_id: str, npc_key: str, payload: DialogueChoiceRequest, request: Request,
+                    account_id: str = Depends(current_account_id)):
+    require_interaction(request, account_id, character_id, npc_key)
+    try:
+        return request.app.state.story.choose(account_id, character_id, npc_key, payload.conversation_id, payload.option_key)
+    except ValueError as exc:
+        raise HTTPException(409, str(exc)) from exc
+
+
+@router.post("/world/characters/{character_id}/interactions/{interaction_key}/inspect")
+def inspect_landmark(character_id: str, interaction_key: str, request: Request, account_id: str = Depends(current_account_id)):
+    require_interaction(request, account_id, character_id, interaction_key)
+    try:
+        return request.app.state.story.inspect(account_id, character_id, interaction_key)
+    except ValueError as exc:
+        raise HTTPException(409, str(exc)) from exc

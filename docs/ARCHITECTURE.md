@@ -110,3 +110,33 @@ frames, caught by screenshot comparisons. See Android's
 [graphics acceleration modes](https://developer.android.com/studio/run/emulator-acceleration).
 This changes the test driver, not the game's Compatibility renderer. The runtime gate
 rejects engine/render errors and requires visible movement from real touch input.
+
+## M1.1 story rules and persistence
+
+The composition root injects `QuestRules` alongside the existing combat engine. It reads
+the same catalog through ContentReader, owns condition/objective/dialogue interpretation,
+and imports no other gameplay module or database implementation. `StoryService` remains
+in vertical_slice as aggregate transaction orchestration. The original starter-only
+accept/fight APIs and standalone legacy service behavior are preserved. New quests are
+accepted through validated NPC offers; combat emits server-observed defeat events into
+the injected quest rules while retaining the existing encounter receipts and rewards.
+
+POST `/world/characters/{id}/npcs/{npc}/dialogue` opens a server-selected branch; `/choose`
+accepts only conversation_id and option_key. One cursor per character stores NPC, graph
+version, node and a rotating UUID. Stale/reordered/forged choices fail; clients cannot send
+node jumps or reward amounts. POST `/interactions/{key}/inspect` accepts no completion
+claim: the server checks ownership/live world proximity and the catalog's discovery.
+Combat blocks story interactions. Quest events are ordered when declared; discoveries
+and talk objectives have quantity1. Nonrepeatable completion/rewards_claimed flags commit
+with XP/items/currency under the existing aggregate lock, so retries cannot reward twice.
+After an uncertain choice response, reopen the conversation; saved progress is retained.
+
+`CharacterRecord.dialogue_state` is an optional dictionary, defaulting empty for old JSON
+and PostgreSQL JSONB saves. It is excluded from public character responses; dialogue APIs
+return a sanitized view. This is additive within runtime schema1 and needs no DDL migration.
+An older server binary cannot read newly added aggregate fields: backup before rollback,
+and migrate/drop only this cursor field deliberately if downgrading to M0. Never reset
+player IDs, inventory, quest progress or rewards. Protocol1 movement/geometry is unchanged.
+
+The first authored follow-up uses existing landmarks and rewards40 XP/5 shell chits once.
+It does not open the cistern dungeon or add harvesting, folios or additional spells.

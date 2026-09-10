@@ -13,6 +13,7 @@ var nearest := ""
 var pending_action: Dictionary = {}
 var busy := false
 var refresh_elapsed := 0.0
+var dialogue: Dictionary = {}
 
 func begin(zone: DawnreefWorld, profile: Dictionary, offline: bool) -> void:
     world = zone
@@ -112,27 +113,76 @@ func interact() -> void:
         return
     match nearest:
         "mara_lanternwright":
-            var panel = hud.open_panel("Mara Lanternwright")
-            panel.add_child(TideUI.paragraph("The well keeps Dawnreef steady above the Glimmerdeep. Tonight its light is answering something beneath the reef. I have never heard it do that before."))
             if preview:
+                var panel = hud.open_panel("Mara Lanternwright")
+                panel.add_child(TideUI.paragraph("The well keeps Dawnreef steady above the Glimmerdeep. Tonight its light is answering something beneath the reef."))
                 panel.add_child(TideUI.paragraph("Sign in to help Mara and save your journey."))
-            elif character.get("quest_state",{}).get("lantern_well_first_light",{}).get("completed",false):
-                panel.add_child(TideUI.paragraph("You drove the lurker away, but listen—the well is still answering. That sound is coming from the Saltglass Cistern."))
-            elif not character.get("quest_state",{}).has("lantern_well_first_light"):
-                panel.add_child(TideUI.button("Help restore the First Light",accept_quest,true))
             else:
-                panel.add_child(TideUI.paragraph("The fog-thorn creature has settled east of the well. Watch what it is preparing before you cast."))
+                open_dialogue()
         "fog_thorn_lurker":
             if preview:
                 hud.open_panel("A creature in the mist").add_child(TideUI.paragraph("Combat and rewards require an online character. Return to sign in when your server is available."))
             else:
                 start_encounter()
-        "sunthread_reeds":
-            hud.open_panel("Sunthread reeds").add_child(TideUI.paragraph("The reeds hold a warm shimmer even after sunset. Gathering and crafting are planned; this patch has no harvest action yet."))
-        "saltglass_cistern":
-            hud.open_panel("Saltglass Cistern").add_child(TideUI.paragraph("A low note rises from behind the sealed gate. The dungeon beyond is planned and is not playable in this build."))
+        "sunthread_reeds", "saltglass_cistern":
+            if preview:
+                var discovery = GameData.definition("zones","dawnreef_atoll").rules.discoveries[nearest]
+                hud.open_panel(discovery.title).add_child(TideUI.paragraph(discovery.text))
+            else:
+                inspect_landmark(nearest)
         _:
             hud.quest_label.text = "Move close to Mara, the lurker, the reeds, or the cistern gate."
+
+func open_dialogue(npc_key := "mara_lanternwright") -> void:
+    if busy:
+        return
+    busy = true
+    hud.open_panel("Speaking with Mara…").add_child(TideUI.paragraph("Listening…"))
+    var result = await ApiClient.post_json("/world/characters/%s/npcs/%s/dialogue" % [character.id,npc_key],{})
+    busy = false
+    apply_dialogue_result(result)
+
+func choose_dialogue(option_key: String) -> void:
+    if busy or dialogue.is_empty():
+        return
+    busy = true
+    var result = await ApiClient.post_json("/world/characters/%s/npcs/%s/dialogue/choose" % [character.id,dialogue.npc_key],{"conversation_id":dialogue.id,"option_key":option_key})
+    busy = false
+    apply_dialogue_result(result)
+
+func apply_dialogue_result(result: Dictionary) -> void:
+    if result.is_empty():
+        dialogue = {}
+        var unavailable = hud.open_panel("Conversation paused")
+        unavailable.add_child(TideUI.paragraph("Check your connection and stay near Mara, then speak again. Your saved quest progress is safe."))
+        unavailable.add_child(TideUI.button("Speak again",open_dialogue))
+        return
+    character = result.character
+    hud.set_character(character,preview)
+    dialogue = result.dialogue if result.get("dialogue") is Dictionary else {}
+    if dialogue.is_empty():
+        hud.close_panel()
+        return
+    var panel = hud.open_panel(dialogue.speaker)
+    panel.add_child(TideUI.paragraph(dialogue.text))
+    for option in dialogue.options:
+        panel.add_child(TideUI.button(option.text,choose_dialogue.bind(option.key),true))
+    if dialogue.options.is_empty():
+        panel.add_child(TideUI.button("Until next time",hud.close_panel,true))
+
+func inspect_landmark(key: String) -> void:
+    if busy:
+        return
+    busy = true
+    hud.open_panel("Listening…").add_child(TideUI.paragraph("Let the reef settle."))
+    var result = await ApiClient.post_json("/world/characters/%s/interactions/%s/inspect" % [character.id,key],{})
+    busy = false
+    if result.is_empty():
+        hud.open_panel("Could not listen").add_child(TideUI.paragraph("Move closer while connected, then try again."))
+        return
+    character = result.character
+    hud.set_character(character,preview)
+    hud.open_panel(result.discovery.title).add_child(TideUI.paragraph(result.discovery.text))
 
 func accept_quest() -> void:
     busy = true
@@ -225,7 +275,18 @@ func show_journal() -> void:
         show_combat()
         return
     var panel = hud.open_panel("Journal · Dawnreef")
-    panel.add_child(TideUI.paragraph("FIRST LIGHT AT THE LANTERN WELL\n" + hud.quest_label.text))
+    if character.get("quest_state",{}).is_empty():
+        panel.add_child(TideUI.paragraph("Speak with Mara to begin your first journey."))
+    for key in character.get("quest_state",{}):
+        var progress = character.quest_state[key]
+        var definition = GameData.definition("quests",key)
+        panel.add_child(TideUI.label(GameData.display_name("quests",key),22,TideUI.GOLD))
+        if progress.get("completed",false):
+            panel.add_child(TideUI.paragraph("Completed · rewards saved"))
+        else:
+            for objective in definition.get("rules",{}).get("objectives",[]):
+                var done = progress.get("objectives",{}).get(objective.key,0)
+                panel.add_child(TideUI.paragraph("%s · %s/%s" % [objective.get("label",objective.key.replace("_"," ")),done,objective.quantity]))
     panel.add_child(TideUI.paragraph("Auralis is a world of floating reefs. The Lantern Wells keep them steady. Your Veilmark can hear what moves beneath them."))
 
 func show_inventory() -> void:

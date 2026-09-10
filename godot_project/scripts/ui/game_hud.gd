@@ -125,5 +125,12 @@ func set_character(character: Dictionary, preview: bool) -> void:
         connection_label.text = "OFFLINE PREVIEW · progress is not saved"
         quest_label.text = "Explore Dawnreef. Sign in for quests and combat."
     else:
-        var quest = character.get("quest_state",{}).get("lantern_well_first_light",{})
-        quest_label.text = "First Light completed · rewards saved." if quest.get("completed",false) else "First Light · confront the lurker beyond the well." if not quest.is_empty() else "Speak with Mara beside the Lantern Well."
+        quest_label.text = "Speak with Mara beside the Lantern Well."
+        for key in character.get("quest_state",{}):
+            var progress = character.quest_state[key]
+            if progress.get("completed",false):
+                continue
+            for objective in GameData.definition("quests",key).get("rules",{}).get("objectives",[]):
+                if progress.get("objectives",{}).get(objective.key,0) < objective.quantity:
+                    quest_label.text = objective.get("label",GameData.display_name("quests",key))
+                    return

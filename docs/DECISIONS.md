@@ -16,3 +16,5 @@
 | D012 | Preserve legacy client; modular new main scene | Keep history and working source while separating camera/movement/UI/network responsibilities. |
 | D013 | Remote checkpoints and canonical state before handoff | Workspace maintenance can remove local files; conversation memory is not durable source. |
 | D014 | Retain Android CI artifacts and separate emulator QA build | Recoverable builds and runtime evidence; x86 emulator success cannot certify ARM64 phone performance. |
+
+| D015 | Server-owned dialogue cursor and catalog quest rules after M0 checkpoint1044f95 | One optional cursor in the existing aggregate, immutable catalog, transactional progress/rewards; no new database or world server. |

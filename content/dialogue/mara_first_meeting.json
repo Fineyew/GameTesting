@@ -2,13 +2,16 @@
   "type": "dialogue",
   "key": "mara_first_meeting",
   "schema_version": 1,
-  "version": 1,
+  "version": 2,
   "display": {
     "name": "Mara First Meeting",
     "summary": "Introductory conversation at Dawnreef.",
     "description": "A branching dialogue graph introducing the Lantern Well problem."
   },
-  "tags": ["dawnreef", "tutorial"],
+  "tags": [
+    "dawnreef",
+    "tutorial"
+  ],
   "assets": {},
   "rules": {
     "start_node": "greeting",
@@ -16,19 +19,130 @@
       "greeting": {
         "text": "You feel that dim pulse under your boots? The well is asking for help.",
         "options": [
-          {"key": "ask_well", "text": "What is the Lantern Well?", "next_node": "explain_well"},
-          {"key": "offer_help", "text": "I can help.", "effects": [{"type": "offer_quest", "quest_key": "lantern_well_first_light"}]}
+          {
+            "key": "ask_well",
+            "text": "What is the Lantern Well?",
+            "next_node": "explain_well"
+          },
+          {
+            "key": "offer_help",
+            "text": "I can help.",
+            "effects": [
+              {
+                "type": "offer_quest",
+                "quest_key": "lantern_well_first_light"
+              }
+            ]
+          }
         ]
       },
       "explain_well": {
         "text": "It keeps this reef steady when the Glimmerdeep storms turn restless.",
         "options": [
-          {"key": "offer_help", "text": "Then let's mend it.", "effects": [{"type": "offer_quest", "quest_key": "lantern_well_first_light"}]}
+          {
+            "key": "offer_help",
+            "text": "Then let's mend it.",
+            "effects": [
+              {
+                "type": "offer_quest",
+                "quest_key": "lantern_well_first_light"
+              }
+            ]
+          }
+        ]
+      },
+      "first_task": {
+        "text": "The creature has settled east of the well. Watch what it prepares before you cast. The reeds can wait until you are safe.",
+        "options": []
+      },
+      "after_lurker": {
+        "text": "The light is steadier. Thank you. But listen: the well is still answering something below us. Will you help me trace that note?",
+        "options": [
+          {
+            "key": "ask_note",
+            "text": "What should I listen for?",
+            "next_node": "explain_note"
+          },
+          {
+            "key": "follow_note",
+            "text": "I will follow the note.",
+            "effects": [
+              {
+                "type": "offer_quest",
+                "quest_key": "an_answer_in_the_reeds"
+              }
+            ]
+          }
+        ]
+      },
+      "explain_note": {
+        "text": "Sunthread holds a sound after the wind leaves it. Listen there first, then at the cistern gate. Leave the gate sealed and bring me what you hear.",
+        "options": [
+          {
+            "key": "follow_note",
+            "text": "Reeds first, then the cistern.",
+            "effects": [
+              {
+                "type": "offer_quest",
+                "quest_key": "an_answer_in_the_reeds"
+              }
+            ]
+          }
+        ]
+      },
+      "listening": {
+        "text": "Listen to the reeds, then the sealed cistern. I need to know whether the two are answering each other. Come back when you have heard both.",
+        "options": []
+      },
+      "answer_found": {
+        "text": "Three notes in the reeds, and the same three under the gate? That is no storm. Someone built this place to listen. I will find the old plans before we open anything. Take these chits for your trouble.",
+        "options": []
+      }
+    },
+    "entry_nodes": [
+      {
+        "node": "answer_found",
+        "conditions": [
+          {
+            "type": "quest_completed",
+            "quest_key": "an_answer_in_the_reeds"
+          }
+        ]
+      },
+      {
+        "node": "listening",
+        "conditions": [
+          {
+            "type": "quest_state",
+            "quest_key": "an_answer_in_the_reeds",
+            "state": "accepted"
+          }
+        ]
+      },
+      {
+        "node": "after_lurker",
+        "conditions": [
+          {
+            "type": "quest_completed",
+            "quest_key": "lantern_well_first_light"
+          }
+        ]
+      },
+      {
+        "node": "first_task",
+        "conditions": [
+          {
+            "type": "quest_state",
+            "quest_key": "lantern_well_first_light",
+            "state": "accepted"
+          }
         ]
       }
-    }
+    ]
   },
   "localization": {
-    "en": {"name": "Mara First Meeting"}
+    "en": {
+      "name": "Mara First Meeting"
+    }
   }
 }

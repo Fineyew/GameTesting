@@ -69,8 +69,9 @@ def atomic(fn):
 
 
 class VerticalSliceService:
-    def __init__(self, store: VerticalSliceStore) -> None:
+    def __init__(self, store: VerticalSliceStore, quest_rules=None) -> None:
         self.store = store
+        self.quest_rules = quest_rules
 
     @atomic
     def register(self, email: str, display_name: str, password: str) -> AuthResult:
@@ -146,6 +147,11 @@ class VerticalSliceService:
         if quest_key != STARTER_QUEST_KEY:
             raise NotFoundError("quest is not available in the vertical slice")
         character = self._require_character(account_id, character_id)
+        if self.quest_rules:
+            # Preserve the existing starter-only API; later quests come from NPC dialogue.
+            self.quest_rules.accept(character, quest_key, "mara_lanternwright")
+            self.store.save_character(character)
+            return character
         character.quest_state.setdefault(
             quest_key,
             {

@@ -19,7 +19,7 @@ do not restart restoration or replace the working architecture.
 - Real WebSocket player presence, input authority/collision, snapshots, interpolation,
   reconnection and five preset local phrases. One room/process, 32-player cap unbenchmarked.
 - Persisted Tidebeat turns, announced enemy intent, Focus, defense/healing/damage,
-  expected-round checks and durable reward receipts. One quest, one enemy, three learned
+  expected-round checks and durable reward receipts. Two quests, one enemy, three learned
   starter spells; six spell definitions total, three without acquisition paths.
 - JSON development saves plus PostgreSQL adapter and additive migration 0002.
 - CI: **25 tests passed** with a real PostgreSQL service, migrations 0001→0002,
@@ -48,17 +48,29 @@ Manifest source is `2101aa4`; tested PR merge tree is `daa6cb0`. Runtime evidenc
 
 M0 completion criteria are satisfied: restored source, real PostgreSQL/Godot integration,
 retained signed APK, inspected renders and Android runtime checks, canonical handoff and
-explicit device limitations. This documentation commit is the M0 completion checkpoint;
-next work is only ROADMAP's narrow M1 quest/dialogue increment.
+explicit device limitations. M0 completion is checkpointed at **1044f95**; it must remain a recoverable baseline.
 
 Physical S25 Ultra/ARM64 testing, thermal/performance/mobile-network results and the updated
 public host remain **unverified**. No production deployment occurred. README contains the
 physical-device procedure. These remain explicit release gates, not silently passed tests.
 
+## Current increment — M1.1 (validation in progress)
+
+Catalog-driven quest/dialogue rules, persisted server-owned conversation cursors,
+prerequisites, ordered discoveries and once-only transactional rewards are implemented.
+Mara's existing graph is wired to the touch client; one follow-up, **An Answer in the Reeds**,
+uses the existing reeds/cistern/Mara landmarks. Journal/HUD show data-defined objectives.
+No bulk content or new combat/spells/regions were added. Version0.2.1/code3 is the next APK.
+
+Local backend:35 passed,3 PostgreSQL tests explicitly skipped without a database. Godot
+import/smoke and extended live client/API investigation passed. CI/PostgreSQL/Android
+reruns are pending. Do not claim those pending gates passed. Source paths: new
+`modules/quests/rules.py`, `vertical_slice/story.py`, `tests/test_story_progression.py`.
+
 ## Placeholder / planned
 
-Procedural art, simple avatar gait/VFX and scripted Mara dialogue. No finished audio,
-large authored region, generic branching quests/dialogue, folio editor, equipment/vendor
+Procedural art and simple avatar gait/VFX. No finished audio,
+large authored region, additional objective types/content editors, folio editor, equipment/vendor
 transactions, gathering/crafting, mounts, housing, pets, dungeon/boss or full moderation.
 Account recovery, rotated refresh tokens and physical-device/performance release gates remain.
 

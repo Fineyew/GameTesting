@@ -20,7 +20,12 @@ honest device-status documentation. Physical phone thermal/touch/network validat
 an open release gate; never call an emulator or desktop result a physical-phone pass.
 No broad M1 content production before this engineering checkpoint.
 
-## M1 — authored vertical slice (next narrow increment)
+## M1 — authored vertical slice (M1.1 in validation)
+
+M1.1 implementation: generic quest acceptance from NPC offers, server-owned dialogue
+cursors/branches/conditions, ordered discovery/talk objectives, atomic rewards, client journal
+and one Mara follow-up. Local rules/API tests pass; full Godot/PG/Android rerun is pending.
+Do not expand until this increment is validated and checkpointed.
 
 Start with a narrow content-framework increment: generic server-owned quest/dialogue
 execution, validated objectives/rewards and a small authored continuation of Mara's

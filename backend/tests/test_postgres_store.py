@@ -10,17 +10,19 @@ from backend.app.modules.vertical_slice.service import VerticalSliceService
 from backend.app.modules.vertical_slice.encounters import EncounterService
 from backend.app.modules.content.service import ContentCatalog
 from backend.app.modules.combat.engine import CombatEngine
+from backend.app.modules.quests.rules import QuestRules
+from backend.app.modules.vertical_slice.story import StoryService
 
 pytestmark = pytest.mark.skipif(not os.environ.get('VT_TEST_DATABASE_URL'), reason='requires isolated PostgreSQL database')
 
 @pytest.fixture
 def game():
     store = PostgresPlayerStore(os.environ['VT_TEST_DATABASE_URL'])
-    service = VerticalSliceService(store)
+    catalog = ContentCatalog.build(Path(__file__).resolve().parents[2]/'content')
+    service = VerticalSliceService(store, QuestRules(catalog))
     key = uuid4().hex[:12]
     account = service.register(key+'@example.test', 'Tester '+key, 'test-only-password').account
     character = service.create_character(account.id, 'Reef '+key)
-    catalog = ContentCatalog.build(Path(__file__).resolve().parents[2]/'content')
     yield service, EncounterService(service,CombatEngine(catalog),catalog), account.id, character.id
     with store.engine.begin() as connection:
         connection.execute(text('DELETE FROM character_runtime_states WHERE character_id = :id'),{'id':character.id})
@@ -65,3 +67,30 @@ def test_postgres_serializes_concurrent_casts_and_rolls_back(game):
             service.store.save_character(changed)
             raise ValueError('deliberate rollback')
     assert service.store.get_character(character)==before
+
+
+def test_postgres_story_cursor_and_concurrent_turnin_are_durable(game):
+    service, encounters, account, character = game
+    story = StoryService(service, service.quest_rules)
+    npc = 'mara_lanternwright'
+    opened = story.start(account, character, npc)['dialogue']
+    story.choose(account, character, npc, opened['id'], 'offer_help')
+    result = encounters.start(account, character, 'fog_thorn_lurker', 'pg-story-start-0001')
+    for beat in range(1,5):
+        result = encounters.act(account, character, result['encounter']['id'], 'glimmer_spark', beat, f'pg-story-cast-{beat:04}')
+    opened = story.start(account, character, npc)['dialogue']
+    story.choose(account, character, npc, opened['id'], 'follow_note')
+    story.inspect(account, character, 'sunthread_reeds')
+    story.inspect(account, character, 'saltglass_cistern')
+    with ThreadPoolExecutor(4) as pool:
+        list(pool.map(lambda _: story.start(account, character, npc), range(4)))
+    other = PostgresPlayerStore(os.environ['VT_TEST_DATABASE_URL'])
+    try:
+        saved = other.get_character(character)
+        assert saved.wallet['shell_chits'] == 19 and saved.experience == 140
+        assert saved.quest_state['an_answer_in_the_reeds']['rewards_claimed']
+        assert saved.dialogue_state['node'] == 'answer_found'
+        resumed = StoryService(VerticalSliceService(other, service.quest_rules), service.quest_rules)
+        assert resumed.start(account, character, npc)['character']['wallet']['shell_chits'] == 19
+    finally:
+        other.engine.dispose()

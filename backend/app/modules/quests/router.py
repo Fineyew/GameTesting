@@ -7,6 +7,6 @@ router = APIRouter()
 async def module_status() -> dict[str, str]:
     return {
         "module": "quests",
-        "status": "scaffold",
+        "status": "implemented_narrow_slice",
         "boundary": "accepted quests, objectives, completion rewards via ports",
     }

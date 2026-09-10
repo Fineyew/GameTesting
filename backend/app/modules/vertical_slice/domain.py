@@ -49,6 +49,7 @@ class CharacterRecord:
     encounter: dict[str, Any] = field(default_factory=dict)
     command_receipts: dict[str, Any] = field(default_factory=dict)
     equipment: dict[str, str] = field(default_factory=dict)
+    dialogue_state: dict[str, Any] = field(default_factory=dict)
 
     @classmethod
     def create(
@@ -70,6 +71,7 @@ class CharacterRecord:
         state = asdict(self)
         state.pop("command_receipts", None)
         state.pop("account_id", None)
+        state.pop("dialogue_state", None)
         return state
 
 

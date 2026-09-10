@@ -17,9 +17,10 @@ validation remains unverified. PROJECT_STATE records exact CI/artifact evidence 
 
 Create an account and one Wayfarer with appearance/affinity; enter a small original
 procedural Dawnreef; move with touch/WASD/controller stick; orbit/recenter the camera;
-see other connected players and use preset chat; talk to Mara, accept the first quest,
+see other connected players and use preset chat; follow Mara's branching dialogue, accept the first quest,
 fight the Fog-Thorn Lurker in server-owned Tidebeat turns and retain XP, currency and
-inventory rewards. Resume an active encounter after reconnecting. Search the bag and
+inventory rewards. Then trace a note through the reeds and sealed cistern entrance and
+return to Mara for a once-only reward. Resume an active encounter after reconnecting. Search the bag and
 change FPS, shadows and render resolution. Offline exploration is explicitly a preview
 with no saved progression. This is not yet the complete 18-quest authored vertical slice.
 
@@ -67,7 +68,7 @@ isolated database migrated to head. CI runs both migrations and the PostgreSQL t
 ## Android build and runtime checks
 
 Use the checked-in **Android** export preset: ARM64, INTERNET permission, app ID
-`work.surveyroute.veilboundtides`, version 0.2.0/code2. Use Godot 4.5.1 export templates,
+`work.surveyroute.veilboundtides`, version 0.2.1/code3. Use Godot 4.5.1 export templates,
 JDK17, Android SDK platform35 and build-tools35.0.0. See the
 [official engine export instructions](https://docs.godotengine.org/en/4.5/tutorials/export/exporting_for_android.html).
 The exported engine minimum is API24, target API35; minimum OS is not a device-performance guarantee.
@@ -97,7 +98,7 @@ With Android platform-tools and USB debugging enabled:
 
 ```bash
 adb devices
-adb install -r veilbound-tides-0.2.0-android.apk
+adb install -r veilbound-tides-0.2.1-android.apk
 adb reverse tcp:8000 tcp:8000
 ```
 
