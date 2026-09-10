@@ -142,6 +142,8 @@ def test_story_api_requires_live_proximity_and_owner(monkeypatch, tmp_path):
     from backend.app.main import create_app
     try:
         with TestClient(create_app()) as client:
+            info = client.get("/api/v1/server-info").json()
+            assert info["world_protocol"] == 1 and info["story_protocol"] == 1
             identities = []
             for index in range(2):
                 token = client.post("/api/v1/auth/register", json={"email": f"story{index}@example.test", "display_name": "Listener", "password": "test-only-password"}).json()["access_token"]

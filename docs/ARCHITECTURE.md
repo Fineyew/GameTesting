@@ -137,6 +137,9 @@ return a sanitized view. This is additive within runtime schema1 and needs no DD
 An older server binary cannot read newly added aggregate fields: backup before rollback,
 and migrate/drop only this cursor field deliberately if downgrading to M0. Never reset
 player IDs, inventory, quest progress or rewards. Protocol1 movement/geometry is unchanged.
+`/server-info` adds story_protocol=1; the 0.2.1 client checks it before authentication,
+so an older backend fails with a clear update message instead of partial story support.
+Older clients can still use the unchanged world protocol and starter compatibility API.
 
 The first authored follow-up uses existing landmarks and rewards40 XP/5 shell chits once.
 It does not open the cistern dungeon or add harvesting, folios or additional spells.

@@ -44,7 +44,8 @@ Local mode defaults to JSON saves at `var/vertical_slice_save.json`, ignored by 
 Open `godot_project/project.godot` and press Play. Under **Server connection**, set
 `http://127.0.0.1:8000/api/v1`. HTTP is permitted only for localhost in editor/debug builds;
 shared servers require HTTPS. The inherited default `https://game.surveyroute.work/api/v1`
-has not been updated or verified operational in this session. Server protocol 1 is required.
+has not been updated or verified operational in this session. World protocol1 and story
+protocol1 are required; a 0.2.0 backend needs the story update before this client signs in.
 
 To test an attached Android phone against your PC server, install the APK, run
 `adb reverse tcp:8000 tcp:8000`, and use the same localhost URL. This is a development

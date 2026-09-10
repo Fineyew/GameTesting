@@ -100,7 +100,7 @@ func show_login() -> void:
     card.add_child(TideUI.button("Create account",authenticate.bind(true)))
     card.add_child(TideUI.button("Explore the offline preview",start_preview))
     card.add_child(TideUI.button("Server connection",show_connection))
-    add_status("Online play requires a server running world protocol 1.")
+    add_status("Online play requires the matching Veilbound Tides server update.")
 
 func show_connection() -> void:
     clear_card("Server connection")
@@ -131,9 +131,9 @@ func authenticate(registering: bool) -> void:
     status_label.text = "Checking server…"
     ApiClient.set_session(server_url,"")
     var info = await ApiClient.get_json("/server-info")
-    if info.is_empty() or info.get("world_protocol",0) != 1:
+    if info.is_empty() or info.get("world_protocol",0) != 1 or info.get("story_protocol",0) != 1:
         if not info.is_empty():
-            status_label.text = "This server needs the 0.2.0 world update."
+            status_label.text = "Update the server for this game build, then try again."
         busy = false
         return
     status_label.text = "Opening your account…"
@@ -208,6 +208,7 @@ func enter_world() -> void:
 func start_preview() -> void:
     if busy:
         return
+    GameData.load_bundle()
     _play({"id":"preview","name":"Visiting Wayfarer","level":1,"appearance":{"robe":"teal","skin":"warm"},"position":{"x":0,"z":4},"quest_state":{},"wallet":{},"inventory":{}},true)
 
 func _play(character: Dictionary, offline: bool) -> void:
