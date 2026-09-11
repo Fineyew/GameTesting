@@ -5,6 +5,23 @@ Read README → PROJECT_STATE → ARCHITECTURE → relevant source. Main remains
 
 ## Current milestone
 
+**M1.7 started: planar geometry validation groundwork; full milestone incomplete.**
+Reject malformed bounds/spawn/blockers/interactions, nonfinite movement values, capsule
+mismatches and unsupported elevation before catalog construction. Live content, scene,
+world1, saves and APK0.2.5 are unchanged. ARCHITECTURE specifies the next shared-height/
+protocol2/derived-y compatibility plan; terrain runtime has not been implemented.
+Validation of this new checkpoint is pending CI; local counts are recorded in CHANGELOG.
+
+**Reported failure assessed:** M1.6 handoff a0b495c/run34552851591 attempt1 passed
+backend/PostgreSQL, Godot/API and rendering, but failed Android's visible gateway check.
+Inspected native artifact10181631699 shows “Pixel Launcher isn't responding” covering
+an otherwise rendered gateway; filtered Godot log has VT_GATEWAY_READY and no engine
+error. ZIP SHA256:6f19916c84e80fb787d55fc57f2cb90f59d4063c462e973c01bcd19bb9f98bae.
+No ARM64 artifact was published by that failed attempt. The unchanged Android job was
+restarted on a fresh runner: attempt2 passes all jobs, including native touch/resume,
+with unchanged source/assertions. Retained build10273533063, native10273982286 and
+render10273508075 through2026-12-10. The underlying launcher ANR is not fixed.
+
 **M1.6 authoring workflow: engineering complete.**
 Code `d1f0929cd2454f923ed70279f633705d0b9af9f2`,
 [run34552020416](https://github.com/Fineyew/GameTesting/actions/runs/34552020416): all three jobs passed.
@@ -26,7 +43,7 @@ Code: `023db7557baf173c306cd7ba711cd74628c7204b`.
 [CI run34550163642](https://github.com/Fineyew/GameTesting/actions/runs/34550163642): all three jobs passed.
 The owner requested continued engineering after the M1.4 device handoff. This does not
 constitute physical-phone validation or owner art-direction acceptance. M1.6 authoring
-workflow is complete; M1.7 terrain authority is next and has not started.
+workflow is complete; M1.7 has begun with content validation, not active elevation.
 
 ## Preserved checkpoints
 
@@ -38,7 +55,7 @@ workflow is complete; M1.7 terrain authority is next and has not started.
 | M1.3 vendor/equipment | de9d7a38bed6c18b396173cfd926c09c20e8159d | 3ac1f8fc69379b15594191294e6248e9911be950 |
 | M1.4 visual candidate; acceptance open | 365993ce7e79fc29025ee23d1c77cbf449ad2bfc | a5d06dbaa819b25897dbf08f632ce962dd74db58 |
 | M1.5 engineering; physical acceptance open | 023db7557baf173c306cd7ba711cd74628c7204b | 4bcecfec418d4907bcfc4cf9571c78c1a026c048 |
-| M1.6 authoring tools | d1f0929cd2454f923ed70279f633705d0b9af9f2 | Documentation commit containing this state; see Git/PR #4 |
+| M1.6 authoring tools | d1f0929cd2454f923ed70279f633705d0b9af9f2 | a0b495c4f55719b2c8379daf584a8efb22e847c4 |
 
 M1.5 documentation handoff4bcecfe/run34551125125 also passed all three CI jobs.
 Roadmap checkpoint edec97b preserved history and introduced progressive whole-game art production.
@@ -107,7 +124,7 @@ trading, gathering/crafting, mounts/housing/pets or broad social content were ad
 Recovery/moderation, load tests, JSON→PG import/restore, staging/production, signing and
 updater remain future work. One process owns the room;32-player cap is unbenchmarked.
 
-**Next: M1.7 terrain authority.** Explain its shared height/collision representation and
+**Next: continue M1.7 terrain authority.** Implement and test the documented shared height/collision representation and
 versioned world/location compatibility plan before implementation. Preserve flat saves,
 server movement authority and the existing player/camera modules.
 Current tools cover catalog templates/diagnostics, scene/asset binding/status checks and

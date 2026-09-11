@@ -1,5 +1,24 @@
 # Changelog
 
+## M1.7 groundwork and handoff failure assessment (2026-09-11, CI pending)
+
+- Fast-forward the clean workspace fromd1f0929 to the existing remotea0b495c handoff;
+  preserve all completed checkpoints and working gameplay.
+- Inspect run34552851591 attempt1: backend/PG/Godot/API/render pass; Android startup
+  fails because a Pixel Launcher ANR dialog covers the gateway (native10181631699).
+  No engine error or ARM64 publication. Re-run the unchanged Android job on a fresh
+  runner: attempt2 passes all jobs, including native touch/resume. Build10273533063,
+  native10273982286 and render10273508075 retained. Launcher root cause remains unverified.
+- Begin M1.7 with geometry validation before catalog/reference loading: finite ordered
+  bounds, safe spawn, blockers/landmarks, supported movement and capsule agreement.
+  Reject malformed/out-of-range authoring values and unsupported terrain instead of silently
+  accepting rules the current runtime cannot execute. Add29 regression cases.
+- Local139 backend tests/30 subtests pass with9 explicit PostgreSQL skips; isolated real
+  Godot/API authoring preview passes. Live26-definition bundle remains byte-identical.
+  Full new-checkpoint CI still pending; no new APK version/gameplay is claimed.
+- Record the next shared triangular-cell terrain, protocol2 handshake and derived-y
+  save compatibility plan. Actual height/slope/stair/runtime work remains incomplete.
+
 ## M1.6 — Authoring workflow engineering complete (2026-09-11)
 
 - Continue from validated M1.5 code023db75/handoff4bcecfe.

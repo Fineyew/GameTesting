@@ -43,3 +43,9 @@
   examples outside live content and preview them through an isolated real client/API/store.
   Asset metadata validates bindings/evidence without claiming it can implement handlers
   or certify visual/device quality. No CMS, runtime protocol or schema redesign.
+
+- D030 (2026-09-11): Begin M1.7 with strict validation of the currently executable planar
+  geometry before introducing height data. Pin capsule agreement, reject unsupported
+  elevation fields and preserve production catalog bytes. ARCHITECTURE records the next
+  shared triangular-cell surface, protocol2 handshake and derived-height save plan; these
+  runtime changes remain planned until parity/integration/Android gates pass.

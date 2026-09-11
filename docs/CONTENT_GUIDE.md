@@ -226,3 +226,17 @@ The current vertex-color kit uses no texture atlas; a future textured kit must r
 atlas resolution/material/texture budget and validate imports/rendering before acceptance.
 Run `tools.check_art`, strict Godot checks and the next playable render/device gates after
 any asset export. This workflow does not make missing assets or proposed systems playable.
+
+## World geometry authoring guard (M1.7 groundwork)
+
+The catalog now validates `rules.world` before references are traversed. Bounds are four
+finite coordinates within±512m, ordered with at least2m per axis. Spawn is a finite x/z
+pair with0.35m capsule clearance from bounds/blockers. Up to128 ordered blockers must
+lie inside bounds; up to128 named interactions have finite in-bounds x/z coordinates.
+Speed is0.1–12m/s, acceleration/deceleration0.1–64m/s²; omitted parameters retain runtime
+defaults. Radius is0.35 to match the current client. Boolean/NaN/infinite/oversized values,
+malformed shapes and unknown fields fail before runtime, including unsupported terrain.
+These bounds are validation limits, not tested performance capacity or permission to
+expand the hardcoded Dawnreef scene. A scene must still implement its catalog geometry.
+The live catalog/bundle is unchanged. Follow ARCHITECTURE's planned M1.7 terrain contract
+only when the Python/Godot implementation and versioned handshake are ready together.

@@ -6,7 +6,7 @@ Revised 2026-09-10 after inspecting the repository at
 and successful M0–M1.3 CI jobs. Roadmap checkpoint edec97b changed planning only.
 The owner subsequently authorized implementation; current evidence lives in PROJECT_STATE.
 
-**M1.6 engineering complete atd1f0929; next is M1.7 terrain authority.**
+**M1.6 engineering complete atd1f0929; M1.7 geometry groundwork is in progress.**
 On 2026-09-11 the owner requested full continuation after the device-gate handoff.
 Proceed with engineering checkpoints while recording M1.4/M1.5 physical acceptance as
 outstanding. This changes development ordering only; Device E/R/L evidence and final
@@ -314,6 +314,13 @@ PROJECT_STATE records code/handoff and CI artifact provenance.
   with exported assets evaluated in the next playable milestone.
 
 ### M1.7 — Terrain authority and finished movement behavior
+
+Started with strict validation of the existing planar world contract; local regressions
+pass, full CI pending. No elevated world, new protocol or playable route is implemented.
+ARCHITECTURE records the shared cell/triangle surface and compatibility plan before runtime
+changes. Complete this milestone in reviewable checkpoints: input validation, Python/Godot
+surface parity, then negotiated authority + one route + full integration/APK/device evidence.
+These are stages within M1.7, not a claim that its completion criteria are satisfied.
 
 - **Kind / purpose:** Engineering foundation, gameplay systems, polish. Make real terrain safe.
 - **Adds:** A bounded shared height/collision representation, one slope/stair test route,

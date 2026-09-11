@@ -3,6 +3,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from backend.app.modules.content.world_geometry import geometry_errors
+
 
 REQUIRED_CONTENT_CATEGORIES = {
     "achievements",
@@ -70,6 +72,13 @@ def validate_content_tree(root: Path) -> ContentValidationReport:
     report = ContentValidationReport()
     _validate_required_categories(root, report)
     _load_definitions(root, report)
+    if report.errors:
+        return report
+    # Validate geometry before any cross-definition lookup dereferences it (shops,
+    # discoveries and authoring bindings all consume this same world object).
+    for loaded in report.definitions.values():
+        if loaded.payload["type"] == "zones" and "world" in loaded.payload.get("rules", {}):
+            report.errors.extend(f"{loaded.path}: {error}" for error in geometry_errors(loaded.payload["rules"]["world"]))
     if report.errors:
         return report
     _validate_references(report)

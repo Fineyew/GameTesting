@@ -349,3 +349,57 @@ preview and automated validation share this isolation; source content is not mod
 Godot scenarios stay in the existing export-excluded tests directory. Production world
 placement/dispatch remains the current modular implementation; diagnostics expose required
 bindings rather than claiming arbitrary metadata can replace runtime scene integration.
+
+## M1.7 terrain contract — implementation plan, not active runtime
+
+The first checkpoint validates today's planar authoring inputs before catalog construction:
+finite ordered bounds, capsule-clear spawn, bounded blocker/landmark lists and finite
+movement parameters. Radius stays0.35 to match the existing Godot capsule and clamp.
+Unknown geometry fields, including elevation, are rejected until both runtimes implement
+them. The live26 definitions, scene, simulation, saves and world protocol1 are unchanged.
+
+Next, implement one bounded height surface inside the existing world module and catalog.
+Use a sparse grid of one-metre cells aligned to Dawnreef's current bounds; unspecified
+cells are flat at zero. Each authored cell has four integer millimetre corner heights,
+ordered southwest/southeast/northeast/northwest, split along southwest–northeast for both
+height queries and Godot collision triangles. Limit each axis to128 cells and heights to
+±8m for this first contract. Adjacent cells may have distinct boundary heights so stairs
+have actual risers; do not smooth steps into ramps or use bilinear sampling against
+triangular collision. Stable cell keys and deterministic edge tie-breaking are required.
+This single-valued surface does not support stacked bridge/cave floors: those remain
+separate future instance/surface contracts, not extra heights silently added to this map.
+
+The server derives height from legal horizontal input, never a submitted position or y.
+Test swept capsule clearance against existing blockers and every crossed cell boundary;
+reject ascent/descent over0.30m steps and faces above the existing42-degree floor limit.
+Subdivide bounded travel to at most0.10m and inspect boundary height on both sides, so a
+steep face cannot become climbable by choosing very small input increments. No jumping,
+fall simulation or edge teleport is introduced. Reject an unsafe move while retaining
+tangential motion; camera-only foliage stays independent. Generate tops/risers and visual
+route geometry from the same data; keep WayfarerController, OrbitRig and PlaySession.
+A shared fixture suite must compare Python and GDScript heights, diagonal seams, risers,
+cliffs, bounds and sweeps before enabling the first route. Measure vertical smoothing
+without changing authoritative feet placement or accumulating reconciliation error.
+
+Activation requires world protocol2 plus matching geometry revision/digest in the socket
+auth handshake and welcome/snapshots, checked before joining. Keep axis/sequence inputs;
+include authoritative y and reject unsupported position/height fields. Retain the current
+session revocation, timeouts, single room, HTTP progression and receipt contracts. Keep
+old clients on an explicit update message; never serve elevated geometry to protocol1.
+One slope/stair route must stay outside Mara/reeds/cistern/lurker interaction approaches,
+spawn and current buildings. Version the zone only when that route actually activates.
+
+Saves retain x/z and derive y on entry from the current surface. In the first single-floor
+contract a persisted y is redundant and can be stale; do not add a database column or
+trust a saved altitude. Preserve safe old x/z, IDs and aggregate fields; validate bounds/
+blockers and relocate only unsafe positions to the existing safe spawn, with a structured
+reason. Test JSON and PostgreSQL entry/reconnect independently. Update checkpoint writes
+only under the existing aggregate lock; never overwrite inventory/quest/commerce data.
+The future protocol2 snapshot supplies y to both local reconciliation and remote avatars;
+3D proximity must agree with the same height queries.
+
+Roll out only after differential geometry, stale/forged packet, two-client movement,
+reconnect, existing progression, PostgreSQL, rendering and Android gates pass together.
+A new playable APK/version and paired backend are required at activation. Back up before
+rollout; downgrade needs a validated elevated-position-to-flat relocation plan preserving
+all non-location state. No public deployment or physical Device R acceptance is implied.

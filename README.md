@@ -30,7 +30,9 @@ See PROJECT_STATE for hashes/evidence. M1.6 authoring tools pass at `d1f0929cd24
 [run34552020416](https://github.com/Fineyew/GameTesting/actions/runs/34552020416):
 119 backend tests/30 subtests, PostgreSQL, original and isolated-authoring Godot/API,
 render and Android gates. CONTENT_GUIDE documents diagnostics/isolated previews.
-No new live content or APK version; next is M1.7 terrain authority.
+No new live content or APK version. M1.7 has begun with planar geometry authoring validation;
+shared height/stair/slope runtime is still planned. PROJECT_STATE records the diagnosed
+M1.6 handoff Android launcher-overlay failure and subsequent validation status.
 
 ## What is playable
 

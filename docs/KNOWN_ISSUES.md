@@ -42,6 +42,14 @@ Updated 2026-09-11. See PROJECT_STATE for current CI/artifact status.
 
 ## Engineering
 
+- M1.6 handoff a0b495c/run34552851591 attempt1 failed the visible gateway gate. Retained
+  native10181631699 was downloaded and inspected: Pixel Launcher ANR modal covers the
+  rendered game; Godot has its ready marker and no engine error. Backend/PG, Godot/API,
+  authoring and render passed. The failed attempt withheld ARM64 publication. The unchanged Android rerun passes in attempt2 (native10273982286,
+  build10273533063), including touch/resume. Do not treat this as a launcher ANR fix.
+- M1.7 currently adds planar geometry validation only. Shared height sampling, slope/stair
+  scene, protocol2, vertical reconciliation and movement/device acceptance remain planned.
+
 - M1.6 tools pass full CI atd1f0929/run34552020416. Structural dialogue
   reachability does not prove conditional story reachability. Existing runtime bindings
   are checked, not generated; additional NPC placements/handlers need real scene integration.
