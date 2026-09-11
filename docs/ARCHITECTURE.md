@@ -100,8 +100,12 @@ Windows has a preset but no validated export; iOS remains planned.
 
 CI retains APK/provenance and desktop frames, then installs the QA APK on an API35
 emulator and uses actual adb touch input to enter preview/move, background and resume.
-Logs/screenshots record the result. These are runtime/function checks, not physical ARM64
-performance certification. Source checkpoints persist in Git; downloadable artifacts
+Logs/screenshots record the result. Before the post-resume swipe, the API35 harness
+requires three seconds of a focused, visible, shown landscape app surface with no screen
+rotation animation. It retains the OS window dump and fails closed on missing fields.
+Seven parser/readiness regressions run in the Android job. No extra gesture is injected;
+the original movement and resume-difference gates remain unchanged. These are runtime/
+function checks, not physical ARM64 performance certification. Source checkpoints persist in Git; downloadable artifacts
 must also be retained. Current startup has no pack download/repair/resume updater yet.
 
 CI uses the supported `swangle` emulator graphics mode (ANGLE over SwiftShader).

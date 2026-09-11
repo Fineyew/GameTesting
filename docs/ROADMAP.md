@@ -6,7 +6,7 @@ Revised 2026-09-10 after inspecting the repository at
 and successful M0–M1.3 CI jobs. Roadmap checkpoint edec97b changed planning only.
 The owner subsequently authorized implementation; current evidence lives in PROJECT_STATE.
 
-**Current engineering milestone: M1.5, usable Sunthread Bandages (in progress).**
+**M1.5 engineering/automated gates complete at023db75. Next: M1.6 authoring workflow.**
 On 2026-09-11 the owner requested full continuation after the device-gate handoff.
 Proceed with engineering checkpoints while recording M1.4/M1.5 physical acceptance as
 outstanding. This changes development ordering only; Device E/R/L evidence and final
@@ -17,7 +17,7 @@ roadmap amendment governs forward ordering; earlier handoff recommendations rema
 ## How to use this roadmap
 
 - Completed milestones and their evidence below are immutable history. Beyond the current
-  M1.4/M1.5 candidates, forward milestones are **planned**, including existing catalog examples.
+  M1.4 visual candidate and M1.5 engineering checkpoint, forward milestones are **planned**, including existing catalog examples.
 - Android is the primary game. Keep Godot 4.5.1 Compatibility, the modular client,
   FastAPI/PostgreSQL/JSON ports, server-owned rules and existing IDs/saves/tests. A future
   change to those decisions needs measured justification and a compatibility plan.
@@ -270,7 +270,10 @@ and Device E are still pending. This is not a completed milestone; PROJECT_STATE
 
 ### M1.5 — Usable Sunthread Bandages
 
-Implemented candidate; full CI/APK pending. PROJECT_STATE owns current evidence.
+Engineering complete at023db7557baf173c306cd7ba711cd74628c7204b, run34550163642.
+106 backend tests/30 subtests,9 PostgreSQL tests,7 Android readiness tests, Godot/API,
+render and native gates pass; ARM64 0.2.5/code7 retained. Device E remains unverified.
+PROJECT_STATE owns artifact provenance and the documentation handoff.
 
 - **Kind / purpose:** Gameplay systems. Close the already-defined supplies loop.
 - **Adds:** Server-owned out-of-combat bandage use, capped Vigor restoration, atomic item
@@ -970,7 +973,7 @@ If too much placeholder debt remains, return to bounded production batches befor
 | Order | Milestones | Result |
 |---|---|---|
 | Preserved | M0 → M1.1 → M1.2 → M1.3 | Tested existing engineering, story, folio and vendor/equipment foundation |
-| Next | M1.4 → M1.5 → M1.6 | Visible Dawnreef quality benchmark, usable supplies, repeatable production tools |
+| Current progression | M1.4 → M1.5 → M1.6 | Visible Dawnreef quality benchmark, usable supplies, repeatable production tools |
 | Early feel | M1.7 → M1.8 → M1.9 → M1.10 | Terrain/movement, character animation, audio and six-spell presentation |
 | Slice systems | M1.11 → M1.12 → M1.13 → M1.14 → M1.15 → M1.16 | Strategic variety, first chapter, gear/loot, parties, co-op and cistern boss |
 | Early operations | M2.1 after M1.12; M2.2 after M1.16; M2.3 before M1.21 | Staging/restore, account recovery and moderation before outside-player acceptance |
@@ -980,8 +983,8 @@ If too much placeholder debt remains, return to bounded production batches befor
 | Entire-game art | M4.1 → M4.2 → M4.3 → M4.4 | Every launch environment, character/collectible, effect/audio and UI surface complete |
 | Release | M5.1 → M5.2 → M5.3 → M5.4 → M5.5 | Whole-game cohesion, phone certification, recovery/security, beta and approved launch |
 
-**Recommended immediate work: finish M1.5 validation and checkpoint.** The next engineering
-increment is M1.6 content/asset authoring tools. Keep the concrete M1.4 art/phone review and
+**Recommended immediate work: M1.6 content/asset authoring tools.** M1.5 engineering
+and its automated gates are checkpointed. Keep the concrete M1.4 art/phone review and
 M1.5 online Device E checklist open alongside engineering; no release gate is waived.
 
 Postpone bulk quest/spell generation until the authoring/art benchmark exists; additional

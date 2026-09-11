@@ -28,7 +28,7 @@ Updated 2026-09-11. See PROJECT_STATE for current CI/artifact status.
 - One vest vendor/equipment loop passes all M1.3 gates atde9d7a3/run34440512749. Selling,
   trading, wearable vest mesh, additional gear slots, gathering/crafting, mounts,
   housing, pets, dungeon/boss and most social features are not implemented.
-  M1.5 Sunthread Bandage use is an implemented candidate; full CI/APK verification pending.
+  M1.5 Sunthread Bandage engineering/automated gates pass at023db75/run34550163642.
   Engineering continuation was authorized; physical acceptance is still outstanding.
 - M1.4's small original art/rig/VFX candidate passes full CI/render/native validation at
   365993ce/run34483308643; actual captures and matching route frames were inspected.
@@ -42,16 +42,12 @@ Updated 2026-09-11. See PROJECT_STATE for current CI/artifact status.
 
 ## Engineering
 
-- M1.5 candidate f761714/run34547305384 passes backend106/30, Godot/API and render;
-  native post-resume movement failed (artifact10179708379). Android InputDispatcher
-  reported no touched window during the resume transition. Harness now waits for
-  stable focus/ready surface before the unchanged single-swipe movement check;
-  correction awaits full CI. No M1.5 ARM64 artifact was published by the failed run.
-  0edc990/run34548765608 passed backend/Godot/render but the first wait timed out on
-  an absent legacy AppTransition field (native artifact10180224033). The corrected
-  parser uses actual API35 focused-window/surface/rotation fields, with seven regressions
-  and a check against the retained dump. Its full Android rerun remains pending.
-
+- Resolved M1.5 native harness issues: f761714/run34547305384 failed post-resume
+  movement during an OS transition (native10179708379);0edc990/run34548765608 timed out
+  on an absent legacy AppTransition field (native10180224033). Both withheld APKs.
+  The API35 focused/visible/shown landscape surface parser, stable focus wait and seven
+  regressions pass at023db75/run34550163642 with unchanged movement/resume thresholds.
+  Exact source/retained ARM64 and inspected frame evidence are in PROJECT_STATE.
 - M0 Android emulator checks pass at 69457a4, including visible resume and repeat touch
   locomotion. The earlier black transition screenshot is resolved by waiting for presented
   frames; this was a test timing gap. Physical-device gates above remain open.

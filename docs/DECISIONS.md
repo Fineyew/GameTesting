@@ -33,3 +33,8 @@
   acceptance. Do not label M1.4/M1.5 fully accepted or release-ready from automated tests.
 - D027: Reuse commerce transactions/revisions/receipts for single-item out-of-combat healing;
   preserve old saves, separate rules from persistence, and consume nothing at full Vigor.
+
+- D028: Gate emulator gestures on the actual API35 focused/visible surface and rotation
+  state, retaining diagnostics and a bounded stabilization wait. Legacy transition fields
+  are absent; test the recorded dump shape and fail closed on missing/hidden surfaces.
+  Keep one gesture and the existing visual thresholds; do not claim real-phone certification.

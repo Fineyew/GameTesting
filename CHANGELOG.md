@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.5 — M1.5 bandage loop candidate (2026-09-11)
+## 0.2.5 — M1.5 engineering complete; physical acceptance open (2026-09-11)
 
 - Continue from a5d06db after its full CI passed; owner requested continued engineering.
 - Use one owned Sunthread Bandage outside combat: up to12 Vigor, cap30, no waste at full health.
@@ -9,7 +9,7 @@
 - Add item_use_protocol1 and strict item-use API/content validation; no DDL or new save fields.
 - Add JSON/API/concurrency/rollback/content and PostgreSQL use/purchase regressions, real
   Godot/API purchase/use/reconnect and scroll-visible GUI input coverage.
-- Local97 backend tests/30 subtests pass;9 PostgreSQL tests await CI. Godot/API passes.
+- Local97 backend tests/30 subtests pass;9 PostgreSQL tests are explicit local skips. Godot/API passes.
   Candidate f761714/run34547305384 passes backend106/30 including9 PostgreSQL tests,
   Godot/API and render. Native resume swipe was sent during an Android window transition
   and failed; retain artifact10179708379, publish no APK. Wait for stable focused/ready
@@ -19,7 +19,13 @@
 - 0edc990/run34548765608 passes backend/Godot/render; readiness wait failed closed on
   an absent legacy field (native10180224033). Parse the retained API35 window/surface
   format, with seven readiness regressions in CI; unchanged single swipe/thresholds.
-  Corrected full CI and ARM640.2.5/code7 pending. Physical acceptance remains unverified.
+- Code023db7557baf173c306cd7ba711cd74628c7204b/run34550163642 passes all gates:
+  106 backend tests/30 subtests including9 PostgreSQL tests,7 readiness tests, Godot/API,
+  render71 calls/83,630 primitives/15,182,467 texture bytes and native touch/resume.
+  Retain verified ARM64 0.2.5/code7,29,148,100 bytes, artifact10180711026; native10180711956,
+  render10180713027. SHA256:6e9ad8c7a15dbd210e886bc3e265daa538ee1f693232d310b4df8524ee286152.
+  APK/Bag capture/evidence saved for handoff. No public deployment or phone pass claimed.
+  Next engineering milestone: M1.6 authoring tools; no broader content started.
 
 ## 0.2.4 — M1.4 visual benchmark candidate (in progress, 2026-09-10)
 

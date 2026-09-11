@@ -18,10 +18,15 @@ M1.4 is an implemented visual benchmark candidate at
 [CI run 34483308643](https://github.com/Fineyew/GameTesting/actions/runs/34483308643)
 passes 90 tests / 30 subtests with PostgreSQL, full Godot/API progression, a 71-draw-call
 render sample, matching walkthrough recordings and Android touch/visible-resume checks.
-Verified ARM64 **0.2.4/code6** is retained as artifact **10154911714**. PROJECT_STATE records
-exact source/manifest/APK hashes and evidence. Owner art-direction acceptance and the
+Historical ARM64 **0.2.4/code6** remains artifact **10154911714**; CHANGELOG preserves
+that milestone and PROJECT_STATE records the current APK provenance. Owner art-direction acceptance and the
 required physical-phone baseline remain open. The owner authorized continued engineering;
-M1.5 now has a bandage-use candidate awaiting full CI and a fresh APK. See PROJECT_STATE.
+M1.5 engineering passes at `023db7557baf173c306cd7ba711cd74628c7204b`,
+[run34550163642](https://github.com/Fineyew/GameTesting/actions/runs/34550163642):
+106 backend tests/30 subtests including9 PostgreSQL tests,7 Android readiness tests,
+Godot/API, render and native touch/resume. Current verified ARM64 **0.2.5/code7** is
+artifact **10180711026**. Physical acceptance remains open; next is M1.6 authoring tools.
+See PROJECT_STATE for hashes/evidence.
 
 ## What is playable
 
@@ -87,7 +92,7 @@ isolated database migrated to head. CI runs both migrations and the PostgreSQL t
 ## Android build and runtime checks
 
 Use the checked-in **Android** export preset: ARM64, INTERNET permission, app ID
-`work.surveyroute.veilboundtides`, version 0.2.5/code 7 (candidate; check validation status in PROJECT_STATE). Use Godot 4.5.1 export templates,
+`work.surveyroute.veilboundtides`, version 0.2.5/code 7 (automated gates passed; physical validation open). Use Godot 4.5.1 export templates,
 JDK17, Android SDK platform35 and build-tools35.0.0. See the
 [official engine export instructions](https://docs.godotengine.org/en/4.5/tutorials/export/exporting_for_android.html).
 The exported engine minimum is API24, target API35; minimum OS is not a device-performance guarantee.
@@ -95,6 +100,8 @@ The exported engine minimum is API24, target API35; minimum OS is not a device-p
 The Linux/CI helper requires `GODOT_BIN`, `ANDROID_HOME`, `JAVA_HOME` and installed templates:
 
 ```bash
+# The Android CI environment also installs Pillow==11.3.0.
+python -m unittest discover -s tools/tests
 python -m tools.export_android --emulator
 xvfb-run -a python -m tools.check_render
 # With an Android emulator already booted and adb available:
