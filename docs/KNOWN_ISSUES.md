@@ -42,6 +42,12 @@ Updated 2026-09-11. See PROJECT_STATE for current CI/artifact status.
 
 ## Engineering
 
+- M1.6 tools are a locally validated candidate; full CI is pending. Structural dialogue
+  reachability does not prove conditional story reachability. Existing runtime bindings
+  are checked, not generated; additional NPC placements/handlers need real scene integration.
+  Artifact acceptance metadata verifies references/hashes, not the truth of human review.
+  Interactive desktop authoring UI and physical phones have not been manually tested here.
+
 - Resolved M1.5 native harness issues: f761714/run34547305384 failed post-resume
   movement during an OS transition (native10179708379);0edc990/run34548765608 timed out
   on an absent legacy AppTransition field (native10180224033). Both withheld APKs.

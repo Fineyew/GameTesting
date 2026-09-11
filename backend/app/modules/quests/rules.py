@@ -10,6 +10,7 @@ from backend.app.modules.contracts import ContentReader
 
 
 class QuestRules:
+    SUPPORTED_OBJECTIVES = frozenset({"defeat_enemy", "inspect_landmark", "talk_to_npc", "cast_spell"})
     def __init__(self, catalog: ContentReader):
         self.definitions = {(d.type, d.key): d for d in catalog.list_definitions()}
 
@@ -44,7 +45,7 @@ class QuestRules:
             return  # Reopening/retrying a conversation never resets old progress.
         if not self.conditions_met(character, quest.rules.get("start_conditions", [])):
             raise ValueError("quest requirements are not met")
-        if any(o["type"] not in {"defeat_enemy", "inspect_landmark", "talk_to_npc", "cast_spell"} for o in quest.rules["objectives"]):
+        if any(o["type"] not in self.SUPPORTED_OBJECTIVES for o in quest.rules["objectives"]):
             raise ValueError("quest objective is not playable yet")
         character.quest_state[quest_key] = {
             "state": "accepted", "objectives": {o["key"]: 0 for o in quest.rules["objectives"]},

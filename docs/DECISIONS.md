@@ -38,3 +38,8 @@
   state, retaining diagnostics and a bounded stabilization wait. Legacy transition fields
   are absent; test the recorded dump shape and fail closed on missing/hidden surfaces.
   Keep one gesture and the existing visual thresholds; do not claim real-phone certification.
+
+- D029: Extend the existing CLI/catalog/native-editor workflow for M1.6. Keep authoring
+  examples outside live content and preview them through an isolated real client/API/store.
+  Asset metadata validates bindings/evidence without claiming it can implement handlers
+  or certify visual/device quality. No CMS, runtime protocol or schema redesign.

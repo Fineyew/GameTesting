@@ -6,7 +6,7 @@ Revised 2026-09-10 after inspecting the repository at
 and successful M0–M1.3 CI jobs. Roadmap checkpoint edec97b changed planning only.
 The owner subsequently authorized implementation; current evidence lives in PROJECT_STATE.
 
-**M1.5 engineering/automated gates complete at023db75. Next: M1.6 authoring workflow.**
+**Current: M1.6 authoring workflow candidate. M1.5 engineering complete at023db75.**
 On 2026-09-11 the owner requested full continuation after the device-gate handoff.
 Proceed with engineering checkpoints while recording M1.4/M1.5 physical acceptance as
 outstanding. This changes development ordering only; Device E/R/L evidence and final
@@ -289,6 +289,11 @@ PROJECT_STATE owns artifact provenance and the documentation handoff.
   state, old-save compatibility required; Device E required for the online use flow.
 
 ### M1.6 — Reusable content and asset authoring workflow
+
+Implemented candidate: CLI diagnostics/example/encounter preview, binding and production
+status inventory, isolated copied-client/API preview. Local110 backend tests/30 subtests
+pass (9 PG skips), including13 authoring regressions; actual authored Godot/API example
+passes. Full CI/checkpoint pending. No live content or protocol/schema changes.
 
 - **Kind / purpose:** Content systems. Make subsequent production maintainable.
 - **Adds:** Extend the current catalog CLI and native Godot editor workflow with templates,
@@ -983,7 +988,7 @@ If too much placeholder debt remains, return to bounded production batches befor
 | Entire-game art | M4.1 → M4.2 → M4.3 → M4.4 | Every launch environment, character/collectible, effect/audio and UI surface complete |
 | Release | M5.1 → M5.2 → M5.3 → M5.4 → M5.5 | Whole-game cohesion, phone certification, recovery/security, beta and approved launch |
 
-**Recommended immediate work: M1.6 content/asset authoring tools.** M1.5 engineering
+**Recommended immediate work: finish M1.6 validation and checkpoint.** M1.5 engineering
 and its automated gates are checkpointed. Keep the concrete M1.4 art/phone review and
 M1.5 online Device E checklist open alongside engineering; no release gate is waived.
 

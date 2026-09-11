@@ -5,12 +5,20 @@ Read README → PROJECT_STATE → ARCHITECTURE → relevant source. Main remains
 
 ## Current milestone
 
+**M1.6 authoring workflow: implemented candidate; full CI pending.**
+Local110 backend tests/30 subtests pass,9 PostgreSQL tests skip explicitly. Thirteen new
+authoring regressions, unchanged production bundle, real isolated Godot/API example pass.
+Tools add branch/runtime-objective/binding/asset-status diagnostics, a copied quest/dialogue
+example, encounter simulation and isolated editor/client preview. No live catalog, gameplay
+protocol, schema, art or APK version changes. Initial preview assertion used an incorrect
+response envelope and timed out; corrected direct character response passes.
+
 **M1.5 engineering and automated validation complete. Physical acceptance remains open.**
 Code: `023db7557baf173c306cd7ba711cd74628c7204b`.
 [CI run34550163642](https://github.com/Fineyew/GameTesting/actions/runs/34550163642): all three jobs passed.
 The owner requested continued engineering after the M1.4 device handoff. This does not
 constitute physical-phone validation or owner art-direction acceptance. M1.6 authoring
-workflow is the next engineering milestone; it is not implemented yet.
+workflow is now the current engineering candidate; it is not complete until its gates pass.
 
 ## Preserved checkpoints
 
@@ -21,8 +29,9 @@ workflow is the next engineering milestone; it is not implemented yet.
 | M1.2 acquisition/folio | d0c604894ba768c6647b42ff19a76285d0e41bce | 56370e6dd442485101824dc188d12e00aa87d3f8 |
 | M1.3 vendor/equipment | de9d7a38bed6c18b396173cfd926c09c20e8159d | 3ac1f8fc69379b15594191294e6248e9911be950 |
 | M1.4 visual candidate; acceptance open | 365993ce7e79fc29025ee23d1c77cbf449ad2bfc | a5d06dbaa819b25897dbf08f632ce962dd74db58 |
-| M1.5 engineering; physical acceptance open | 023db7557baf173c306cd7ba711cd74628c7204b | Documentation commit containing this state; see Git/PR #4 |
+| M1.5 engineering; physical acceptance open | 023db7557baf173c306cd7ba711cd74628c7204b | 4bcecfec418d4907bcfc4cf9571c78c1a026c048 |
 
+M1.5 documentation handoff4bcecfe/run34551125125 also passed all three CI jobs.
 Roadmap checkpoint edec97b preserved history and introduced progressive whole-game art production.
 M1.4 code run34483308643 and handoff run34484981552 both passed. Its prior ARM64
 0.2.4/code6 artifact10154911714 remains historical evidence; current deliverable is below.
@@ -89,8 +98,9 @@ trading, gathering/crafting, mounts/housing/pets or broad social content were ad
 Recovery/moderation, load tests, JSON→PG import/restore, staging/production, signing and
 updater remain future work. One process owns the room;32-player cap is unbenchmarked.
 
-**Next: M1.6 only**, reusable catalog templates/diagnostics, scene/asset binding/status
-checks and an isolated authored preview example. No bulk live content. Keep M1.4/M1.5
+**Next: finish M1.6 validation/checkpoint**, then evaluate M1.7 terrain authority.
+Current tools cover catalog templates/diagnostics, scene/asset binding/status checks and
+an isolated authored preview example. No bulk live content. Keep M1.4/M1.5
 Device E open alongside engineering; README provides local backend/USB reverse testing.
 The inherited public endpoint has not been updated or verified.
 

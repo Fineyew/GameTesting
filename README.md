@@ -26,7 +26,8 @@ M1.5 engineering passes at `023db7557baf173c306cd7ba711cd74628c7204b`,
 106 backend tests/30 subtests including9 PostgreSQL tests,7 Android readiness tests,
 Godot/API, render and native touch/resume. Current verified ARM64 **0.2.5/code7** is
 artifact **10180711026**. Physical acceptance remains open; next is M1.6 authoring tools.
-See PROJECT_STATE for hashes/evidence.
+See PROJECT_STATE for hashes/evidence. M1.6 authoring tools are now an implemented
+candidate pending full CI; CONTENT_GUIDE documents diagnostics and isolated previews.
 
 ## What is playable
 
@@ -80,8 +81,10 @@ python -m pytest backend/tests -q
 python -m tools.build_catalog
 # Set GODOT_BIN to your Godot executable, or put `godot` on PATH.
 python -m tools.check_art
+python -m tools.author_content check
 python -m tools.check_godot
 python -m tools.check_online
+python -m tools.check_authoring
 ```
 
 `check_online` starts an isolated API and another WebSocket player, then runs the real

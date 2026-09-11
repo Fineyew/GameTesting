@@ -171,3 +171,58 @@ its existing12-point effect/20 stack cap; shop version3 enables its existing fiv
 Increment shop version whenever changing a quote/availability; never change stable item IDs.
 Item use consumes exactly one after ownership, inactive combat and missing-Vigor validation.
 No client-supplied quantity/heal values, consumable stat rolls or combat consumables exist.
+
+## M1.6 authoring workflow (candidate)
+
+Keep production definitions in `content/`; generated catalogs remain disposable snapshots.
+These tools extend the existing catalog/rules, not a parallel CMS or live publication API:
+
+```bash
+python -m tools.author_content check
+python -m tools.author_content example --output /tmp/veilbound-authoring-example
+python -m tools.author_content check --content-root /tmp/veilbound-authoring-example/content
+python -m tools.build_catalog --content-root /tmp/veilbound-authoring-example/content --output /tmp/example-catalog.json
+python -m tools.author_content encounter --actions gather,glimmer_spark --folio glimmer_spark,root_snare,tide_mend
+python -m tools.check_authoring
+# Interactive desktop/editor preview, with temporary account/client data:
+python -m tools.check_authoring --content-root /tmp/veilbound-authoring-example/content --interactive
+```
+
+Choose a new example output directory. The tool refuses existing output and nested source
+workspaces. It copies all original definitions unchanged except a versioned Mara offer and
+branch, and adds one tiny listen-to-reeds/return-to-Mara quest with an earned five-XP reward.
+Edit its JSON in any editor. It never inserts this example into the production catalog.
+The example manifest records original checksums. Commit your authored workspace/content
+changes when ready; rollback by restoring the prior versioned definitions and rebuilding
+the bundle. Do not rollback a live reward definition blindly after players have earned it.
+
+The automated preview creates its own catalog/client copy, local API, random signing key,
+JSON save and client settings. It earns the example through actual movement/dialogue/
+landmark/talk actions and verifies the once-only reward/save. All temporary accounts and
+settings are discarded at exit. Interactive preview uses the same isolation but waits for
+the author to create a test account; the production endpoint/save is never selected.
+The default automated scenario expects the generated `authoring_echo` example. A custom
+catalog needs its own authored integration scenario, not debug grants. These scripts are
+under Godot's existing `tests/*` Android export exclusion.
+
+`authoring/bindings.json` inventories all declared asset paths and existing interaction
+bindings. Missing/unbuilt paths must remain `planned` with a reason. Existing placeholders
+are not final; a candidate needs a file, editable source and license/provenance. `final`
+requires an acceptance record matching the actual SHA256 with a named reviewer and existing
+visual/device evidence paths. This validates evidence references, not the truth or quality
+of an artist's claim: actual review/phone validation is still required. No assets are marked
+final by this milestone. The existing art manifest remains the source for kit/rig budgets.
+
+Interaction bindings point to existing scene, world construction and dispatch source;
+the doctor checks them against zone/NPC/enemy/discovery content. Metadata alone cannot
+spawn a new NPC or implement a new interaction. Additional runtime placements/handlers
+must be integrated and exercised through a Godot/API scenario. Unsupported executable
+quest objectives and structurally unreachable dialogue branches fail. Conditional branch
+reachability still needs authored scenarios; a static graph walk cannot prove every story.
+
+Continue the M1.4 metre/Y-up/-Z-forward, grounded pivot, named tint/rig/animation and
+self-contained GLB conventions. Keep source recipes/import settings and generated LODs.
+The current vertex-color kit uses no texture atlas; a future textured kit must record its
+atlas resolution/material/texture budget and validate imports/rendering before acceptance.
+Run `tools.check_art`, strict Godot checks and the next playable render/device gates after
+any asset export. This workflow does not make missing assets or proposed systems playable.

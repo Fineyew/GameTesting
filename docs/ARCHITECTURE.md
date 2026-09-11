@@ -331,3 +331,21 @@ quotes without changing existing item/listing IDs or prices. Old clients need an
 to expose Use; rollback must restore unavailable stock before serving a server without use.
 The Bag keeps the same panel, search and command-recovery flow, reloads current state after
 receipts and displays server-owned before/after Vigor. Preview never sends use commands.
+
+## M1.6 authoring workflow (candidate)
+
+`tools.author_content` composes the existing immutable catalog, quest capability set and
+Tidebeat engine for diagnostics, isolated examples and encounter simulations. The bundler
+now exposes an import-safe function and optional root/output arguments; its default bytes
+remain unchanged. No REST/WS capability, persisted field, migration or production definition
+changes. `authoring/bindings.json` is production-status/binding metadata outside the runtime
+catalog. It cannot grant rewards or create runtime handlers.
+
+`tools.check_authoring` runs the real application against a copied catalog on loopback with
+an independent temporary JSON store, random signing key, Godot project and XDG settings.
+It imports the copied client and exercises an actual authored offer, movement, objectives,
+reward and saved state. No test account touches the inherited public endpoint. Interactive
+preview and automated validation share this isolation; source content is not modified.
+Godot scenarios stay in the existing export-excluded tests directory. Production world
+placement/dispatch remains the current modular implementation; diagnostics expose required
+bindings rather than claiming arbitrary metadata can replace runtime scene integration.

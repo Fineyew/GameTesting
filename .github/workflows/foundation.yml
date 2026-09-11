@@ -46,6 +46,8 @@ jobs:
           git diff --exit-code godot_project/data/catalog.json
       - name: Validate benchmark art budgets and editable sources
         run: python -m tools.check_art
+      - name: Validate content branches, runtime bindings and asset status
+        run: python -m tools.author_content check
   godot:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
@@ -67,6 +69,8 @@ jobs:
         run: python -m tools.check_godot
       - name: Godot to API integration with two players
         run: python -m tools.check_online
+      - name: Isolated authored example through Godot and API
+        run: python -m tools.check_authoring
 
   android:
     needs: [backend, godot]

@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased — M1.6 authoring workflow candidate (2026-09-11)
+
+- Continue from validated M1.5 code023db75/handoff4bcecfe.
+- Add catalog branch/runtime-objective diagnostics and25 declared asset-status records,
+  with scene/interaction/dispatch-source checks and final-asset evidence requirements.
+- Add an isolated reusable Mara/reeds quest/dialogue example, source checksums, deterministic
+  configurable bundling and encounter simulation through the existing Tidebeat engine.
+- Add copied-client/local API preview with temporary accounts/saves/settings/signing key;
+  actual movement/dialogue/observed objectives/once-only reward and saved state validated.
+- Local110 backend tests/30 subtests pass,9 PG skips, including13 authoring regressions.
+  Production26-definition bundle round-trips unchanged. First preview response-envelope
+  assertion was corrected after timeout; actual integration then passed. Full CI pending.
+- Preserve APK0.2.5/code7, protocols, saves, art and live content. No broad content added.
+
 ## 0.2.5 — M1.5 engineering complete; physical acceptance open (2026-09-11)
 
 - Continue from a5d06db after its full CI passed; owner requested continued engineering.
