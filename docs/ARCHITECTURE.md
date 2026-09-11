@@ -332,7 +332,7 @@ to expose Use; rollback must restore unavailable stock before serving a server w
 The Bag keeps the same panel, search and command-recovery flow, reloads current state after
 receipts and displays server-owned before/after Vigor. Preview never sends use commands.
 
-## M1.6 authoring workflow (candidate)
+## M1.6 authoring workflow
 
 `tools.author_content` composes the existing immutable catalog, quest capability set and
 Tidebeat engine for diagnostics, isolated examples and encounter simulations. The bundler

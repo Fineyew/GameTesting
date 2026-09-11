@@ -172,7 +172,7 @@ Increment shop version whenever changing a quote/availability; never change stab
 Item use consumes exactly one after ownership, inactive combat and missing-Vigor validation.
 No client-supplied quantity/heal values, consumable stat rolls or combat consumables exist.
 
-## M1.6 authoring workflow (candidate)
+## M1.6 authoring workflow
 
 Keep production definitions in `content/`; generated catalogs remain disposable snapshots.
 These tools extend the existing catalog/rules, not a parallel CMS or live publication API:

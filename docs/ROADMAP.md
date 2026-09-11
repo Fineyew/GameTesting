@@ -6,7 +6,7 @@ Revised 2026-09-10 after inspecting the repository at
 and successful M0–M1.3 CI jobs. Roadmap checkpoint edec97b changed planning only.
 The owner subsequently authorized implementation; current evidence lives in PROJECT_STATE.
 
-**Current: M1.6 authoring workflow candidate. M1.5 engineering complete at023db75.**
+**M1.6 engineering complete atd1f0929; next is M1.7 terrain authority.**
 On 2026-09-11 the owner requested full continuation after the device-gate handoff.
 Proceed with engineering checkpoints while recording M1.4/M1.5 physical acceptance as
 outstanding. This changes development ordering only; Device E/R/L evidence and final
@@ -17,7 +17,7 @@ roadmap amendment governs forward ordering; earlier handoff recommendations rema
 ## How to use this roadmap
 
 - Completed milestones and their evidence below are immutable history. Beyond the current
-  M1.4 visual candidate and M1.5 engineering checkpoint, forward milestones are **planned**, including existing catalog examples.
+  M1.4 visual candidate and M1.5/M1.6 engineering checkpoints, forward milestones are **planned**, including existing catalog examples.
 - Android is the primary game. Keep Godot 4.5.1 Compatibility, the modular client,
   FastAPI/PostgreSQL/JSON ports, server-owned rules and existing IDs/saves/tests. A future
   change to those decisions needs measured justification and a compatibility plan.
@@ -290,10 +290,13 @@ PROJECT_STATE owns artifact provenance and the documentation handoff.
 
 ### M1.6 — Reusable content and asset authoring workflow
 
-Implemented candidate: CLI diagnostics/example/encounter preview, binding and production
-status inventory, isolated copied-client/API preview. Local110 backend tests/30 subtests
-pass (9 PG skips), including13 authoring regressions; actual authored Godot/API example
-passes. Full CI/checkpoint pending. No live content or protocol/schema changes.
+Engineering complete at `d1f0929cd2454f923ed70279f633705d0b9af9f2`, run34552020416.
+119 backend tests/30 subtests including9 PostgreSQL tests and13 authoring regressions,
+7 Android readiness tests, original Godot/API plus isolated authored example, render and
+native gates pass. No new live content, protocol/schema or APK version. The owner-facing
+playable APK remains0.2.5/code7 from the M1.5 handoff. Interactive manual preview review
+is unverified; automated preview runs the actual client/API with isolated saves/settings.
+PROJECT_STATE records code/handoff and CI artifact provenance.
 
 - **Kind / purpose:** Content systems. Make subsequent production maintainable.
 - **Adds:** Extend the current catalog CLI and native Godot editor workflow with templates,
@@ -988,8 +991,9 @@ If too much placeholder debt remains, return to bounded production batches befor
 | Entire-game art | M4.1 → M4.2 → M4.3 → M4.4 | Every launch environment, character/collectible, effect/audio and UI surface complete |
 | Release | M5.1 → M5.2 → M5.3 → M5.4 → M5.5 | Whole-game cohesion, phone certification, recovery/security, beta and approved launch |
 
-**Recommended immediate work: finish M1.6 validation and checkpoint.** M1.5 engineering
-and its automated gates are checkpointed. Keep the concrete M1.4 art/phone review and
+**Recommended immediate work: M1.7 terrain authority and movement.** M1.5 and M1.6
+engineering are checkpointed. Explain the shared height/collision representation and
+protocol/save compatibility plan before changing movement. Keep the concrete M1.4 art/phone review and
 M1.5 online Device E checklist open alongside engineering; no release gate is waived.
 
 Postpone bulk quest/spell generation until the authoring/art benchmark exists; additional

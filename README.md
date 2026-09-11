@@ -25,9 +25,12 @@ M1.5 engineering passes at `023db7557baf173c306cd7ba711cd74628c7204b`,
 [run34550163642](https://github.com/Fineyew/GameTesting/actions/runs/34550163642):
 106 backend tests/30 subtests including9 PostgreSQL tests,7 Android readiness tests,
 Godot/API, render and native touch/resume. Current verified ARM64 **0.2.5/code7** is
-artifact **10180711026**. Physical acceptance remains open; next is M1.6 authoring tools.
-See PROJECT_STATE for hashes/evidence. M1.6 authoring tools are now an implemented
-candidate pending full CI; CONTENT_GUIDE documents diagnostics and isolated previews.
+artifact **10180711026**. Physical acceptance remains open.
+See PROJECT_STATE for hashes/evidence. M1.6 authoring tools pass at `d1f0929cd2454f923ed70279f633705d0b9af9f2`,
+[run34552020416](https://github.com/Fineyew/GameTesting/actions/runs/34552020416):
+119 backend tests/30 subtests, PostgreSQL, original and isolated-authoring Godot/API,
+render and Android gates. CONTENT_GUIDE documents diagnostics/isolated previews.
+No new live content or APK version; next is M1.7 terrain authority.
 
 ## What is playable
 

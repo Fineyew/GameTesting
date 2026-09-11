@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased — M1.6 authoring workflow candidate (2026-09-11)
+## M1.6 — Authoring workflow engineering complete (2026-09-11)
 
 - Continue from validated M1.5 code023db75/handoff4bcecfe.
 - Add catalog branch/runtime-objective diagnostics and25 declared asset-status records,
@@ -11,7 +11,12 @@
   actual movement/dialogue/observed objectives/once-only reward and saved state validated.
 - Local110 backend tests/30 subtests pass,9 PG skips, including13 authoring regressions.
   Production26-definition bundle round-trips unchanged. First preview response-envelope
-  assertion was corrected after timeout; actual integration then passed. Full CI pending.
+  assertion was corrected after timeout; actual integration then passed.
+- Code d1f0929cd2454f923ed70279f633705d0b9af9f2/run34552020416 passes all full gates:
+  119 backend tests/30 subtests including9 PostgreSQL tests and13 authoring regressions,
+  7 Android readiness tests, original/authoring Godot/API, render and native touch/resume.
+  CI retains build10181359760, native10181360298, render10181360897. Owner playable APK
+  remains verified0.2.5/code7 from M1.5; no new runtime version required.
 - Preserve APK0.2.5/code7, protocols, saves, art and live content. No broad content added.
 
 ## 0.2.5 — M1.5 engineering complete; physical acceptance open (2026-09-11)

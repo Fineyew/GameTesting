@@ -42,7 +42,7 @@ Updated 2026-09-11. See PROJECT_STATE for current CI/artifact status.
 
 ## Engineering
 
-- M1.6 tools are a locally validated candidate; full CI is pending. Structural dialogue
+- M1.6 tools pass full CI atd1f0929/run34552020416. Structural dialogue
   reachability does not prove conditional story reachability. Existing runtime bindings
   are checked, not generated; additional NPC placements/handlers need real scene integration.
   Artifact acceptance metadata verifies references/hashes, not the truth of human review.
