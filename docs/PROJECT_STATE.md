@@ -10,7 +10,14 @@ Reject malformed bounds/spawn/blockers/interactions, nonfinite movement values, 
 mismatches and unsupported elevation before catalog construction. Live content, scene,
 world1, saves and APK0.2.5 are unchanged. ARCHITECTURE specifies the next shared-height/
 protocol2/derived-y compatibility plan; terrain runtime has not been implemented.
-Validation of this new checkpoint is pending CI; local counts are recorded in CHANGELOG.
+Code checkpoint fe4551c22c39ee6533b6e086135532a06fbd318b, run34625951261.
+Backend CI passes148 tests/30 subtests, including9 PostgreSQL tests and29 geometry
+regressions. All three CI jobs pass:7 Android readiness tests, Godot smoke, existing
+two-player progression, isolated authored-example API preview, render and native touch/
+resume. Render remains71 calls/83,630 primitives/15,182,467 texture bytes. Local139 pass/
+9 PG skips/30 subtests. CI retains ARM64 artifact10274589788, native10274434937 and
+render10274409949 through2026-12-10. The automatic export remains0.2.5/code7; the previously
+downloaded/hash-verified owner APK below is separate evidence, not this artifact's hash.
 
 **Reported failure assessed:** M1.6 handoff a0b495c/run34552851591 attempt1 passed
 backend/PostgreSQL, Godot/API and rendering, but failed Android's visible gateway check.
@@ -124,8 +131,8 @@ trading, gathering/crafting, mounts/housing/pets or broad social content were ad
 Recovery/moderation, load tests, JSON→PG import/restore, staging/production, signing and
 updater remain future work. One process owns the room;32-player cap is unbenchmarked.
 
-**Next: continue M1.7 terrain authority.** Implement and test the documented shared height/collision representation and
-versioned world/location compatibility plan before implementation. Preserve flat saves,
+**Next: continue M1.7 terrain authority.** Prove Python/Godot height and collision parity
+against shared fixtures before activating protocol2 and the first slope/stair route. Preserve flat saves,
 server movement authority and the existing player/camera modules.
 Current tools cover catalog templates/diagnostics, scene/asset binding/status checks and
 an isolated authored preview example. No bulk live content. Keep M1.4/M1.5

@@ -47,7 +47,9 @@ Updated 2026-09-11. See PROJECT_STATE for current CI/artifact status.
   rendered game; Godot has its ready marker and no engine error. Backend/PG, Godot/API,
   authoring and render passed. The failed attempt withheld ARM64 publication. The unchanged Android rerun passes in attempt2 (native10273982286,
   build10273533063), including touch/resume. Do not treat this as a launcher ANR fix.
-- M1.7 currently adds planar geometry validation only. Shared height sampling, slope/stair
+- M1.7 groundworkfe4551c/run34625951261 passes all full gates (148 tests/30 subtests,
+  including9 PostgreSQL tests, Godot/API/render/native). It adds planar validation only.
+  Shared height sampling, slope/stair
   scene, protocol2, vertical reconciliation and movement/device acceptance remain planned.
 
 - M1.6 tools pass full CI atd1f0929/run34552020416. Structural dialogue

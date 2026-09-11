@@ -6,7 +6,7 @@ Revised 2026-09-10 after inspecting the repository at
 and successful M0–M1.3 CI jobs. Roadmap checkpoint edec97b changed planning only.
 The owner subsequently authorized implementation; current evidence lives in PROJECT_STATE.
 
-**M1.6 engineering complete atd1f0929; M1.7 geometry groundwork is in progress.**
+**M1.6 engineering complete atd1f0929; M1.7 geometry groundwork passes atfe4551c, with terrain runtime still planned.**
 On 2026-09-11 the owner requested full continuation after the device-gate handoff.
 Proceed with engineering checkpoints while recording M1.4/M1.5 physical acceptance as
 outstanding. This changes development ordering only; Device E/R/L evidence and final
@@ -315,8 +315,10 @@ PROJECT_STATE records code/handoff and CI artifact provenance.
 
 ### M1.7 — Terrain authority and finished movement behavior
 
-Started with strict validation of the existing planar world contract; local regressions
-pass, full CI pending. No elevated world, new protocol or playable route is implemented.
+Geometry-validation groundwork passes atfe4551c22c39ee6533b6e086135532a06fbd318b,
+run34625951261:148 backend tests/30 subtests including9 PostgreSQL tests,7 Android
+readiness tests, full Godot/API/authoring/render/native gates. No elevated world, new
+protocol or playable route is implemented. CI retains the same0.2.5/code7 version.
 ARCHITECTURE records the shared cell/triangle surface and compatibility plan before runtime
 changes. Complete this milestone in reviewable checkpoints: input validation, Python/Godot
 surface parity, then negotiated authority + one route + full integration/APK/device evidence.
@@ -999,8 +1001,8 @@ If too much placeholder debt remains, return to bounded production batches befor
 | Release | M5.1 → M5.2 → M5.3 → M5.4 → M5.5 | Whole-game cohesion, phone certification, recovery/security, beta and approved launch |
 
 **Recommended immediate work: M1.7 terrain authority and movement.** M1.5 and M1.6
-engineering are checkpointed. Explain the shared height/collision representation and
-protocol/save compatibility plan before changing movement. Keep the concrete M1.4 art/phone review and
+engineering are checkpointed. ARCHITECTURE now records the shared height/collision and
+protocol/save compatibility plan; prove Python/Godot parity before activating it. Keep the concrete M1.4 art/phone review and
 M1.5 online Device E checklist open alongside engineering; no release gate is waived.
 
 Postpone bulk quest/spell generation until the authoring/art benchmark exists; additional

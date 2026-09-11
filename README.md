@@ -31,7 +31,10 @@ See PROJECT_STATE for hashes/evidence. M1.6 authoring tools pass at `d1f0929cd24
 119 backend tests/30 subtests, PostgreSQL, original and isolated-authoring Godot/API,
 render and Android gates. CONTENT_GUIDE documents diagnostics/isolated previews.
 No new live content or APK version. M1.7 has begun with planar geometry authoring validation;
-shared height/stair/slope runtime is still planned. PROJECT_STATE records the diagnosed
+shared height/stair/slope runtime is still planned. Groundwork checkpointfe4551c passes
+all gates in run34625951261 (148 backend tests/30 subtests including9 PostgreSQL tests;
+Godot/API, render and Android). Fresh CI ARM64 artifact10274589788 remains0.2.5/code7.
+PROJECT_STATE records the diagnosed
 M1.6 handoff Android launcher-overlay failure and subsequent validation status.
 
 ## What is playable

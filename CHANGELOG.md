@@ -1,6 +1,6 @@
 # Changelog
 
-## M1.7 groundwork and handoff failure assessment (2026-09-11, CI pending)
+## M1.7 groundwork and handoff failure assessment (2026-09-11, validated checkpoint)
 
 - Fast-forward the clean workspace fromd1f0929 to the existing remotea0b495c handoff;
   preserve all completed checkpoints and working gameplay.
@@ -15,7 +15,11 @@
   accepting rules the current runtime cannot execute. Add29 regression cases.
 - Local139 backend tests/30 subtests pass with9 explicit PostgreSQL skips; isolated real
   Godot/API authoring preview passes. Live26-definition bundle remains byte-identical.
-  Full new-checkpoint CI still pending; no new APK version/gameplay is claimed.
+  At codefe4551c/run34625951261 backend CI passes148 tests/30 subtests including9 real
+  PostgreSQL tests. All full gates pass:7 Android readiness tests, Godot smoke/online/
+  authoring integration, render71 calls and native touch/resume. Retain ARM6410274589788,
+  native10274434937, render10274409949 through2026-12-10. Version remains0.2.5/code7;
+  this geometry-authoring checkpoint adds no new playable terrain.
 - Record the next shared triangular-cell terrain, protocol2 handshake and derived-y
   save compatibility plan. Actual height/slope/stair/runtime work remains incomplete.
 
