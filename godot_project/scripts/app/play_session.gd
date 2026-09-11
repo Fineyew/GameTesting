@@ -520,7 +520,7 @@ func reload_commerce() -> void:
     await show_commerce(commerce_shop)
 
 func _commerce_failed(endpoint: String, status_code: int, message: String) -> void:
-    if "/equipment" not in endpoint and "/shops/" not in endpoint:
+    if "/equipment" not in endpoint and "/shops/" not in endpoint and "/items/use" not in endpoint:
         return
     var body = JSON.parse_string(message)
     commerce_error = "Connection interrupted. Retry safely or reload saved supplies."

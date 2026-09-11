@@ -213,6 +213,15 @@ func run() -> void:
     await until(func(): return session.connection.connected)
     await session.show_inventory()
     assert(session.character.vigor == healed and session.character.commerce_revision == 6)
+    # A stale use must preserve supplies and surface the server's actionable reason.
+    session.pending_commerce = {"key":"online-stale-wrap","path":"items/use","payload":{"item_key":"sunthread_bandage","expected_revision":0}}
+    await session.retry_commerce()
+    assert("changed" in session.commerce_error.to_lower())
+    assert(not session.pending_commerce.is_empty())
+    await session.reload_commerce()
+    assert(session.pending_commerce.is_empty())
+    assert(session.character.vigor == healed and session.character.commerce_revision == 6)
+    assert(session.character.inventory.sunthread_bandage == supply_count)
     print("GODOT_ITEM_USE_PASS: earned purchase, Bag use, capped healing, inventory and reconnect")
     app.return_to_gateway()
     await api.post_json("/auth/logout",{})

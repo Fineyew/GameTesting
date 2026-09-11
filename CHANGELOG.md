@@ -14,6 +14,8 @@
   Godot/API and render. Native resume swipe was sent during an Android window transition
   and failed; retain artifact10179708379, publish no APK. Wait for stable focused/idle
   window state before the single swipe; all movement thresholds remain unchanged.
+- Route item-use server errors into the existing recovery UI; add an actual Godot/API
+  stale-use/reload regression that verifies unchanged Vigor, inventory and revision.
   Corrected full CI and ARM640.2.5/code7 pending. Physical acceptance remains unverified.
 
 ## 0.2.4 — M1.4 visual benchmark candidate (in progress, 2026-09-10)
