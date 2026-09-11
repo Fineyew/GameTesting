@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.2.5 — M1.5 bandage loop candidate (2026-09-11)
+
+- Continue from a5d06db after its full CI passed; owner requested continued engineering.
+- Use one owned Sunthread Bandage outside combat: up to12 Vigor, cap30, no waste at full health.
+- Reuse aggregate locks, commerce revision and durable receipts for atomic consumption/healing.
+- Enable the existing five-chit listing (shop version3); add Bag Vigor, effect and use feedback.
+- Add item_use_protocol1 and strict item-use API/content validation; no DDL or new save fields.
+- Add JSON/API/concurrency/rollback/content and PostgreSQL use/purchase regressions, real
+  Godot/API purchase/use/reconnect and scroll-visible GUI input coverage.
+- Local97 backend tests/30 subtests pass;9 PostgreSQL tests await CI. Godot/API passes.
+  Full CI and ARM640.2.5/code7 pending. Physical M1.4/M1.5 acceptance remains unverified.
+
 ## 0.2.4 — M1.4 visual benchmark candidate (in progress, 2026-09-10)
 
 - Continue the revised roadmap from edec97b; preserve completed M0–M1.3 checkpoints.

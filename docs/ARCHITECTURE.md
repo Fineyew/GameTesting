@@ -310,3 +310,20 @@ catalog bounds. OrbitRig uses both layers; its reusable pair-framing query tests
 actors from candidate camera positions and keeps the gameplay view if none is clear.
 The material paints the existing road layout onto the same flat floor, with feathered
 verges and a rounded well plaza; no navigable terrain or server geometry changed.
+
+## M1.5 item use
+
+POST `/world/characters/{id}/items/use` accepts only item_key and expected_revision, with
+Idempotency-Key. CommerceService reuses its aggregate transaction, active-encounter guard,
+commerce revision and fingerprinted128-receipt map. One successful command consumes one
+item and restores catalog Vigor atomically; matching retries replay, changed payloads fail,
+and stale revisions reject replays after receipt pruning. Purchases and use serialize on
+the same JSON/PG lock. Full-health/unowned/unsupported/active attempts do not mutate state.
+InventoryRules interprets a single validated restore_vigor effect; no client amount/stat.
+CharacterRecord exposes max_vigor=30 as a derived public property, not a saved field.
+Existing schema1 saves need no DDL/import/reset. item_use_protocol1 is additive to server-info;
+0.2.5 requires it, while world/story/folio/commerce remain1. Shop version3 invalidates old
+quotes without changing existing item/listing IDs or prices. Old clients need an update
+to expose Use; rollback must restore unavailable stock before serving a server without use.
+The Bag keeps the same panel, search and command-recovery flow, reloads current state after
+receipts and displays server-owned before/after Vigor. Preview never sends use commands.

@@ -461,6 +461,7 @@ func show_commerce(shop_key: String, feedback := "") -> void:
     panel.add_child(commerce_panel)
     commerce_panel.build(commerce_view,preview,feedback)
     commerce_panel.buy_requested.connect(buy_listing)
+    commerce_panel.use_requested.connect(use_item)
     commerce_panel.equip_requested.connect(equip_item)
     commerce_panel.vendor_requested.connect(show_vendor)
     commerce_panel.bag_requested.connect(show_inventory)
@@ -479,6 +480,12 @@ func equip_item(slot: String, item_key: Variant) -> void:
     pending_commerce = {"key":command_id(),"path":"equipment","payload":{"slot":slot,"item_key":item_key,"expected_revision":int(character.commerce_revision)}}
     await retry_commerce()
 
+func use_item(item_key: String) -> void:
+    if busy or preview or not pending_commerce.is_empty():
+        return
+    pending_commerce = {"key":command_id(),"path":"items/use","payload":{"item_key":item_key,"expected_revision":int(character.commerce_revision)}}
+    await retry_commerce()
+
 func retry_commerce() -> void:
     if busy or pending_commerce.is_empty():
         return
@@ -493,7 +500,9 @@ func retry_commerce() -> void:
     var outcome = result.outcome
     var message = "Equipment saved."
     if outcome.has("spent"):
-        message = "Purchase saved · %s ×%s · %s shell chits spent." % [GameData.display_name("equipment",outcome.item_key),int(outcome.quantity),int(outcome.spent)]
+        message = "Purchase saved · %s ×%s · %s shell chits spent." % [GameData.display_name("equipment" if not GameData.definition("equipment",outcome.item_key).is_empty() else "items",outcome.item_key),int(outcome.quantity),int(outcome.spent)]
+    if outcome.has("consumed"):
+        message = "Wrap used · Vigor %s → %s (+%s)." % [int(outcome.vigor_before),int(outcome.vigor_after),int(outcome.restored)]
     pending_commerce.clear()
     # A saved receipt may predate another session's update; always read current state.
     await show_commerce(commerce_shop,message)

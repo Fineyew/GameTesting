@@ -1,9 +1,11 @@
 class_name CommercePanel
 extends VBoxContainer
 signal buy_requested(listing_key: String)
+signal use_requested(item_key: String)
 signal equip_requested(slot: String, item_key: Variant)
 signal vendor_requested
 signal bag_requested
+var use_buttons: Dictionary = {}
 var buy_buttons: Dictionary = {}
 var equip_buttons: Dictionary = {}
 var unequip_button: Button
@@ -17,6 +19,7 @@ func build(view: Dictionary, offline: bool, feedback := "") -> void:
     if shop.is_empty():
         browse_button = TideUI.button("Browse Mara's supply cart",vendor_requested.emit,true)
         add_child(browse_button)
+    add_child(TideUI.label("Vigor · %s / %s" % [int(character.get("vigor",30)),int(character.get("max_vigor",30))],22))
     if not feedback.is_empty():
         add_child(TideUI.paragraph(feedback,20))
     if offline:
@@ -52,8 +55,15 @@ func build(view: Dictionary, offline: bool, feedback := "") -> void:
                 equip.disabled = offline or character.get("level",1) < item.required_level
                 column.add_child(equip)
                 equip_buttons[item.item_key] = equip
-        elif item.item_key == "sunthread_bandage":
-            column.add_child(TideUI.paragraph("Item use is not available yet.",17))
+        elif item.has("restore_vigor"):
+            column.add_child(TideUI.paragraph("Restores up to %s Vigor outside combat." % int(item.restore_vigor),17))
+            if shop.is_empty():
+                var use = TideUI.button("Use one · Vigor %s → %s" % [int(character.vigor),int(item.vigor_after)],func(): use_requested.emit(item.item_key),true)
+                use.disabled = offline or not item.can_use
+                column.add_child(use)
+                use_buttons[item.item_key] = use
+                if not item.use_reason.is_empty():
+                    column.add_child(TideUI.paragraph(item.use_reason,17))
         if not shop.is_empty():
             var buy = TideUI.button("Buy ×%s · %s shell chits" % [int(item.quantity),int(item.price)],func(): buy_requested.emit(item.listing_key),true)
             buy.disabled = offline or not item.can_buy
@@ -82,6 +92,8 @@ static func preview_view(character: Dictionary, shop_key: String) -> Dictionary:
         var item = {"item_key":row.item_key,"name":definition.display.name,"summary":definition.display.summary,"type":definition.type,"owned":0,"listing_key":row.key,"quantity":row.quantity,"price":row.price[0].amount,"can_buy":false,"reason":row.get("unavailable_reason","")}
         if definition.type == "equipment":
             item.merge({"slot":definition.rules.slot,"required_level":definition.rules.required_level,"guard":definition.rules.modifiers[0].value,"current_guard":0,"guard_delta":definition.rules.modifiers[0].value,"equipped":false,"equipped_name":"No chest equipment"})
+        elif not definition.rules.get("use_effects",[]).is_empty():
+            item.restore_vigor = definition.rules.use_effects[0].amount
         listings.append(item)
     result.shop = {"key":shop.key,"name":shop.display.name,"version":shop.version,"listings":listings}
     return result

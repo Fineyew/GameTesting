@@ -82,7 +82,12 @@ class CharacterRecord:
         state.pop("account_id", None)
         state.pop("dialogue_state", None)
         state["folio_capacity"] = FOLIO_CAPACITY
+        state["max_vigor"] = self.max_vigor
         return state
+
+    @property
+    def max_vigor(self) -> int:
+        return STARTING_VIGOR
 
 
 @dataclass(frozen=True)

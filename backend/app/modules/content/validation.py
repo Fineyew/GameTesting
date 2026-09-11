@@ -208,6 +208,13 @@ def _validate_type_specific_references(
     if content_type == "dialogue":
         _validate_dialogue(path, rules, report)
     if content_type == "items":
+        effects = rules.get("use_effects", [])
+        if effects and (len(effects) != 1 or any(
+            not isinstance(e, dict) or set(e) != {"type", "amount"} or
+            e.get("type") != "restore_vigor" or not _bounded_integer(e.get("amount"), 1, 30)
+            for e in effects
+        )):
+            report.errors.append(f"{path}: item use supports one restore_vigor effect (1–30)")
         if not _bounded_integer(rules.get("stack_limit"), 1, 10000):
             report.errors.append(f"{path}: invalid item stack limit")
         if ("equipment", path.stem) in report.definitions:

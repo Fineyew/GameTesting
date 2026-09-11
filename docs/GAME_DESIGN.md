@@ -78,7 +78,9 @@ Buying puts the vest in the bag; equipping is explicit. Unequipping keeps owners
 Equipment changes are blocked during encounters. Stat equipment uses the existing
 `equipment` map; visual identity stays in `appearance` and is never overwritten by gear.
 The vest does not yet have a finished wearable mesh, and full cosmetic overrides/transmog
-are future work. Existing bandage stock is visible but unavailable until item use works;
+are future work. M1.5 enables the existing bandage stock for five chits. One wrap restores up to12 Vigor
+outside combat, capped at30; full health consumes nothing. Use lives in the Bag with a
+server-derived Vigor comparison. No combat turn/Focus rule changes;
 no selling, trading, crafting or additional gear categories are introduced in this increment.
 
 ## First hour target

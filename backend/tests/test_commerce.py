@@ -47,7 +47,7 @@ def commerce_game(tmp_path):
 
 
 def buy(commerce, account, character, revision=0, key='first-purchase', **changes):
-    args = dict(shop_key=SHOP, listing_key=LISTING, quantity=1, shop_version=2, expected_revision=revision, key=key)
+    args = dict(shop_key=SHOP, listing_key=LISTING, quantity=1, shop_version=3, expected_revision=revision, key=key)
     args.update(changes)
     return commerce.buy(account, character, **args)
 
@@ -89,6 +89,7 @@ def test_malformed_quantity_never_mutates(commerce_game, quantity):
 
 def test_purchase_forgery_unavailable_funds_stack_and_proximity(commerce_game):
     players, _, commerce, account, character = commerce_game
+    commerce.rules.shops[SHOP].rules['listings'][1]['available'] = False
     before = players.store.path.read_bytes()
     for changes, message in [({'listing_key':'forged'}, 'not available'),
                              ({'listing_key':'buy_sunthread_bandage'}, 'not available'),
@@ -138,7 +139,7 @@ def test_receipt_conflicts_stale_commands_eviction_and_ownership(commerce_game):
 def test_concurrent_purchases_cannot_overspend(commerce_game):
     players, _, commerce, account, character = commerce_game
     # Repeatable supply fixture exercises balance exhaustion beyond a unique gear cap.
-    # The shipped bandage listing remains unavailable until item use exists.
+    # Repeatable supplies exercise wallet exhaustion as well as stack limits.
     commerce.rules.shops[SHOP].rules['listings'][1]['available'] = True
     def purchase(index):
         for attempt in range(5):
@@ -243,7 +244,7 @@ def test_api_rejects_client_authority_fields_and_requires_owner_proximity(monkey
             record = client.post('/api/v1/characters',headers=headers,json={'name':'Shopper','equipment':{'chest':VEST},'wallet':{'shell_chits':999}}).json()
             assert record['equipment'] == {} and record['wallet']['shell_chits'] == 0
             character = record['id']; path = f'/api/v1/world/characters/{character}'
-            body = dict(listing_key=LISTING,quantity=1,shop_version=2,expected_revision=0)
+            body = dict(listing_key=LISTING,quantity=1,shop_version=3,expected_revision=0)
             assert client.post(path+'/shops/'+SHOP+'/buy',json=body).status_code == 401
             assert client.post(path+'/shops/'+SHOP+'/buy',headers=headers,json=body).status_code == 409
             for extra in [{'price':0},{'item_key':'forged'},{'wallet':{}},{'quantity':True},{'quantity':'1'},{'quantity':1.0},{'expected_revision':True}]:

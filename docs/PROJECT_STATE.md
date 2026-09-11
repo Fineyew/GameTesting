@@ -1,18 +1,31 @@
 # Veilbound Tides — project state
 
-Updated 2026-09-10. Branch `feature/android-foundation`, draft PR [#4](https://github.com/Fineyew/GameTesting/pull/4).
+Updated 2026-09-11. Branch `feature/android-foundation`, draft PR [#4](https://github.com/Fineyew/GameTesting/pull/4).
 Read README → PROJECT_STATE → ARCHITECTURE → relevant source. Main is bd98746; no merge/deployment.
 
 ## Current milestone
 
-**M1.4 visual benchmark: implemented candidate; acceptance remains open.**
+**M1.5 bandage loop: implemented candidate, full CI pending.**
+The owner requested full continuation after the M1.4 device-gate handoff. Engineering
+continues while physical validation remains explicitly outstanding; this is not a phone pass
+or a declaration that M1.4/M1.5 acceptance is complete. M1.4 handoff a5d06db/run34484981552
+passed all three CI jobs. This increment changes no public deployment, regions or art assets.
+
+M1.5 adds one-wrap use through existing CommerceService locks/revisions/receipts, capped
+12-Vigor restoration, server-owned max_vigor=30, full-health/active/unowned rejection,
+shop version3 bandage availability, and Bag health/effect/use feedback. No new save fields
+or migration; item_use_protocol1 is additive. Existing world/story/folio/commerce remain1.
+Local:97 backend passed /9 PostgreSQL skipped /30 subtests; real Godot/API purchase/use/
+reconnect passed. Full CI and a fresh ARM64 0.2.5/code7 are pending. No M1.5 APK claimed yet.
+
+**M1.4 visual benchmark remains an acceptance-open candidate.**
 Roadmap checkpoint edec97b introduced this scope; the owner then authorized implementation.
 Validated code checkpoint: `365993ce7e79fc29025ee23d1c77cbf449ad2bfc`,
 [run 34483308643](https://github.com/Fineyew/GameTesting/actions/runs/34483308643), all three jobs successful.
 Actual overview, Mara, vendor, Glimmer, native resume and matched-route frames were inspected.
 The final pass clears camera foliage, grounds the paving and finishes the sample shop side.
-Do not mark M1.4 complete or start M1.5 before owner art-direction acceptance and the required
-physical-phone install/online-touch/20-minute thermal baseline. Neither has been performed.
+Do not mark physical-phone install/online-touch/20-minute thermal acceptance complete without
+actual measurements. Continued engineering does not substitute for that evidence.
 
 Completed history is preserved in ROADMAP/CHANGELOG:
 
@@ -33,7 +46,7 @@ Completed history is preserved in ROADMAP/CHANGELOG:
   Mara's dialogue/investigation/three spell lessons, six obtainable spells and a 1–6 spell folio.
 - Mara sells the existing Lanternkeeper Vest for 12 earned shell chits. One chest slot,
   Guard1 per incoming hit; purchase/equip/unequip/comparison/retries are authoritative and atomic.
-  Equipment preserves appearance; the existing bandage listing stays unavailable until M1.5.
+  Equipment preserves appearance; the existing bandage listing is enabled by the M1.5 candidate.
 - JSON development and PostgreSQL aggregate adapters, migrations0001/0002, old-save defaults,
   revisions/receipts/concurrency protection. World1/story1/folio1/commerce1 and26 definitions unchanged.
 - M1.4 adds eight original editable kit pieces around the Lantern Well/cart, a sample
@@ -84,11 +97,12 @@ Owner art acceptance and **all physical ARM64 phone validation remain unverified
 Two houses, distant trees/coast/vistas, dock, cistern, lurker, most spell VFX, all audio,
 full animation/creator variety, wearable vest mesh and full UI/accessibility remain unfinished.
 Tree canopy shapes affect cameras only; movement still uses the preserved planar catalog.
-No new quests/spells/regions, consumable use, selling/trading, dungeon/co-op, gathering/crafting,
+No new quests/spells/regions, selling/trading, dungeon/co-op, gathering/crafting,
 mounts/housing/pets or broad social content were added. Account recovery/moderation, load tests,
 JSON→Postgres import/restore drills, production deployment/signing/updater remain future work.
 
-Finish M1.4 owner/device acceptance first; **M1.5 is the still-unstarted Sunthread Bandage loop**.
+Finish M1.5 automated validation/checkpoint, then M1.6 authoring tooling is next engineering work.
+M1.4/M1.5 physical acceptance remains open; do not report it complete without device evidence.
 Use README's local backend/USB reverse recipe for phone testing; a paid public server is
 not required for this review. The inherited public endpoint has not been updated/verified.
 

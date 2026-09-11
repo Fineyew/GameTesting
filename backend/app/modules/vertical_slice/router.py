@@ -254,6 +254,19 @@ class EquipmentRequest(BaseModel):
     expected_revision: int = Field(strict=True, ge=0, lt=2**63-1)
 
 
+class UseItemRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    item_key: StrictStr = Field(min_length=1, max_length=64)
+    expected_revision: int = Field(strict=True, ge=0, lt=2**63-1)
+
+
+@router.post("/world/characters/{character_id}/items/use")
+def use_item(character_id: str, payload: UseItemRequest, request: Request,
+             idempotency_key: str = Header(min_length=8, max_length=80), account_id: str = Depends(current_account_id)):
+    return commerce_result(lambda: request.app.state.commerce.use(account_id, character_id,
+                           payload.item_key, payload.expected_revision, idempotency_key))
+
+
 def commerce_result(operation):
     try:
         return operation()

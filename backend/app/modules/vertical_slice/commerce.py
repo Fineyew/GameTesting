@@ -79,3 +79,9 @@ class CommerceService:
             return {"slot": slot, "item_key": item_key}
         return self._command(account_id, character_id, expected_revision, key,
                              {"equip": slot, "item_key": item_key}, apply)
+
+    def use(self, account_id, character_id, item_key, expected_revision, key):
+        if not isinstance(item_key, str) or not 1 <= len(item_key) <= 64:
+            raise ValueError("invalid item")
+        return self._command(account_id, character_id, expected_revision, key,
+                             {"use": item_key}, lambda character: self.rules.use(character, item_key))

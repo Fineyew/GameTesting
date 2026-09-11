@@ -161,3 +161,13 @@ from M1.3 de9d7a3 and current source with pinned camera/control/.75/no-shadow se
 It requires FFmpeg and may fetch the named baseline into Git; it extracts to a temporary
 project and never switches the working branch. These are offline Movie Maker captures,
 not real-time benchmarks. Source provenance is retained beside the recordings.
+
+## M1.5 restorative items
+
+An item may declare one use_effects entry with type restore_vigor and integer amount1–30.
+Unknown effects, extra effect fields, bool/noninteger amounts and multiple effects fail
+validation. Items without use_effects remain nonusable resources. Sunthread Bandage keeps
+its existing12-point effect/20 stack cap; shop version3 enables its existing five-chit listing.
+Increment shop version whenever changing a quote/availability; never change stable item IDs.
+Item use consumes exactly one after ownership, inactive combat and missing-Vigor validation.
+No client-supplied quantity/heal values, consumable stat rolls or combat consumables exist.

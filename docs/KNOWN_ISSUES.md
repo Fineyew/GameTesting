@@ -4,7 +4,7 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
 
 ## Release gates
 
-- Updated public server not deployed or verified. Clients0.2.3/0.2.4 need world1/story1/folio1/commerce1.
+- Updated public server not deployed or verified. Clients0.2.3/0.2.4 need world1/story1/folio1/commerce1;0.2.5 additionally needs item_use1.
 - Physical Android install/touch/safe-area, 20-minute thermal/memory/battery, packet-loss,
   cellular/Wi-Fi switching and background/resume certification remain outstanding.
   CI emulator and desktop rendering cannot substitute for these measurements. The emulator
@@ -25,10 +25,11 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
 - Catalog-driven Mara dialogue and one investigation now exist. Collect-item/repeatable
   quests, broader objective types and visual authoring tools remain planned. M1.1 integration
   and Android gates pass at 4efd3a6; additional NPC visual/interaction bindings need scene work.
-- One vest vendor/equipment loop passes all M1.3 gates atde9d7a3/run34440512749. Item use, selling,
+- One vest vendor/equipment loop passes all M1.3 gates atde9d7a3/run34440512749. Selling,
   trading, wearable vest mesh, additional gear slots, gathering/crafting, mounts,
   housing, pets, dungeon/boss and most social features are not implemented.
-  M1.5 Sunthread Bandage use remains unstarted until M1.4 acceptance.
+  M1.5 Sunthread Bandage use is an implemented candidate; full CI/APK verification pending.
+  Engineering continuation was authorized; physical acceptance is still outstanding.
 - M1.4's small original art/rig/VFX candidate passes full CI/render/native validation at
   365993ce/run34483308643; actual captures and matching route frames were inspected.
   Owner art acceptance and physical-phone Device E remain open. Do not call it final.

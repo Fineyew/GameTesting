@@ -33,6 +33,14 @@ class InventoryRules:
         item = self.items[key]
         view = {"item_key": key, "name": item.display.name, "summary": item.display.summary,
                 "type": item.type, "owned": character.inventory.get(key, 0)}
+        effects = item.rules.get("use_effects", [])
+        if effects:
+            amount = effects[0]["amount"]
+            reason = ("Finish the encounter first" if character.encounter.get("state") == "active" else
+                      "No wraps in your bag" if view["owned"] < 1 else
+                      "Vigor is already full" if character.vigor >= character.max_vigor else "")
+            view.update(restore_vigor=amount, can_use=not reason, use_reason=reason,
+                        vigor_after=min(character.max_vigor, character.vigor + amount))
         if item.type == "equipment":
             slot = item.rules["slot"]
             current = character.equipment.get(slot)
@@ -42,6 +50,24 @@ class InventoryRules:
                         current_guard=current_guard, guard_delta=guard-current_guard,
                         equipped=current == key, equipped_name=self.items[current].display.name if current else "No chest equipment")
         return view
+
+    def use(self, character, item_key):
+        item = self.items.get(item_key)
+        if not item or item.type != "items" or not item.rules.get("use_effects"):
+            raise ValueError("item cannot be used")
+        owned = character.inventory.get(item_key, 0)
+        if owned < 1:
+            raise ValueError("character does not own that item")
+        if character.vigor >= character.max_vigor:
+            raise ValueError("Vigor is already full; no item consumed")
+        before = character.vigor
+        character.vigor = min(character.max_vigor, before + item.rules["use_effects"][0]["amount"])
+        if owned == 1:
+            character.inventory.pop(item_key)
+        else:
+            character.inventory[item_key] = owned - 1
+        return {"item_key": item_key, "consumed": 1, "vigor_before": before,
+                "vigor_after": character.vigor, "restored": character.vigor - before}
 
     def inventory_view(self, character):
         return {"character": character.public_state(), "stats": {"guard": self.guard(character)},

@@ -27,3 +27,9 @@
 | D023 | Editable Blender sources outside Godot, checked-in self-contained GLBs | Original reusable assets, deterministic recipes, named rigs/materials and import budgets without Blender on game CI or phones. |
 | D024 | Confirm combat first, then bounded presentation with a short-effects option | Keep server authority/receipts and make a significant spell visible without forcing repeat camera cuts. |
 | D025 | Separate camera-only foliage from catalog movement collision | Improve orbit/cast visibility without client-only movement blockers, protocol changes or server shortcuts; test both actor sightlines. |
+
+- D026 (2026-09-11): Following the owner's repeated continuation instruction after the
+  device handoff, advance narrow engineering checkpoints while retaining unverified physical
+  acceptance. Do not label M1.4/M1.5 fully accepted or release-ready from automated tests.
+- D027: Reuse commerce transactions/revisions/receipts for single-item out-of-combat healing;
+  preserve old saves, separate rules from persistence, and consume nothing at full Vigor.

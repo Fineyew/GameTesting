@@ -242,3 +242,40 @@ def test_postgres_old_equipment_payload_preserves_progress_and_active_encounter(
         assert other.get_character(character).commerce_revision == 0
     finally:
         other.engine.dispose()
+
+
+def test_postgres_item_use_atomic_retry_and_cross_connection_purchase(game,monkeypatch):
+    from backend.app.modules.inventory.rules import InventoryRules
+    from backend.app.modules.vertical_slice.commerce import CommerceService
+    from backend.tests.test_commerce import earn_first_reward,buy
+    from backend.tests.test_item_use import set_vigor,WRAP
+    service,encounters,account,character=game
+    earn_first_reward(service,encounters,account,character)
+    set_vigor(service,account,character,0)
+    rules=InventoryRules(encounters.catalog);command=CommerceService(service,rules,lambda *_:True)
+    other=PostgresPlayerStore(os.environ['VT_TEST_DATABASE_URL'])
+    try:
+        peer=CommerceService(VerticalSliceService(other),rules,lambda *_:True)
+        original=other.get_character(character)
+        save=service.store.save_character
+        def fail_after_write(record):save(record);raise ValueError('post-write failure')
+        with monkeypatch.context() as patch:
+            patch.setattr(service.store,'save_character',fail_after_write)
+            with pytest.raises(ValueError,match='post-write'):command.use(account,character,WRAP,0,'pg-use-first')
+        assert other.get_character(character)==original
+        def race(index):
+            try:
+                return command.use(account,character,WRAP,0,'pg-use-first') if index==0 else buy(peer,account,character,listing_key='buy_sunthread_bandage')
+            except ValueError as error:
+                assert 'changed' in str(error);return None
+        with ThreadPoolExecutor(2) as pool:results=list(pool.map(race,range(2)))
+        assert sum(r is not None for r in results)==1
+        if results[0]:buy(peer,account,character,1,'pg-buy-next',listing_key='buy_sunthread_bandage')
+        else:results[0]=command.use(account,character,WRAP,1,'pg-use-next')
+        saved=other.get_character(character)
+        assert saved.vigor==12 and saved.inventory[WRAP]==2 and saved.wallet['shell_chits']==9
+        revision=0 if results[0]['character']['commerce_revision']==1 else 1
+        key='pg-use-first' if revision==0 else 'pg-use-next'
+        assert peer.use(account,character,WRAP,revision,key)==results[0]
+        assert service.enter_world(account,character)==saved
+    finally:other.engine.dispose()

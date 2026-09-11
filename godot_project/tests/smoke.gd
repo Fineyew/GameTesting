@@ -91,6 +91,23 @@ func run() -> void:
         await RenderingServer.frame_post_draw
         root.get_texture().get_image().save_png("user://equipment.png")
     app.session.hud.close_panel()
+    var wraps = CommercePanel.new()
+    app.session.hud.open_panel("Bag & equipment").add_child(wraps)
+    var wrap_view = {"character":{"vigor":18,"max_vigor":30,"wallet":{"shell_chits":4}},"stats":{"guard":0},"items":[{"item_key":"sunthread_bandage","name":"Sunthread Bandage","summary":"A warm woven wrap.","type":"items","owned":2,"restore_vigor":12,"vigor_after":30,"can_use":true,"use_reason":""}]}
+    wraps.build(wrap_view,false)
+    var used: Array = []
+    wraps.use_requested.connect(func(key): used.append(key))
+    await process_frame
+    assert(wraps.use_buttons.sunthread_bandage.size.y >= 56)
+    app.session.hud.panel_content.get_parent().ensure_control_visible(wraps.use_buttons.sunthread_bandage)
+    await process_frame
+    await process_frame
+    await click_control(wraps.use_buttons.sunthread_bandage)
+    assert(used == ["sunthread_bandage"])
+    if DisplayServer.get_name() != "headless":
+        await RenderingServer.frame_post_draw
+        root.get_texture().get_image().save_png("user://item-use.png")
+    app.session.hud.close_panel()
     await VisualBenchmark.check(app,self)
     app.session.show_settings()
     assert(app.session.hud.modal)

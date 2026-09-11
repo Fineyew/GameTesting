@@ -2,7 +2,7 @@
   "type": "shops",
   "key": "dawnreef_supply_cart",
   "schema_version": 1,
-  "version": 2,
+  "version": 3,
   "display": {
     "name": "Dawnreef Supply Cart",
     "summary": "A compact field shop stocked for new Wayfarers.",
@@ -39,8 +39,7 @@
             "amount": 5
           }
         ],
-        "available": false,
-        "unavailable_reason": "Bandages are not for sale until item use is available."
+        "available": true
       }
     ],
     "npc_key": "mara_lanternwright",

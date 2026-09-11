@@ -6,14 +6,18 @@ Revised 2026-09-10 after inspecting the repository at
 and successful M0–M1.3 CI jobs. Roadmap checkpoint edec97b changed planning only.
 The owner subsequently authorized implementation; current evidence lives in PROJECT_STATE.
 
-**Current milestone: M1.4, the playable Dawnreef visual benchmark (in progress).** The former
+**Current engineering milestone: M1.5, usable Sunthread Bandages (in progress).**
+On 2026-09-11 the owner requested full continuation after the device-gate handoff.
+Proceed with engineering checkpoints while recording M1.4/M1.5 physical acceptance as
+outstanding. This changes development ordering only; Device E/R/L evidence and final
+release acceptance requirements are preserved. Do not infer phone/art acceptance from CI. The former
 unstarted M1.4 bandage recommendation moved to M1.5 with its scope preserved. The dated
 roadmap amendment governs forward ordering; earlier handoff recommendations remain history.
 
 ## How to use this roadmap
 
 - Completed milestones and their evidence below are immutable history. Beyond the current
-  M1.4 candidate, forward milestones are **planned**, including existing catalog examples.
+  M1.4/M1.5 candidates, forward milestones are **planned**, including existing catalog examples.
 - Android is the primary game. Keep Godot 4.5.1 Compatibility, the modular client,
   FastAPI/PostgreSQL/JSON ports, server-owned rules and existing IDs/saves/tests. A future
   change to those decisions needs measured justification and a compatibility plan.
@@ -266,10 +270,12 @@ and Device E are still pending. This is not a completed milestone; PROJECT_STATE
 
 ### M1.5 — Usable Sunthread Bandages
 
+Implemented candidate; full CI/APK pending. PROJECT_STATE owns current evidence.
+
 - **Kind / purpose:** Gameplay systems. Close the already-defined supplies loop.
 - **Adds:** Server-owned out-of-combat bandage use, capped Vigor restoration, atomic item
   consumption, exact-command retry, clear before/after Vigor and enabled existing listing.
-- **Depends:** M1.4 for ordering; reuses M1.3 commerce/receipts and the existing item effect.
+- **Depends:** M1.4 for visual continuity (engineering continuation authorized above); reuses M1.3 commerce/receipts and the existing item effect.
 - **Complete:** Buy with earned chits, use while injured, reconnect and retain correct
   inventory/Vigor. Full-health, missing-item and active-combat requests have explicit rules
   and cannot silently waste supplies. No new consumables, crafting or inventory rewrite.
@@ -974,11 +980,9 @@ If too much placeholder debt remains, return to bounded production batches befor
 | Entire-game art | M4.1 → M4.2 → M4.3 → M4.4 | Every launch environment, character/collectible, effect/audio and UI surface complete |
 | Release | M5.1 → M5.2 → M5.3 → M5.4 → M5.5 | Whole-game cohesion, phone certification, recovery/security, beta and approved launch |
 
-**Recommended immediate next work is M1.4 acceptance.** Review the retained in-engine
-Lantern Well/Mara candidate and perform Device E with its actual ARM64 APK. The automated
-engineering/render/native gates pass; owner art acceptance and physical-phone measurements
-remain unverified. After those gates, the narrow bandage loop follows as **M1.5** and remains
-unstarted. The roadmap revision itself added no gameplay; later implementation has separate evidence.
+**Recommended immediate work: finish M1.5 validation and checkpoint.** The next engineering
+increment is M1.6 content/asset authoring tools. Keep the concrete M1.4 art/phone review and
+M1.5 online Device E checklist open alongside engineering; no release gate is waived.
 
 Postpone bulk quest/spell generation until the authoring/art benchmark exists; additional
 magical disciplines until the first three show build depth; regions beyond the approved
