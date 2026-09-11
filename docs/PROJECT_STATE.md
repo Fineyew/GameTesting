@@ -19,10 +19,13 @@ Local:97 backend passed /9 PostgreSQL skipped /30 subtests; real Godot/API purch
 reconnect passed. Candidate f761714/run34547305384 passed backend106/30 (including9 real PostgreSQL tests),
 Godot/API and render71 calls/83,630 primitives. Native post-resume locomotion failed;
 Android logged an undeliverable touch during its resume transition. The harness now waits
-for stable app focus/idle window state before its one swipe, with unchanged thresholds.
+for stable app focus/ready surface state before its one swipe, with unchanged thresholds.
 A review also corrected item-use failure routing so server reasons reach the Bag recovery
 UI; the Godot/API gate now tests stale use, clear feedback and unchanged supplies after reload.
-Fresh CI and ARM64 0.2.5/code7 remain pending; no M1.5 APK claimed yet.
+0edc990/run34548765608 passed backend/Godot/render; its first readiness parser failed
+closed on an absent legacy Android field. Seven regression tests and the actual retained
+API35 dump pass with the corrected focused/ready-surface parser. Full CI and ARM64
+0.2.5/code7 remain pending; no M1.5 APK claimed yet.
 
 **M1.4 visual benchmark remains an acceptance-open candidate.**
 Roadmap checkpoint edec97b introduced this scope; the owner then authorized implementation.

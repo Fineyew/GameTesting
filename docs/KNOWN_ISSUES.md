@@ -45,8 +45,12 @@ Updated 2026-09-11. See PROJECT_STATE for current CI/artifact status.
 - M1.5 candidate f761714/run34547305384 passes backend106/30, Godot/API and render;
   native post-resume movement failed (artifact10179708379). Android InputDispatcher
   reported no touched window during the resume transition. Harness now waits for
-  stable focus/idle transition before the unchanged single-swipe movement check;
+  stable focus/ready surface before the unchanged single-swipe movement check;
   correction awaits full CI. No M1.5 ARM64 artifact was published by the failed run.
+  0edc990/run34548765608 passed backend/Godot/render but the first wait timed out on
+  an absent legacy AppTransition field (native artifact10180224033). The corrected
+  parser uses actual API35 focused-window/surface/rotation fields, with seven regressions
+  and a check against the retained dump. Its full Android rerun remains pending.
 
 - M0 Android emulator checks pass at 69457a4, including visible resume and repeat touch
   locomotion. The earlier black transition screenshot is resolved by waiting for presented

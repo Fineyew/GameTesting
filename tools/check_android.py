@@ -63,19 +63,31 @@ def changed_world(left_path,right_path):
         histogram=difference.histogram()
         return sum(histogram[13:])/sum(histogram)
 
+def input_window_ready(windows):
+    # API35 dumps the actual surface/rotation state, not legacy AppTransition state.
+    focused=re.search(r'mCurrentFocus=(Window\{[^\n]*\})',windows)
+    if not focused or PACKAGE+'/' not in focused[1] or 'no ScreenRotationAnimation' not in windows:
+        return False
+    for block in re.split(r'\n  Window #\d+ ',windows)[1:]:
+        if not block.startswith(focused[1]+':'):
+            continue
+        size=re.search(r'Requested w=(\d+) h=(\d+)',block)
+        return bool(size and int(size[1])>int(size[2]) and
+                    'mHasSurface=true isReadyForDisplay()=true' in block and
+                    'Surface: shown=true' in block and '\n    isVisible=true' in block)
+    return False
+
 def wait_for_input_ready():
     # A landscape screenshot can be the task's snapshot while Android still owns
     # the resume transition. Do not inject a gesture into that transient surface.
-    # Retain OS evidence and require three seconds of focused, idle window state;
+    # Retain OS evidence and require three seconds of focused, ready surface state;
     # this does not retry the gesture or relax any movement/resume assertion.
     ready_since=None
     def ready():
         nonlocal ready_since
         windows=adb('shell','dumpsys','window')
         (OUT/'resume-window-state.txt').write_text(windows)
-        focused=bool(re.search(r'mCurrentFocus=[^\n]*'+re.escape(PACKAGE),windows))
-        idle='mAppTransitionState=APP_STATE_IDLE' in windows
-        if not focused or not idle:
+        if not input_window_ready(windows):
             ready_since=None
             return False
         if ready_since is None:
