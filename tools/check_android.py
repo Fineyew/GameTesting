@@ -63,6 +63,26 @@ def changed_world(left_path,right_path):
         histogram=difference.histogram()
         return sum(histogram[13:])/sum(histogram)
 
+def wait_for_input_ready():
+    # A landscape screenshot can be the task's snapshot while Android still owns
+    # the resume transition. Do not inject a gesture into that transient surface.
+    # Retain OS evidence and require three seconds of focused, idle window state;
+    # this does not retry the gesture or relax any movement/resume assertion.
+    ready_since=None
+    def ready():
+        nonlocal ready_since
+        windows=adb('shell','dumpsys','window')
+        (OUT/'resume-window-state.txt').write_text(windows)
+        focused=bool(re.search(r'mCurrentFocus=[^\n]*'+re.escape(PACKAGE),windows))
+        idle='mAppTransitionState=APP_STATE_IDLE' in windows
+        if not focused or not idle:
+            ready_since=None
+            return False
+        if ready_since is None:
+            ready_since=time.monotonic()
+        return time.monotonic()-ready_since>=3
+    wait_for(ready,30)
+
 def wait_for_settled_world(name):
     # A resting thumb does not prove the last deceleration/camera frame was presented
     # on a slow software GPU. Keep the first frame and require two stable comparisons.
@@ -128,6 +148,7 @@ def main():
     time.sleep(1)
     adb('shell','monkey','-p',PACKAGE,'-c','android.intent.category.LAUNCHER','1')
     assert adb('shell','pidof',PACKAGE).strip(),'process missing after resume'
+    wait_for_input_ready()
     resumed=wait_for_world('resumed')
     assert changed_world(after,resumed)<.15,'world view changed unexpectedly across resume'
     adb('shell','input','swipe',str(round(width*.0875)),str(round(height*.844)),str(round(width*.125)),str(round(height*.844)),'1800')

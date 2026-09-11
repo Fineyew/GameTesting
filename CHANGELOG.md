@@ -10,7 +10,11 @@
 - Add JSON/API/concurrency/rollback/content and PostgreSQL use/purchase regressions, real
   Godot/API purchase/use/reconnect and scroll-visible GUI input coverage.
 - Local97 backend tests/30 subtests pass;9 PostgreSQL tests await CI. Godot/API passes.
-  Full CI and ARM640.2.5/code7 pending. Physical M1.4/M1.5 acceptance remains unverified.
+  Candidate f761714/run34547305384 passes backend106/30 including9 PostgreSQL tests,
+  Godot/API and render. Native resume swipe was sent during an Android window transition
+  and failed; retain artifact10179708379, publish no APK. Wait for stable focused/idle
+  window state before the single swipe; all movement thresholds remain unchanged.
+  Corrected full CI and ARM640.2.5/code7 pending. Physical acceptance remains unverified.
 
 ## 0.2.4 — M1.4 visual benchmark candidate (in progress, 2026-09-10)
 

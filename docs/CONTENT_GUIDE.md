@@ -12,7 +12,7 @@ for shape. Run `python -m tools.build_catalog` to validate and regenerate the de
 | Quests | NPC offers, level/quest conditions, ordered defeat/inspect/talk/cast objectives, XP/item/currency/spell rewards |
 | Dialogue | Conditional entry nodes, options/branches, quest offers and server-owned cursor validation |
 | Zones | Shared planar bounds, expanded rectangular blockers and interaction positions |
-| Items/equipment | Server-owned quantities; chest gear, additive Guard, comparison/equip |
+| Items/equipment | Server-owned quantities; chest gear, Guard/comparison/equip; single-wrap capped healing |
 | Shops | NPC-proximity purchases at catalog prices, availability and stack limits |
 | Other definitions | Validated/reference-linked examples; most are not runtime systems yet |
 
@@ -105,7 +105,7 @@ quantity (bundle size 1–100), explicit boolean available and exactly one shell
 (integer 1–10000). Unavailable listings require unavailable_reason. The client requests
 1–10 bundles; the server multiplies price/count and checks the stack limit under lock.
 The current vest bundle is one and its stack_limit is one; quantity2 is rejected.
-The retained bandage listing is unavailable. Do not enable it before item use is playable.
+M1.3 retained unavailable bandages; M1.5 enables the existing listing alongside tested item use.
 
 Equipment currently supports only chest, required_level 1–1000, stack_limit1 and one
 modifier `{stat: "guard", operation: "add", value: 0..3}`. The vest uses Guard1. Unsupported

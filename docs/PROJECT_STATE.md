@@ -5,7 +5,7 @@ Read README → PROJECT_STATE → ARCHITECTURE → relevant source. Main is bd98
 
 ## Current milestone
 
-**M1.5 bandage loop: implemented candidate, full CI pending.**
+**M1.5 bandage loop: implemented; Android gate correction awaiting CI.**
 The owner requested full continuation after the M1.4 device-gate handoff. Engineering
 continues while physical validation remains explicitly outstanding; this is not a phone pass
 or a declaration that M1.4/M1.5 acceptance is complete. M1.4 handoff a5d06db/run34484981552
@@ -16,7 +16,11 @@ M1.5 adds one-wrap use through existing CommerceService locks/revisions/receipts
 shop version3 bandage availability, and Bag health/effect/use feedback. No new save fields
 or migration; item_use_protocol1 is additive. Existing world/story/folio/commerce remain1.
 Local:97 backend passed /9 PostgreSQL skipped /30 subtests; real Godot/API purchase/use/
-reconnect passed. Full CI and a fresh ARM64 0.2.5/code7 are pending. No M1.5 APK claimed yet.
+reconnect passed. Candidate f761714/run34547305384 passed backend106/30 (including9 real PostgreSQL tests),
+Godot/API and render71 calls/83,630 primitives. Native post-resume locomotion failed;
+Android logged an undeliverable touch during its resume transition. The harness now waits
+for stable app focus/idle window state before its one swipe, with unchanged thresholds.
+Fresh CI and ARM64 0.2.5/code7 remain pending; no M1.5 APK claimed yet.
 
 **M1.4 visual benchmark remains an acceptance-open candidate.**
 Roadmap checkpoint edec97b introduced this scope; the owner then authorized implementation.

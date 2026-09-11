@@ -1,6 +1,6 @@
 # Known issues and limitations
 
-Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
+Updated 2026-09-11. See PROJECT_STATE for current CI/artifact status.
 
 ## Release gates
 
@@ -41,6 +41,12 @@ Updated 2026-09-10. See PROJECT_STATE for current CI/artifact status.
   support remain accessibility work.
 
 ## Engineering
+
+- M1.5 candidate f761714/run34547305384 passes backend106/30, Godot/API and render;
+  native post-resume movement failed (artifact10179708379). Android InputDispatcher
+  reported no touched window during the resume transition. Harness now waits for
+  stable focus/idle transition before the unchanged single-swipe movement check;
+  correction awaits full CI. No M1.5 ARM64 artifact was published by the failed run.
 
 - M0 Android emulator checks pass at 69457a4, including visible resume and repeat touch
   locomotion. The earlier black transition screenshot is resolved by waiting for presented
