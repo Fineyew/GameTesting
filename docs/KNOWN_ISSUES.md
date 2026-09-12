@@ -130,3 +130,13 @@ Updated 2026-09-11. See PROJECT_STATE for current CI/artifact status.
   foliage and clear two-actor framing, with no movement/protocol changes. It passes full
   validation at 365993ce/run34483308643; overview/cast/native frames were inspected.
   Art acceptance and physical-device gates remain open independently.
+
+## M1.7 surface checkpoint limits / asset candidates
+
+Surface parity and ray collision do not prove capsule movement safety. Slopes, riser
+crossings, tangential motion and protocol2 activation remain unimplemented; current
+world stays flat. Initial fixture checks exposed/repaired Godot top-face winding and
+trailing-newline key acceptance; no live movement was enabled during those failures.
+Fal candidates are not shipped: lantern textures are three2K maps without emissive glow;
+sounds need listening/loop/mix acceptance. Physical phone and art-direction acceptance
+remain open. See CONTENT_GUIDE and candidate README for records and next checks.

@@ -49,3 +49,12 @@
   elevation fields and preserve production catalog bytes. ARCHITECTURE records the next
   shared triangular-cell surface, protocol2 handshake and derived-height save plan; these
   runtime changes remain planned until parity/integration/Android gates pass.
+
+### M1.7 surface parity before activation (2026-09-12)
+
+Checkpoint surface queries/triangles independently from movement activation. Physical
+raycasts complement numeric parity because two languages can agree on wrongly wound
+collision faces. Integral JSON numbers are accepted in both runtimes because Godot's
+JSON parser represents numbers as floats; booleans and fractional millimetres are rejected.
+Generated Fal assets remain source candidates outside the runtime export until art,
+license, import and Android budget acceptance; paid generation is not production approval.

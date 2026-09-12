@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-09-12 — M1.7 shared terrain surface checkpoint (local gates pass; CI pending)
+
+- Implemented bounded sparse millimetre height surfaces in Python and Godot, deterministic
+  cell/diagonal ownership, planar gradients and matched collision tops/interior risers.
+- Added analytic/seeded parity and actual Godot physics rays as a CI gate; raycasts caught
+  and corrected top-face winding. Invalid-fixture parity caught trailing-newline cell keys;
+  exact matching now rejects them. Initial assertions timed out; harness retains diagnostics.
+- Preserved Fal evaluation sources/prompts/checks outside exported content. No paid jobs
+  in this continuation, no asset runtime integration or claims of finished art/audio.
+- Live protocol1, flat saves, catalog, movement, combat, folio, quests and commerce remain.
+  M1.7 sweep/authority/route/APK activation and physical-device acceptance remain open.
+
+
 ## M1.7 groundwork and handoff failure assessment (2026-09-11, validated checkpoint)
 
 - Fast-forward the clean workspace fromd1f0929 to the existing remotea0b495c handoff;

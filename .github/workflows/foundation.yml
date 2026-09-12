@@ -67,6 +67,8 @@ jobs:
           echo "GODOT_BIN=/tmp/godot/Godot_v4.5.1-stable_linux.x86_64" >> "$GITHUB_ENV"
       - name: Import and playable smoke check
         run: python -m tools.check_godot
+      - name: Shared terrain surface and real Godot collision parity
+        run: python -m tools.check_terrain
       - name: Godot to API integration with two players
         run: python -m tools.check_online
       - name: Isolated authored example through Godot and API

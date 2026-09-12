@@ -37,6 +37,11 @@ Godot/API, render and Android). Fresh CI ARM64 artifact10274589788 remains0.2.5/
 PROJECT_STATE records the diagnosed
 M1.6 handoff Android launcher-overlay failure and subsequent validation status.
 
+M1.7 now includes isolated Python/Godot surface and collision-ray parity helpers;
+run `python -m tools.check_terrain` after Godot import. Live hills/stairs and protocol2
+remain pending. Fal trial sources are retained outside the runtime export under
+`art_sources/candidates/fal_dawnreef_20260912`; see CONTENT_GUIDE for acceptance work.
+
 ## What is playable
 
 Create an account and one Wayfarer with appearance/affinity; enter a small original

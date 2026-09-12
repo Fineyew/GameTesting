@@ -403,3 +403,20 @@ reconnect, existing progression, PostgreSQL, rendering and Android gates pass to
 A new playable APK/version and paired backend are required at activation. Back up before
 rollout; downgrade needs a validated elevated-position-to-flat relocation plan preserving
 all non-location state. No public deployment or physical Device R acceptance is implied.
+
+## M1.7 surface parity checkpoint (not activated)
+
+`world/terrain.py` and `world/terrain_surface.gd` now implement the planned bounded
+sparse surface as pure geometry helpers. They do not replace planar simulation,
+WayfarerController or OrbitRig. Height and slope use piecewise planar triangles;
+collision tops and two-sided interior risers derive from the same corners. Where
+adjacent edge profiles cross, risers split at their intersection rather than generating
+self-intersecting faces. Outer skirts are absent; future movement bounds own that limit.
+Godot collision is tested with actual top and horizontal-riser raycasts, including
+clockwise face winding. The Python/Godot comparison runs in CI after import.
+
+This checkpoint proves surface queries and ray collision only. A point/ray is not a
+capsule sweep and does not establish safe locomotion. Live catalog, WS protocol1,
+geometry digest, saves and player feet remain unchanged. Next implement bounded capsule
+sweeps/sliding against blockers, steep faces and crossed edges before protocol2 activation.
+No y persistence, database migration, public deployment or physical acceptance is claimed.

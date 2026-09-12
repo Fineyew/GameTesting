@@ -240,3 +240,33 @@ These bounds are validation limits, not tested performance capacity or permissio
 expand the hardcoded Dawnreef scene. A scene must still implement its catalog geometry.
 The live catalog/bundle is unchanged. Follow ARCHITECTURE's planned M1.7 terrain contract
 only when the Python/Godot implementation and versioned handshake are ready together.
+
+## M1.7 isolated terrain contract
+
+`TerrainSurface` in the existing Python world module and Godot world scripts accepts
+`{"bounds":[-2,-2,2,2],"cells":{"0:0":[0,0,300,300]}}`. Bounds are integer-valued
+metres (absolute limit4096), with1–128 cells per axis. Keys are canonical nonnegative
+`x:z` indices relative to the minimum bounds. Missing cells are flat zero. Heights are
+integer-valued millimetres within±8000, SW/SE/NE/NW. Both runtimes accept integral JSON
+numbers and reject booleans/fractions/extra fields. SW→NE is the fixed triangle diagonal;
+interior edges belong to the positive-axis cell, outer maxima to the final cell.
+
+This is a fixture-only contract: the live catalog deliberately still rejects terrain.
+Run `python -m tools.check_terrain` after Godot import to compare shared analytic/seeded
+queries and actual collision rays. Do not activate these surfaces as walkable content
+until capsule sweeps, protocol2 negotiation/reconciliation and old-save checks pass.
+
+## Fal candidate assets (not runtime-approved)
+
+The first generated lantern and two sounds are preserved under
+`art_sources/candidates/fal_dawnreef_20260912`, outside the exported Godot project.
+The folder records prompts, settings, request IDs, hashes and technical checks.
+These are experimental candidates, not replacements for accepted assets or claims of
+commercial-license verification. Do not put them in the final-art manifest yet.
+
+Lantern:2,421 triangles,1 material, three2K textures; evaluate512/1024px derivatives,
+scale/pivot, emissive core and mobile budget before integration. Sound sources are
+3s/20s stereo MP3; a separate spell WAV has3dB attenuation to avoid decoded full-scale
+overs. Listening, seamless looping and in-game mix remain unverified. Preserve originals.
+Use the lantern in a future Dawnreef visual pass only after Godot/device checks; audio
+follows M1.9's buses/volume/lifecycle framework. No further paid generation is needed now.

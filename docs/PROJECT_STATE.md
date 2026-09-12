@@ -1,9 +1,31 @@
 # Veilbound Tides — project state
 
-Updated 2026-09-11. Branch `feature/android-foundation`, draft [PR #4](https://github.com/Fineyew/GameTesting/pull/4).
+Updated 2026-09-12. Branch `feature/android-foundation`, draft [PR #4](https://github.com/Fineyew/GameTesting/pull/4).
 Read README → PROJECT_STATE → ARCHITECTURE → relevant source. Main remains bd98746; no merge/deployment.
 
 ## Current milestone
+
+**M1.7 surface parity implemented; full terrain milestone remains incomplete.**
+Pure Python/Godot helpers now validate/query the bounded sparse height contract and
+build matching top/riser triangles. An isolated CI gate compares analytic/seeded
+surfaces and actual Godot collision rays. Live world remains planar: capsule sweeps,
+protocol2, reconciliation/save entry and one playable route are the next checkpoint.
+No catalog, WS, persistence, character controller, camera or APK version change.
+Local validation:177 backend tests/30 subtests pass,9 PostgreSQL tests explicitly
+skipped locally;38 new terrain regressions. Terrain parity passes31 surfaces/2,003
+samples/269 actual physics rays/17 invalid definitions. Godot smoke, full existing
+two-player API progression, isolated authoring,26-definition catalog/art and7 Android
+readiness tests pass. CI PostgreSQL/render/native Android results are pending for this
+checkpoint, not inferred from older runs. Initial fixture winding/newline bugs were
+corrected without changing live simulation or weakening tests.
+
+Fal evaluation sources are retained in `art_sources/candidates/fal_dawnreef_20260912`:
+lantern GLB/preview, two sounds, spell headroom derivative, prompts/requests/hashes.
+They are **not integrated or production-approved**. Lantern needs texture downsizing,
+scale/pivot/emission/Godot/mobile checks; audio needs listening/loop/mix review and M1.9.
+No new paid generation, public deployment or physical-phone test in this continuation.
+
+### Previous validated geometry checkpoint (preserved)
 
 **M1.7 started: planar geometry validation groundwork; full milestone incomplete.**
 Reject malformed bounds/spawn/blockers/interactions, nonfinite movement values, capsule
@@ -131,8 +153,8 @@ trading, gathering/crafting, mounts/housing/pets or broad social content were ad
 Recovery/moderation, load tests, JSON→PG import/restore, staging/production, signing and
 updater remain future work. One process owns the room;32-player cap is unbenchmarked.
 
-**Next: continue M1.7 terrain authority.** Prove Python/Godot height and collision parity
-against shared fixtures before activating protocol2 and the first slope/stair route. Preserve flat saves,
+**Next: continue M1.7 terrain authority.** Add capsule sweeps, slope/step legality and
+tangential sliding using the tested surface before activating protocol2 and the first route. Preserve flat saves,
 server movement authority and the existing player/camera modules.
 Current tools cover catalog templates/diagnostics, scene/asset binding/status checks and
 an isolated authored preview example. No bulk live content. Keep M1.4/M1.5

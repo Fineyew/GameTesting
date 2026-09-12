@@ -6,7 +6,7 @@ Revised 2026-09-10 after inspecting the repository at
 and successful M0–M1.3 CI jobs. Roadmap checkpoint edec97b changed planning only.
 The owner subsequently authorized implementation; current evidence lives in PROJECT_STATE.
 
-**M1.6 engineering complete atd1f0929; M1.7 geometry groundwork passes atfe4551c, with terrain runtime still planned.**
+**M1.6 engineering complete atd1f0929; M1.7 geometry groundwork passes atfe4551c. Shared surface parity is now implemented; live terrain authority is still pending.**
 On 2026-09-11 the owner requested full continuation after the device-gate handoff.
 Proceed with engineering checkpoints while recording M1.4/M1.5 physical acceptance as
 outstanding. This changes development ordering only; Device E/R/L evidence and final
@@ -323,6 +323,13 @@ ARCHITECTURE records the shared cell/triangle surface and compatibility plan bef
 changes. Complete this milestone in reviewable checkpoints: input validation, Python/Godot
 surface parity, then negotiated authority + one route + full integration/APK/device evidence.
 These are stages within M1.7, not a claim that its completion criteria are satisfied.
+
+2026-09-12 continuation: Python/Godot surface helpers, shared analytic/seeded fixtures,
+matching triangles and actual collision ray validation are implemented. Live geometry
+still rejects elevation. Next prove capsule sweeps/slide/step/slope legality, then
+negotiate protocol2 and activate the route. PROJECT_STATE records executed gates.
+Fal lantern/audio candidates are preserved outside runtime exports for the appropriate
+visual/audio pass; they do not complete art, lighting, audio or physical-device gates.
 
 - **Kind / purpose:** Engineering foundation, gameplay systems, polish. Make real terrain safe.
 - **Adds:** A bounded shared height/collision representation, one slope/stair test route,
