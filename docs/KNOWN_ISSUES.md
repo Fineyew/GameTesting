@@ -37,7 +37,7 @@ Updated 2026-09-11. See PROJECT_STATE for current CI/artifact status.
   remain placeholders. No full audio framework/soundtrack or complete animation library.
   The sample has three clips and limited appearance tinting; it is not the full creator.
 - Historical planar checkpoint: capsule/gravity/floor snap existed, but stairs, slopes and vertical
-  authority are not tested. Full UI scaling, safe areas, left-handed controls and menu controller
+  authority were not tested there; current activation has automated parity/API coverage. Full UI scaling, safe areas, left-handed controls and menu controller
   support remain accessibility work.
 
 ## Engineering
@@ -49,8 +49,8 @@ Updated 2026-09-11. See PROJECT_STATE for current CI/artifact status.
   build10273533063), including touch/resume. Do not treat this as a launcher ANR fix.
 - M1.7 groundworkfe4551c/run34625951261 passes all full gates (148 tests/30 subtests,
   including9 PostgreSQL tests, Godot/API/render/native). It adds planar validation only.
-  Shared height sampling, slope/stair
-  scene, protocol2, vertical reconciliation and movement/device acceptance remain planned.
+  Shared height sampling, slope/stair scene, protocol2 and vertical reconciliation
+  have since been activated; physical/latency/feel acceptance remains open.
 
 - M1.6 tools pass full CI atd1f0929/run34552020416. Structural dialogue
   reachability does not prove conditional story reachability. Existing runtime bindings
@@ -143,7 +143,8 @@ remain open. See CONTENT_GUIDE and candidate README for records and next checks.
 
 ## Current terrain activation limits
 
-- Full activation CI/render/Android evidence pending; target0.2.6/code8 is not yet a verified APK.
+- Automated activation gates pass atcd6df1d/run34669362714; retained0.2.6/code8 artifact10290647152
+  has verified download/manifest/architecture/signing-report evidence. This is debug-signed.
 - Physical-phone Device R, adverse-latency feel and camera/terrain walkthrough remain unverified.
 - Conservative square footprint/whole-cell slopes can block some geometrically clear corners.
   Automatic .3m steps use discrete feet altitude; camera smoothing is not final animation polish.
@@ -152,3 +153,7 @@ remain open. See CONTENT_GUIDE and candidate README for records and next checks.
   exercised by the Godot/API test and second socket observer, not a physical Android walkthrough.
 - New client requires world2/revision2/digest and paired backend; public backend not deployed.
 - Fal candidates remain excluded from APKs, awaiting technical and artistic acceptance.
+
+- Inspected terrace framing shows the label overlapping the avatar silhouette and only part
+  of the stair/ramp profile. Improve label placement and capture angle in the next terrain
+  presentation pass. Simple edge posts/path paint are candidate dressing, not final world art.

@@ -332,6 +332,12 @@ conservative swept-footprint traversal, protocol2 and the small Mooring Rise rou
 Fal lantern/audio candidates are preserved outside runtime exports for the appropriate
 visual/audio pass; they do not complete art, lighting, audio or physical-device gates.
 
+Activation code `cd6df1dcd471a526260b2ba12e2443deb8c4a7fe`, run34669362714 passes all
+three jobs:214 backend tests/30 subtests including10 PG tests,32 surface cases/740 motions,
+full Godot/API/authoring,7 Android readiness tests,71 town/60 terrain render calls and native
+install/touch/resume. ARM640.2.6/code8 artifact10290647152 retained. Physical Device R and
+adverse-latency/feel acceptance still prevent declaring the full milestone complete.
+
 Activation candidate (2026-09-12): bounds/blockers, 42° slope limit and .3m steps share
 Python/Godot rules; derived-y snapshots, stale-contract rejection and transactional old-save
 entry are implemented. No DDL. Test route, two-player altitude/reconnect, render and APK

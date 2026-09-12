@@ -5,8 +5,12 @@ PostgreSQL, Docker and Nginx. Continue this repository; do not recreate working 
 The active work is `feature/android-foundation`, [draft PR #4](https://github.com/Fineyew/GameTesting/pull/4).
 
 Current continuation: **M1.7 terrain activation candidate**, including Mooring Rise,
-world protocol2 and persistent safe terrain entry. Full validation status and exact artifact
-provenance are in PROJECT_STATE. Target APK0.2.6/code8; physical-phone acceptance is open.
+world protocol2 and persistent safe terrain entry. All three jobs in
+[run34669362714](https://github.com/Fineyew/GameTesting/actions/runs/34669362714) pass at
+`cd6df1dcd471a526260b2ba12e2443deb8c4a7fe`. Retained
+[ARM64 APK0.2.6/code8](https://github.com/Fineyew/GameTesting/actions/runs/34669362714/artifacts/10290647152)
+passes automated gates; PROJECT_STATE records hashes/provenance. Physical-phone and
+adverse-latency/feel acceptance remain open.
 The older checkpoint evidence below remains history.
 
 ## Start here
@@ -52,6 +56,9 @@ run `python -m tools.check_terrain` after Godot import. The subsequent activatio
 `art_sources/candidates/fal_dawnreef_20260912`; see CONTENT_GUIDE for acceptance work.
 
 ## What is playable
+
+Mooring Rise, southeast of spawn, adds a ramp to a1.2m terrace and descending steps.
+The server derives altitude and restores safe terrain positions after reconnect.
 
 Create an account and one Wayfarer with appearance/affinity; enter a small original
 Dawnreef with a small authored Lantern Well/Mara art benchmark; move with touch/WASD/controller stick; orbit/recenter the camera;
@@ -117,7 +124,7 @@ isolated database migrated to head. CI runs both migrations and the PostgreSQL t
 ## Android build and runtime checks
 
 Use the checked-in **Android** export preset: ARM64, INTERNET permission, app ID
-`work.surveyroute.veilboundtides`, version 0.2.6/code 8 (activation gates pending; physical validation open). Use Godot 4.5.1 export templates,
+`work.surveyroute.veilboundtides`, version 0.2.6/code 8 (automated activation gates passed; physical validation open). Use Godot 4.5.1 export templates,
 JDK17, Android SDK platform35 and build-tools35.0.0. See the
 [official engine export instructions](https://docs.godotengine.org/en/4.5/tutorials/export/exporting_for_android.html).
 The exported engine minimum is API24, target API35; minimum OS is not a device-performance guarantee.

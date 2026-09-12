@@ -15,8 +15,22 @@ extend the existing modular world. No new quests, rewards or asset families.
 
 Local backend:204 tests/30 subtests pass,10 PostgreSQL tests explicitly skipped here.
 Terrain parity:32 surfaces/2,067 samples/278 actual physics rays/17 invalid definitions/
-740 movement comparisons pass. Full CI/render/Android activation evidence is pending.
-Export target is0.2.6/code8, not yet a validated artifact. No public deployment, paid
+740 movement comparisons pass. Code checkpoint `cd6df1dcd471a526260b2ba12e2443deb8c4a7fe`,
+[run34669362714](https://github.com/Fineyew/GameTesting/actions/runs/34669362714): backend214 tests/30 subtests,
+including10 real PostgreSQL tests and both migrations, pass. Godot smoke, full progression/
+route/reconnect/independent altitude observer and isolated authoring pass. All three CI jobs pass.
+7 Android readiness tests, render and both comparison walkthroughs pass; actual emulator
+install/touch/Folio/Bag/locomotion/background-resume pass. Town:71 draw calls/87,774 primitives/
+15,182,467 texture bytes; terrace frame:60 calls. Inspected town/terrace frames preserve the
+visual baseline; terrain dressing/label placement remain candidate art, not final polish.
+
+Retained ARM64 **0.2.6/code8**,29,156,650 bytes, artifact10290647152; native10289888107,
+render10290322500, through2026-12-11. Downloaded ZIP/APK CRC/SHA and ARM64-only libraries
+match; retained v2/v3 signing report verified (ephemeral debug identity, not a release key).
+APK SHA256 `fa186966b44ddd57683253867dde086bba1271463ac4dd16d9f1a0c117507f9c`.
+Manifest sourcecd6df1d, tested merge`717be09ad5d416885f0440175b45260d87c56258`.
+Native gate exercises flat preview locomotion; new terrain traversal is Godot/API evidence,
+not an Android route walkthrough. No public deployment, paid
 asset generation or physical-phone test. Existing Fal candidates remain unintegrated.
 Traversal uses an enclosing square footprint, entire touched-cell slope checks and .3m
 maximum automatic step up/down; conservative corner blocking is a known feel limitation.
@@ -177,14 +191,18 @@ passes at023db75; KNOWN_ISSUES/CHANGELOG retain the failed attempts.
 **All physical ARM64 phone validation and owner art acceptance remain unverified.**
 Other houses, distant trees/coast/vistas, dock, cistern/lurker, most VFX, all audio, full
 animation/creator, wearable vest mesh and broader UI/accessibility remain unfinished.
-Server movement is planar. No additional quests/spells/regions, co-op/dungeons, selling,
+Server movement now follows the bounded Mooring Rise surface. No additional quests/spells/regions, co-op/dungeons, selling,
 trading, gathering/crafting, mounts/housing/pets or broad social content were added.
 Recovery/moderation, load tests, JSON→PG import/restore, staging/production, signing and
 updater remain future work. One process owns the room;32-player cap is unbenchmarked.
 
-**Next: continue M1.7 terrain authority.** Add capsule sweeps, slope/step legality and
-tangential sliding using the tested surface before activating protocol2 and the first route. Preserve flat saves,
-server movement authority and the existing player/camera modules.
+**Next: M1.7 latency/terrain feel acceptance.** Measure delayed/lost snapshot recovery and
+edge/corner/stair stopping behavior on this route, then refine only demonstrated issues. Include a clearer ramp/stair profile capture and
+move the Mooring Rise label away from the avatar silhouette in the next presentation pass.
+Use bounded 50/150/300ms delays, brief snapshot loss and reconnect on ramp/landing as
+reproducible fixtures; measure maximum correction and settling time, not just final position.
+Obtain Device R physical-phone evidence before calling finished movement accepted. Preserve
+server authority and the existing player/camera modules; no broad M1.8 content increment yet.
 Current tools cover catalog templates/diagnostics, scene/asset binding/status checks and
 an isolated authored preview example. No bulk live content. Keep M1.4/M1.5
 Device E open alongside engineering; README provides local backend/USB reverse testing.
@@ -193,7 +211,7 @@ The inherited public endpoint has not been updated or verified.
 ## Build / continue
 
 Install backend/requirements.lock; run pytest backend/tests, tools.build_catalog,
-tools.check_art, tools.author_content check, tools.check_godot, tools.check_online and
+tools.check_art, tools.author_content check, tools.check_godot, tools.check_terrain, tools.check_online and
 tools.check_authoring with GODOT_BIN set to4.5.1.
 Android job adds Pillow11.3.0 and unittest discover -s tools/tests. CI supplies PG16,
 JDK17/SDK35/templates, render and emulator. README has exact commands and phone checklist.

@@ -449,3 +449,8 @@ update. No public rollout has occurred. Rollback requires restoring the paired p
 and its matching catalog; evaluate new positions against that surface before reopening.
 Never silently serve new terrain through world1. Physical feel, adverse-latency reconciliation
 and Device R acceptance remain open; parity and desktop/API tests do not substitute for them.
+
+Activation evidence: codecd6df1d/run34669362714 passes all full automated gates, including
+10 real PostgreSQL tests (safe-entry preservation/rollback), both migrations,740 cross-runtime
+movement comparisons and two-player route/reconnect altitude validation. APK0.2.6/code8 is
+retained. Native emulator checks remain flat preview input/resume; no physical/latency claim.

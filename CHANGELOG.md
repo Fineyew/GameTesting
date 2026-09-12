@@ -8,8 +8,14 @@
   Preserve story/folio/commerce/item-use capabilities, identities and x/z save schema.
 - Add traversal/protocol regressions, old-save rollback coverage, cross-runtime motion
   parity and full online route/second-player altitude checks. Target APK0.2.6/code8.
-- Local204 tests/30 subtests pass;10 PostgreSQL tests await CI. Full CI and artifact
-  evidence pending. Physical-phone/latency/feel acceptance remains open.
+- Code `cd6df1dcd471a526260b2ba12e2443deb8c4a7fe`, run34669362714: backend214 tests/30 subtests
+  including10 PostgreSQL tests/both migrations and all Godot gates pass. Local204 tests/
+  30 subtests pass,10 PG skips. All three jobs pass:7 readiness tests, render71 town/60 terrain
+  calls, two comparison walkthroughs and native Android touch/locomotion/visible-resume.
+- Retained ARM640.2.6/code8 artifact10290647152, native10289888107, render10290322500.
+  Downloaded package hash/CRC, architecture and retained signing report checked; town/terrace
+  frames inspected. PROJECT_STATE records exact hashes/source/merge provenance. Physical,
+  adverse-latency/feel and final terrain presentation acceptance remain open.
 - Retain prior Fal sources without runtime integration or additional spend.
 
 ## 2026-09-12 — M1.7 shared terrain surface checkpoint (all code gates pass)
