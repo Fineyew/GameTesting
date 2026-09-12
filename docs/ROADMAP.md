@@ -324,7 +324,8 @@ changes. Complete this milestone in reviewable checkpoints: input validation, Py
 surface parity, then negotiated authority + one route + full integration/APK/device evidence.
 These are stages within M1.7, not a claim that its completion criteria are satisfied.
 
-2026-09-12 continuation: Python/Godot surface helpers, shared analytic/seeded fixtures,
+2026-09-12 continuation: Code `7628d305519d041f6d44b1c91f98d293ca0c49dc` passes run34666830183.
+Python/Godot surface helpers, shared analytic/seeded fixtures,
 matching triangles and actual collision ray validation are implemented. Live geometry
 still rejects elevation. Next prove capsule sweeps/slide/step/slope legality, then
 negotiate protocol2 and activate the route. PROJECT_STATE records executed gates.

@@ -1,6 +1,6 @@
 # Changelog
 
-## 2026-09-12 — M1.7 shared terrain surface checkpoint (local gates pass; CI pending)
+## 2026-09-12 — M1.7 shared terrain surface checkpoint (all code gates pass)
 
 - Implemented bounded sparse millimetre height surfaces in Python and Godot, deterministic
   cell/diagonal ownership, planar gradients and matched collision tops/interior risers.
@@ -9,6 +9,12 @@
   exact matching now rejects them. Initial assertions timed out; harness retains diagnostics.
 - Preserved Fal evaluation sources/prompts/checks outside exported content. No paid jobs
   in this continuation, no asset runtime integration or claims of finished art/audio.
+- Code `7628d305519d041f6d44b1c91f98d293ca0c49dc`, run34666830183 passes all three CI jobs:
+  186 backend tests/30 subtests including9 PostgreSQL tests,31 terrain cases/2,003 samples/
+  269 physics rays, Godot/API/authoring,7 readiness tests, render71 calls and Android touch/resume.
+  Local177 pass/9 explicit PG skips/30 subtests. Fresh ARM640.2.5/code7 artifact10289273590
+  and native10289663087/render10289598091 retained through2026-12-11; downloaded APK hash,
+  ARM64 libraries and signature report verified (PROJECT_STATE records exact provenance).
 - Live protocol1, flat saves, catalog, movement, combat, folio, quests and commerce remain.
   M1.7 sweep/authority/route/APK activation and physical-device acceptance remain open.
 

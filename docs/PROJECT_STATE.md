@@ -15,8 +15,18 @@ Local validation:177 backend tests/30 subtests pass,9 PostgreSQL tests explicitl
 skipped locally;38 new terrain regressions. Terrain parity passes31 surfaces/2,003
 samples/269 actual physics rays/17 invalid definitions. Godot smoke, full existing
 two-player API progression, isolated authoring,26-definition catalog/art and7 Android
-readiness tests pass. CI PostgreSQL/render/native Android results are pending for this
-checkpoint, not inferred from older runs. Initial fixture winding/newline bugs were
+readiness tests pass. Code checkpoint: `7628d305519d041f6d44b1c91f98d293ca0c49dc`,
+[CI run34666830183](https://github.com/Fineyew/GameTesting/actions/runs/34666830183).
+CI backend and Godot jobs pass:186 tests/30 subtests including9 real PostgreSQL tests,
+both migrations, terrain parity and existing online/authoring integration. All three jobs pass, including7 Android readiness tests, actual emulator install/touch/
+movement/visible-resume and render71 calls/83,630 primitives/15,182,467 texture bytes.
+ARM64 artifact10289273590, native10289663087, render10289598091 are retained through
+2026-12-11. Downloaded build ZIP CRC/SHA matches the artifact digest; APK CRC/hash,
+ARM64-only libraries and retained v2/v3 signature report verified. APK remains0.2.5/code7,
+29,152,373 bytes; SHA256 `5fb28e4459bb6669dc86d83eb0fcc3a503725d3ee57120f0cb791e06e9bc46fb`.
+Manifest source7628d30; tested merge`ecb39cd27e02c34b012f42490e50238410550f8c`.
+Inspected retained Dawnreef frame: existing flat visual baseline preserved. Candidates
+are excluded from the APK. No new playable terrain is claimed. Initial fixture winding/newline bugs were
 corrected without changing live simulation or weakening tests.
 
 Fal evaluation sources are retained in `art_sources/candidates/fal_dawnreef_20260912`:
@@ -112,7 +122,7 @@ M1.4 code run34483308643 and handoff run34484981552 both passed. Its prior ARM64
   shared tints, Glimmer anticipation/travel/impact and saved short/no-camera-cut option.
   Camera-only foliage stays separate from movement; pause clears input/velocity.
 
-## Tested / retained APK
+## Historical M1.5 validation / APK (current evidence above)
 
 At023db75: **106 backend tests /30 subtests**, including **9 real PostgreSQL tests** and
 both migrations. Content and art budgets pass. **7 Android readiness regressions** pass.

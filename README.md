@@ -24,7 +24,7 @@ required physical-phone baseline remain open. The owner authorized continued eng
 M1.5 engineering passes at `023db7557baf173c306cd7ba711cd74628c7204b`,
 [run34550163642](https://github.com/Fineyew/GameTesting/actions/runs/34550163642):
 106 backend tests/30 subtests including9 PostgreSQL tests,7 Android readiness tests,
-Godot/API, render and native touch/resume. Current verified ARM64 **0.2.5/code7** is
+Godot/API, render and native touch/resume. That M1.5 verified ARM64 **0.2.5/code7** is
 artifact **10180711026**. Physical acceptance remains open.
 See PROJECT_STATE for hashes/evidence. M1.6 authoring tools pass at `d1f0929cd2454f923ed70279f633705d0b9af9f2`,
 [run34552020416](https://github.com/Fineyew/GameTesting/actions/runs/34552020416):
@@ -33,10 +33,15 @@ render and Android gates. CONTENT_GUIDE documents diagnostics/isolated previews.
 No new live content or APK version. M1.7 has begun with planar geometry authoring validation;
 shared height/stair/slope runtime is still planned. Groundwork checkpointfe4551c passes
 all gates in run34625951261 (148 backend tests/30 subtests including9 PostgreSQL tests;
-Godot/API, render and Android). Fresh CI ARM64 artifact10274589788 remains0.2.5/code7.
+Godot/API, render and Android). Groundwork CI ARM64 artifact10274589788 remains0.2.5/code7.
 PROJECT_STATE records the diagnosed
 M1.6 handoff Android launcher-overlay failure and subsequent validation status.
 
+M1.7 surface checkpoint `7628d305519d041f6d44b1c91f98d293ca0c49dc` passes
+[run34666830183](https://github.com/Fineyew/GameTesting/actions/runs/34666830183):
+186 backend tests/30 subtests with PostgreSQL,31 shared terrain cases, Godot/API/authoring,
+render71 calls and native Android touch/resume. Current retained ARM64 artifact10289273590
+is still0.2.5/code7; PROJECT_STATE records its verified hash and physical-device limitations.
 M1.7 now includes isolated Python/Godot surface and collision-ray parity helpers;
 run `python -m tools.check_terrain` after Godot import. Live hills/stairs and protocol2
 remain pending. Fal trial sources are retained outside the runtime export under
