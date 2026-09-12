@@ -1,0 +1,48 @@
+{
+  "type": "quests",
+  "key": "what_the_reeds_hold",
+  "schema_version": 1,
+  "version": 1,
+  "display": {
+    "name": "What the Reeds Hold",
+    "summary": "Learn how living reeds share a sudden weight without breaking."
+  },
+  "tags": [
+    "dawnreef",
+    "spell_lesson"
+  ],
+  "assets": {},
+  "rules": {
+    "giver_npc_key": "mara_lanternwright",
+    "ordered": true,
+    "start_conditions": [
+      {
+        "type": "quest_completed",
+        "quest_key": "reading_the_afterlight"
+      }
+    ],
+    "objectives": [
+      {
+        "key": "study_sunthread_reeds",
+        "label": "Study the woven shadows beneath the reeds",
+        "type": "inspect_landmark",
+        "zone_key": "dawnreef_atoll",
+        "interaction_key": "sunthread_reeds",
+        "quantity": 1
+      },
+      {
+        "key": "return_to_mara",
+        "label": "Bring the pattern to Mara",
+        "type": "talk_to_npc",
+        "npc_key": "mara_lanternwright",
+        "quantity": 1
+      }
+    ],
+    "rewards": [
+      {
+        "type": "learn_spell",
+        "spell_key": "reed_aegis"
+      }
+    ]
+  }
+}

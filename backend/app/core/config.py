@@ -19,7 +19,8 @@ PLACEHOLDER_TOKENS = (
 class Settings:
     project_name: str = "Veilbound Tides API"
     environment: str = "local"
-    api_version: str = "0.1.0"
+    api_version: str = "0.2.0"
+    player_store: str = "json"
     minimum_client_version: str = "0.1.0"
     content_manifest_version: str = "1"
     debug: bool = False
@@ -38,6 +39,7 @@ class Settings:
         return cls(
             project_name=_env_str("VT_PROJECT_NAME", cls.project_name),
             environment=_env_str("VT_ENVIRONMENT", cls.environment),
+            player_store=_env_str("VT_PLAYER_STORE", cls.player_store),
             api_version=_env_str("VT_API_VERSION", cls.api_version),
             minimum_client_version=_env_str(
                 "VT_MINIMUM_CLIENT_VERSION",

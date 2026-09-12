@@ -2,13 +2,16 @@
   "type": "dialogue",
   "key": "mara_first_meeting",
   "schema_version": 1,
-  "version": 1,
+  "version": 3,
   "display": {
     "name": "Mara First Meeting",
     "summary": "Introductory conversation at Dawnreef.",
     "description": "A branching dialogue graph introducing the Lantern Well problem."
   },
-  "tags": ["dawnreef", "tutorial"],
+  "tags": [
+    "dawnreef",
+    "tutorial"
+  ],
   "assets": {},
   "rules": {
     "start_node": "greeting",
@@ -16,19 +19,244 @@
       "greeting": {
         "text": "You feel that dim pulse under your boots? The well is asking for help.",
         "options": [
-          {"key": "ask_well", "text": "What is the Lantern Well?", "next_node": "explain_well"},
-          {"key": "offer_help", "text": "I can help.", "effects": [{"type": "offer_quest", "quest_key": "lantern_well_first_light"}]}
+          {
+            "key": "ask_well",
+            "text": "What is the Lantern Well?",
+            "next_node": "explain_well"
+          },
+          {
+            "key": "offer_help",
+            "text": "I can help.",
+            "effects": [
+              {
+                "type": "offer_quest",
+                "quest_key": "lantern_well_first_light"
+              }
+            ]
+          }
         ]
       },
       "explain_well": {
         "text": "It keeps this reef steady when the Glimmerdeep storms turn restless.",
         "options": [
-          {"key": "offer_help", "text": "Then let's mend it.", "effects": [{"type": "offer_quest", "quest_key": "lantern_well_first_light"}]}
+          {
+            "key": "offer_help",
+            "text": "Then let's mend it.",
+            "effects": [
+              {
+                "type": "offer_quest",
+                "quest_key": "lantern_well_first_light"
+              }
+            ]
+          }
+        ]
+      },
+      "first_task": {
+        "text": "The creature has settled east of the well. Watch what it prepares before you cast. The reeds can wait until you are safe.",
+        "options": []
+      },
+      "after_lurker": {
+        "text": "The light is steadier. Thank you. But listen: the well is still answering something below us. Will you help me trace that note?",
+        "options": [
+          {
+            "key": "ask_note",
+            "text": "What should I listen for?",
+            "next_node": "explain_note"
+          },
+          {
+            "key": "follow_note",
+            "text": "I will follow the note.",
+            "effects": [
+              {
+                "type": "offer_quest",
+                "quest_key": "an_answer_in_the_reeds"
+              }
+            ]
+          }
+        ]
+      },
+      "explain_note": {
+        "text": "Sunthread holds a sound after the wind leaves it. Listen there first, then at the cistern gate. Leave the gate sealed and bring me what you hear.",
+        "options": [
+          {
+            "key": "follow_note",
+            "text": "Reeds first, then the cistern.",
+            "effects": [
+              {
+                "type": "offer_quest",
+                "quest_key": "an_answer_in_the_reeds"
+              }
+            ]
+          }
+        ]
+      },
+      "listening": {
+        "text": "Listen to the reeds, then the sealed cistern. I need to know whether the two are answering each other. Come back when you have heard both.",
+        "options": []
+      },
+      "answer_found": {
+        "text": "Three notes in the reeds, and the same three under the gate? That is no storm. Someone built this place to listen. I will find the old plans before we open anything. Take these chits for your trouble. The old plans describe a light that stays after a note ends. Trace that afterlight on the closed cistern gate, then bring its shape to me. That is how we begin Beacon Trace.",
+        "options": [
+          {
+            "key": "study_reading_the_afterlight",
+            "text": "Teach me to read the afterlight.",
+            "effects": [
+              {
+                "type": "offer_quest",
+                "quest_key": "reading_the_afterlight"
+              }
+            ]
+          }
+        ]
+      },
+      "tracing_afterlight": {
+        "text": "Watch the seam above the sealed gate as its answering light fades. Follow the last warm thread with your finger, without touching the lock. Bring that shape back; the gate stays closed.",
+        "options": []
+      },
+      "trace_learned": {
+        "text": "There: you kept the opening visible. Beacon Trace is yours. Prepare it in your Folio; the next damaging spell will consume its mark for 6 extra damage. Now study how the sunthread reeds bend together. Their shadows show a shield no single stem could hold.",
+        "options": [
+          {
+            "key": "study_what_the_reeds_hold",
+            "text": "Learn what the reeds hold.",
+            "effects": [
+              {
+                "type": "offer_quest",
+                "quest_key": "what_the_reeds_hold"
+              }
+            ]
+          }
+        ]
+      },
+      "studying_reeds": {
+        "text": "Look beneath the sunthread reeds, where their shadows cross. A heavy gust passes through the whole weave. Bring me that pattern, and we can shape it into Reed Aegis.",
+        "options": []
+      },
+      "aegis_learned": {
+        "text": "You let the pressure spread through the weave. Reed Aegis is yours: 2 Focus to absorb 10 damage this beat. Prepare it and Beacon Trace. Mark the lurker first, then meet its heavy, 10-damage intent with the aegis. Finish the encounter and return. I will teach you to release that pressure as Seam Lance.",
+        "options": [
+          {
+            "key": "study_a_measured_release",
+            "text": "Practice a measured release.",
+            "effects": [
+              {
+                "type": "offer_quest",
+                "quest_key": "a_measured_release"
+              }
+            ]
+          }
+        ]
+      },
+      "measuring_pressure": {
+        "text": "Open your Folio and prepare Beacon Trace and Reed Aegis. Mark the lurker, then use the aegis when its next intent shows 10 damage. Keep Tide Mend ready if you are hurt. Finish the encounter and return; a hurried cast will not teach this pattern.",
+        "options": []
+      },
+      "lance_learned": {
+        "text": "You found the opening, held the weight, and chose when to let it go. Seam Lance is yours: 4 Focus for 15 damage. Gather helps you build that Focus, and Beacon Trace strengthens the strike. Try your own folio. I will keep searching the plans before we open the cistern.",
+        "options": []
+      }
+    },
+    "entry_nodes": [
+      {
+        "node": "lance_learned",
+        "conditions": [
+          {
+            "type": "quest_completed",
+            "quest_key": "a_measured_release"
+          }
+        ]
+      },
+      {
+        "node": "measuring_pressure",
+        "conditions": [
+          {
+            "type": "quest_state",
+            "quest_key": "a_measured_release",
+            "state": "accepted"
+          }
+        ]
+      },
+      {
+        "node": "aegis_learned",
+        "conditions": [
+          {
+            "type": "quest_completed",
+            "quest_key": "what_the_reeds_hold"
+          }
+        ]
+      },
+      {
+        "node": "studying_reeds",
+        "conditions": [
+          {
+            "type": "quest_state",
+            "quest_key": "what_the_reeds_hold",
+            "state": "accepted"
+          }
+        ]
+      },
+      {
+        "node": "trace_learned",
+        "conditions": [
+          {
+            "type": "quest_completed",
+            "quest_key": "reading_the_afterlight"
+          }
+        ]
+      },
+      {
+        "node": "tracing_afterlight",
+        "conditions": [
+          {
+            "type": "quest_state",
+            "quest_key": "reading_the_afterlight",
+            "state": "accepted"
+          }
+        ]
+      },
+      {
+        "node": "answer_found",
+        "conditions": [
+          {
+            "type": "quest_completed",
+            "quest_key": "an_answer_in_the_reeds"
+          }
+        ]
+      },
+      {
+        "node": "listening",
+        "conditions": [
+          {
+            "type": "quest_state",
+            "quest_key": "an_answer_in_the_reeds",
+            "state": "accepted"
+          }
+        ]
+      },
+      {
+        "node": "after_lurker",
+        "conditions": [
+          {
+            "type": "quest_completed",
+            "quest_key": "lantern_well_first_light"
+          }
+        ]
+      },
+      {
+        "node": "first_task",
+        "conditions": [
+          {
+            "type": "quest_state",
+            "quest_key": "lantern_well_first_light",
+            "state": "accepted"
+          }
         ]
       }
-    }
+    ]
   },
   "localization": {
-    "en": {"name": "Mara First Meeting"}
+    "en": {
+      "name": "Mara First Meeting"
+    }
   }
 }

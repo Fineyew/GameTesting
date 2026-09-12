@@ -41,6 +41,7 @@ class Account(TimestampMixin, Base):
     email: Mapped[str] = mapped_column(String(320), unique=True, nullable=False)
     display_name: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(Text, nullable=False)
+    auth_version: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     status: Mapped[str] = mapped_column(String(32), default="active", nullable=False)
 
 
@@ -78,6 +79,7 @@ class ContentDefinition(TimestampMixin, Base):
     key: Mapped[str] = mapped_column(String(128), nullable=False)
     version: Mapped[int] = mapped_column(Integer, nullable=False)
     locale: Mapped[str] = mapped_column(String(16), default="en", nullable=False)
+    auth_version: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     status: Mapped[str] = mapped_column(String(32), default="draft", nullable=False)
     checksum: Mapped[str] = mapped_column(String(128), nullable=False)
     definition: Mapped[dict] = mapped_column(JSONB, nullable=False)
@@ -157,3 +159,10 @@ class ChatMessage(Base):
         server_default=func.now(),
         nullable=False,
     )
+
+
+class CharacterRuntimeState(Base):
+    __tablename__ = "character_runtime_states"
+    character_id: Mapped[PyUUID] = mapped_column(UUID(as_uuid=True), ForeignKey("characters.id"), primary_key=True)
+    schema_version: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    payload: Mapped[dict] = mapped_column(JSONB, nullable=False)

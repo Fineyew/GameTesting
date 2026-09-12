@@ -1,0 +1,134 @@
+{
+  "schema": 1,
+  "art_manifest": "art_sources/dawnreef/manifest.json",
+  "asset_references": {
+    "res://assets/audio/music/original_dawnreef_theme.ogg": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://assets/creatures/fog_thorn_lurker.tscn": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://assets/equipment/lanternkeeper_vest.tscn": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://assets/gathering/sunthread_reeds.tscn": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://assets/icons/achievements/first_lantern_aid.png": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://assets/icons/crafting/sunthread_bandage_recipe.png": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://assets/icons/equipment/lanternkeeper_vest.png": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://assets/icons/gathering/sunthread_reeds.png": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://assets/icons/items/clean_reed_cloth.png": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://assets/icons/items/sunthread_bandage.png": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://assets/icons/items/sunthread_fiber.png": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://assets/icons/mounts/reedstrider_fawn.png": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://assets/icons/quests/lantern_well.png": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://assets/icons/shops/dawnreef_supply_cart.png": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://assets/icons/spells/glimmer_spark.png": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://assets/icons/spells/root_snare.png": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://assets/icons/spells/tide_mend.png": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://assets/mounts/reedstrider_fawn.tscn": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://assets/npcs/mara_lanternwright.tscn": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://assets/portraits/mara_lanternwright.png": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://assets/vfx/glimmer_spark.tscn": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://assets/vfx/root_snare.tscn": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://assets/vfx/tide_mend.tscn": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://scenes/dungeons/saltglass_cistern.tscn": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://scenes/zones/dawnreef_atoll.tscn": {
+      "status": "planned",
+      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    }
+  },
+  "interactions": {
+    "mara_lanternwright": {
+      "handler": "dialogue",
+      "category": "npcs",
+      "scene": "res://scenes/world/dawnreef.tscn",
+      "binding_source": "godot_project/scripts/world/dawnreef_world.gd",
+      "handler_source": "godot_project/scripts/app/play_session.gd"
+    },
+    "fog_thorn_lurker": {
+      "handler": "encounter",
+      "category": "enemies",
+      "scene": "res://scenes/world/dawnreef.tscn",
+      "binding_source": "godot_project/scripts/world/dawnreef_world.gd",
+      "handler_source": "godot_project/scripts/app/play_session.gd"
+    },
+    "sunthread_reeds": {
+      "handler": "inspect",
+      "scene": "res://scenes/world/dawnreef.tscn",
+      "binding_source": "godot_project/scripts/world/dawnreef_world.gd",
+      "handler_source": "godot_project/scripts/app/play_session.gd"
+    },
+    "saltglass_cistern": {
+      "handler": "inspect",
+      "scene": "res://scenes/world/dawnreef.tscn",
+      "binding_source": "godot_project/scripts/world/dawnreef_world.gd",
+      "handler_source": "godot_project/scripts/app/play_session.gd"
+    }
+  }
+}
