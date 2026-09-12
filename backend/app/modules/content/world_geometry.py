@@ -1,22 +1,23 @@
-"""Authoring checks for the currently executable planar world contract.
+"""Authoring checks for the currently executable world contract.
 
 Keep this in content: validation must not import the world simulation internals.
-Elevation is deliberately rejected until both runtimes negotiate its contract.
+Elevation uses the core schema shared with simulation; runtime negotiates protocol2.
 """
 import math
+from backend.app.core.terrain_schema import validate_surface
 
 
 def geometry_errors(world):
     errors = []
     required = {"bounds", "spawn", "blockers", "interactions"}
-    allowed = required | {"speed", "acceleration", "deceleration", "radius"}
+    allowed = required | {"speed", "acceleration", "deceleration", "radius", "terrain", "geometry_revision"}
     if not isinstance(world, dict):
         return ["world must be an object"]
     if not required <= world.keys() or world.keys() - allowed:
-        errors.append("world requires bounds/spawn/blockers/interactions and only supported planar fields")
+        errors.append("world requires bounds/spawn/blockers/interactions and only supported fields")
 
     def number(value, minimum, maximum):
-        return type(value) in (int, float) and minimum <= value <= maximum and math.isfinite(value)
+        return type(value) in (int, float) and minimum <= value <= maximum and math.isfinite(value) and abs(value*1000-round(value*1000)) <= 1e-8
 
     def coordinates(value, size):
         return isinstance(value, list) and len(value) == size and all(number(v, -512, 512) for v in value)
@@ -25,6 +26,19 @@ def geometry_errors(world):
     if not coordinates(bounds, 4) or bounds[2] - bounds[0] < 2 or bounds[3] - bounds[1] < 2:
         errors.append("world bounds require four finite coordinates and at least two metres on each axis")
         bounds = None
+    if "terrain" in world:
+        try:
+            terrain_bounds, cells = validate_surface(world["terrain"])
+            if bounds is None or list(terrain_bounds) != bounds or world.get("geometry_revision") != 2 or type(world.get("geometry_revision")) is not int:
+                errors.append("world terrain requires matching bounds and geometry_revision2")
+            # Keep entry and story approaches flat in this first activation.
+            for at in [world.get("spawn"), *world.get("interactions",{}).values()] if isinstance(world.get("interactions"),dict) else []:
+                if coordinates(at,2):
+                    for (x,z), heights in cells.items():
+                        if any(heights) and terrain_bounds[0]+x-4 <= at[0] <= terrain_bounds[0]+x+5 and terrain_bounds[1]+z-4 <= at[1] <= terrain_bounds[1]+z+5:
+                            errors.append("world elevation must preserve flat entry and interaction approaches")
+        except (ValueError,TypeError):
+            errors.append("world terrain descriptor is invalid")
     # Godot's existing capsule/clamp are .35; accepting a different server radius
     # here would silently create different collision rules across the two runtimes.
     radius = world.get("radius", .35)

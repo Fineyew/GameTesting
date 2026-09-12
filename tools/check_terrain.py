@@ -7,6 +7,8 @@ import subprocess
 import tempfile
 
 from backend.app.modules.world.terrain import TerrainSurface
+from backend.app.modules.world.traversal import move
+from backend.app.modules.world.protocol import geometry_digest
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -19,6 +21,8 @@ def check():
                  for x in range(3) for z in range(3) if randomizer.random() > .25}
         cases.append({"name":f"seeded_{index}", "surface":{"bounds":[-2,-2,1,1],"cells":cells},
                       "probes":[],"rays":[]})
+    live = json.loads((ROOT/'content/zones/dawnreef_atoll.json').read_text())["rules"]["world"]
+    cases.append({"name":"live_route","surface":live["terrain"],"probes":[],"rays":[[6,14.5]],"blockers":live["blockers"]})
     for case in cases:
         terrain = TerrainSurface(case["surface"])
         b = terrain.bounds
@@ -26,6 +30,20 @@ def check():
         queries += [[randomizer.uniform(b[0],b[2]),randomizer.uniform(b[1],b[3])] for _ in range(64)]
         case["expected_samples"] = [{"at":q,"result":terrain.sample(*q)} for q in queries]
         case["expected_triangles"] = terrain.triangles()
+        motions=[]
+        for _ in range(20):
+            start=[randomizer.uniform(b[0]+.36,b[2]-.36),randomizer.uniform(b[1]+.36,b[3]-.36)]
+            delta=[randomizer.uniform(-.5,.5),randomizer.uniform(-.5,.5)]
+            result,stopped=move(terrain,start,delta,case.get("blockers",[]))
+            motions.append({"start":start,"delta":delta,"position":result,"stopped":stopped})
+        if case["name"]=="live_route":
+            pos=[6,9]
+            for _ in range(100):
+                delta=[0,.1]
+                result,stopped=move(terrain,pos,delta,case["blockers"])
+                motions.append({"start":pos,"delta":delta,"position":result,"stopped":stopped})
+                pos=result
+        case["motions"]=motions
         # Interior random rays avoid ambiguous exact shared-edge ownership in physics.
         case["rays"] += queries[-8:]
         case["expected_ray_heights"] = [terrain.sample(*q)["height"] for q in case["rays"]]
@@ -44,7 +62,7 @@ def check():
         raise AssertionError("Python accepted invalid fixture")
     with tempfile.TemporaryDirectory(prefix="vt-terrain-") as temporary:
         path = Path(temporary)/"terrain.json"
-        path.write_text(json.dumps({"cases":cases,"invalid":invalid}))
+        path.write_text(json.dumps({"cases":cases,"invalid":invalid,"geometry":live,"digest":geometry_digest(live)}))
         try:
             result = subprocess.run([os.environ.get("GODOT_BIN","godot"),"--headless","--path",
                                      str(ROOT/"godot_project"),"--script","res://tests/terrain.gd","--",str(path)],

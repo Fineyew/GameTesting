@@ -147,3 +147,12 @@ Glimmer Spark gathers through a lens, travels in a bright arc and breaks into ei
 shards; a short-effects setting removes its camera cut. Combat rules remain Tidebeat.
 Audio, the other spell effects, distant scenery and full animation/creator variety remain
 later roadmap work. Expand this visual language only after M1.4's review/device gates.
+
+## M1.7 Mooring Rise traversal candidate
+
+A small approach ramp east of the southern town path climbs to a1.2m overlook, then
+descends in .3m steps. It adds terrain exploration without new progression or quest gates.
+The first route uses automatic single-floor following, no jump button, a42° slope limit
+and .3m maximum step in either direction. Existing interactions remain on flat safe ground.
+Camera height follows smoothly. Square footprint clearance is conservative and stairs use
+discrete foot height; physical feel/latency acceptance and final animation polish are open.

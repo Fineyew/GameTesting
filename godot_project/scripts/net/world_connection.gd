@@ -13,10 +13,15 @@ var send_elapsed := 0.0
 var reconnect_in := 0.0
 var backoff := 1.0
 var attempt_elapsed := 0.0
+var geometry_digest := ""
+var geometry_revision := 2
 
 func start(identity: String) -> void:
     stop()
     character_id = identity
+    var geometry = GameData.definition("zones","dawnreef_atoll").rules.world
+    geometry_digest = TerrainSurface.digest(geometry)
+    geometry_revision = geometry.get("geometry_revision",1)
     running = true
     backoff = 1
     _connect()
@@ -46,11 +51,17 @@ func _process(delta: float) -> void:
     var state = socket.get_ready_state()
     if state == WebSocketPeer.STATE_OPEN:
         if not authenticated:
-            socket.send_text(JSON.stringify({"type":"auth", "protocol":1, "token":ApiClient.access_token,"character_id":character_id}))
+            socket.send_text(JSON.stringify({"type":"auth", "protocol":2,"geometry_digest":geometry_digest,"geometry_revision":geometry_revision, "token":ApiClient.access_token,"character_id":character_id}))
             authenticated = true
         while socket.get_available_packet_count() > 0:
             var packet = JSON.parse_string(socket.get_packet().get_string_from_utf8())
             if packet is Dictionary:
+                if packet.get("protocol") != 2 or packet.get("geometry_digest") != geometry_digest or packet.get("geometry_revision") != geometry_revision:
+                    running = false
+                    connected = false
+                    socket.close()
+                    state_changed.emit("World update required · return to sign in")
+                    return
                 if packet.get("type") == "welcome":
                     connected = true
                     backoff = 1
@@ -65,7 +76,10 @@ func _process(delta: float) -> void:
     elif state == WebSocketPeer.STATE_CLOSED or attempt_elapsed > 12 and not connected:
         var code = socket.get_close_code()
         connected = false
-        if code == 4003 or code == 4001:
+        if code == 4004:
+            running = false
+            state_changed.emit("World update required · install matching game build")
+        elif code == 4003 or code == 4001:
             running = false
             state_changed.emit("Session ended · return to sign in")
         else:

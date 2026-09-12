@@ -72,6 +72,7 @@ class VerticalSliceService:
     def __init__(self, store: VerticalSliceStore, quest_rules=None) -> None:
         self.store = store
         self.quest_rules = quest_rules
+        self.position_validator = None
 
     @atomic
     def register(self, email: str, display_name: str, password: str) -> AuthResult:
@@ -140,7 +141,16 @@ class VerticalSliceService:
         return self.store.list_characters(account_id)
 
     def enter_world(self, account_id: str, character_id: str) -> CharacterRecord:
-        return self._require_character(account_id, character_id)
+        character = self._require_character(account_id, character_id)
+        if self.position_validator and self.position_validator(character.position) != character.position:
+            # Re-read under the existing aggregate lock; never write back a stale aggregate.
+            with self.store.transaction(character_id):
+                character = self._require_character(account_id, character_id)
+                position = self.position_validator(character.position)
+                if position != character.position:
+                    character.position = position
+                    self.store.save_character(character)
+        return character
 
     @atomic
     def accept_quest(self, account_id: str, character_id: str, quest_key: str) -> CharacterRecord:

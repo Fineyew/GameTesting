@@ -4,6 +4,11 @@ An original Android-first online fantasy RPG built with Godot 4.5.1, FastAPI,
 PostgreSQL, Docker and Nginx. Continue this repository; do not recreate working systems.
 The active work is `feature/android-foundation`, [draft PR #4](https://github.com/Fineyew/GameTesting/pull/4).
 
+Current continuation: **M1.7 terrain activation candidate**, including Mooring Rise,
+world protocol2 and persistent safe terrain entry. Full validation status and exact artifact
+provenance are in PROJECT_STATE. Target APK0.2.6/code8; physical-phone acceptance is open.
+The older checkpoint evidence below remains history.
+
 ## Start here
 
 Read [PROJECT_STATE](docs/PROJECT_STATE.md), [ARCHITECTURE](docs/ARCHITECTURE.md),
@@ -31,7 +36,7 @@ See PROJECT_STATE for hashes/evidence. M1.6 authoring tools pass at `d1f0929cd24
 119 backend tests/30 subtests, PostgreSQL, original and isolated-authoring Godot/API,
 render and Android gates. CONTENT_GUIDE documents diagnostics/isolated previews.
 No new live content or APK version. M1.7 has begun with planar geometry authoring validation;
-shared height/stair/slope runtime is still planned. Groundwork checkpointfe4551c passes
+shared height/stair/slope runtime was still planned at that checkpoint. Groundwork checkpointfe4551c passes
 all gates in run34625951261 (148 backend tests/30 subtests including9 PostgreSQL tests;
 Godot/API, render and Android). Groundwork CI ARM64 artifact10274589788 remains0.2.5/code7.
 PROJECT_STATE records the diagnosed
@@ -40,11 +45,10 @@ M1.6 handoff Android launcher-overlay failure and subsequent validation status.
 M1.7 surface checkpoint `7628d305519d041f6d44b1c91f98d293ca0c49dc` passes
 [run34666830183](https://github.com/Fineyew/GameTesting/actions/runs/34666830183):
 186 backend tests/30 subtests with PostgreSQL,31 shared terrain cases, Godot/API/authoring,
-render71 calls and native Android touch/resume. Current retained ARM64 artifact10289273590
+render71 calls and native Android touch/resume. That checkpoint’s retained ARM64 artifact10289273590
 is still0.2.5/code7; PROJECT_STATE records its verified hash and physical-device limitations.
 M1.7 now includes isolated Python/Godot surface and collision-ray parity helpers;
-run `python -m tools.check_terrain` after Godot import. Live hills/stairs and protocol2
-remain pending. Fal trial sources are retained outside the runtime export under
+run `python -m tools.check_terrain` after Godot import. The subsequent activation candidate adds live hills/stairs and protocol2. Fal trial sources are retained outside the runtime export under
 `art_sources/candidates/fal_dawnreef_20260912`; see CONTENT_GUIDE for acceptance work.
 
 ## What is playable
@@ -85,8 +89,8 @@ Local mode defaults to JSON saves at `var/vertical_slice_save.json`, ignored by 
 Open `godot_project/project.godot` and press Play. Under **Server connection**, set
 `http://127.0.0.1:8000/api/v1`. HTTP is permitted only for localhost in editor/debug builds;
 shared servers require HTTPS. The inherited default `https://game.surveyroute.work/api/v1`
-has not been updated or verified operational in this session. World protocol 1, story protocol 1 and folio protocol 1 and commerce protocol 1 are required; the backend needs
-the M1.5 update and item_use_protocol1 before this client signs in.
+has not been updated or verified operational in this session. World protocol 2 (matching geometry revision/digest), story protocol 1 and folio protocol 1 and commerce protocol 1 are required; the backend needs
+the M1.7 terrain update and item_use_protocol1 before this client signs in.
 
 To test an attached Android phone against your PC server, install the APK, run
 `adb reverse tcp:8000 tcp:8000`, and use the same localhost URL. This is a development
@@ -113,7 +117,7 @@ isolated database migrated to head. CI runs both migrations and the PostgreSQL t
 ## Android build and runtime checks
 
 Use the checked-in **Android** export preset: ARM64, INTERNET permission, app ID
-`work.surveyroute.veilboundtides`, version 0.2.5/code 7 (automated gates passed; physical validation open). Use Godot 4.5.1 export templates,
+`work.surveyroute.veilboundtides`, version 0.2.6/code 8 (activation gates pending; physical validation open). Use Godot 4.5.1 export templates,
 JDK17, Android SDK platform35 and build-tools35.0.0. See the
 [official engine export instructions](https://docs.godotengine.org/en/4.5/tutorials/export/exporting_for_android.html).
 The exported engine minimum is API24, target API35; minimum OS is not a device-performance guarantee.
@@ -155,7 +159,7 @@ With Android platform-tools and USB debugging enabled:
 
 ```bash
 adb devices
-adb install -r veilbound-tides-0.2.5-android.apk
+adb install -r veilbound-tides-0.2.6-android.apk
 adb reverse tcp:8000 tcp:8000
 ```
 

@@ -36,7 +36,7 @@ Updated 2026-09-11. See PROJECT_STATE for current CI/artifact status.
   Two houses, distant foliage/coast/vistas, dock, cistern, lurker and most spell effects
   remain placeholders. No full audio framework/soundtrack or complete animation library.
   The sample has three clips and limited appearance tinting; it is not the full creator.
-- Capsule/gravity/floor snap exist, but server movement is planar. Stairs, slopes and vertical
+- Historical planar checkpoint: capsule/gravity/floor snap existed, but stairs, slopes and vertical
   authority are not tested. Full UI scaling, safe areas, left-handed controls and menu controller
   support remain accessibility work.
 
@@ -133,10 +133,22 @@ Updated 2026-09-11. See PROJECT_STATE for current CI/artifact status.
 
 ## M1.7 surface checkpoint limits / asset candidates
 
-Surface parity and ray collision do not prove capsule movement safety. Slopes, riser
-crossings, tangential motion and protocol2 activation remain unimplemented; current
-world stays flat. Initial fixture checks exposed/repaired Godot top-face winding and
+Surface parity and ray collision do not prove capsule movement safety. At the historical surface-only checkpoint slopes, riser
+crossings, tangential motion and protocol2 were not implemented. Activation now exists;
+its limitations are listed below. Initial fixture checks exposed/repaired Godot top-face winding and
 trailing-newline key acceptance; no live movement was enabled during those failures.
 Fal candidates are not shipped: lantern textures are three2K maps without emissive glow;
 sounds need listening/loop/mix acceptance. Physical phone and art-direction acceptance
 remain open. See CONTENT_GUIDE and candidate README for records and next checks.
+
+## Current terrain activation limits
+
+- Full activation CI/render/Android evidence pending; target0.2.6/code8 is not yet a verified APK.
+- Physical-phone Device R, adverse-latency feel and camera/terrain walkthrough remain unverified.
+- Conservative square footprint/whole-cell slopes can block some geometrically clear corners.
+  Automatic .3m steps use discrete feet altitude; camera smoothing is not final animation polish.
+- No jumping, falling, stacked floors or arbitrary terrain expansion. Existing interactions stay flat.
+- Android CI validates native startup/touch/flat locomotion/resume; the new ramp/stair route is
+  exercised by the Godot/API test and second socket observer, not a physical Android walkthrough.
+- New client requires world2/revision2/digest and paired backend; public backend not deployed.
+- Fal candidates remain excluded from APKs, awaiting technical and artistic acceptance.

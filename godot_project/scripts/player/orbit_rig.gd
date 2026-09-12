@@ -7,6 +7,7 @@ var yaw := 0.0
 var pitch := -.27
 var enabled := true
 var finger := -1
+var height_ready := false
 
 func _ready() -> void:
     arm = SpringArm3D.new()
@@ -24,9 +25,12 @@ func _ready() -> void:
     camera.current = true
     arm.add_child(camera)
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
     if is_instance_valid(target):
-        position = target.position + Vector3(0,1.35,0)
+        var desired = target.position + Vector3(0,1.35,0)
+        var smoothed_y = lerpf(position.y,desired.y,1-exp(-14*delta)) if height_ready else desired.y
+        position = Vector3(desired.x,smoothed_y,desired.z)
+        height_ready = true
     rotation = Vector3(pitch,yaw,0)
 
 func _unhandled_input(event: InputEvent) -> void:

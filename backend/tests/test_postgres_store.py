@@ -279,3 +279,40 @@ def test_postgres_item_use_atomic_retry_and_cross_connection_purchase(game,monke
         assert peer.use(account,character,WRAP,revision,key)==results[0]
         assert service.enter_world(account,character)==saved
     finally:other.engine.dispose()
+
+
+def test_postgres_safe_terrain_entry_preserves_aggregate_and_rolls_back(game, monkeypatch):
+    from backend.app.modules.world.hub import WorldHub
+    service, _, account, character = game
+    geometry=ContentCatalog.build(Path(__file__).resolve().parents[2]/'content').get_definition('zones','dawnreef_atoll').rules['world']
+    hub=WorldHub(geometry,service); service.position_validator=hub.safe_position
+    with service.store.transaction(character):
+        saved=service.store.get_character(character)
+        saved.position={'x':6,'z':14.5}
+        saved.wallet['shell_chits']=17
+        service.store.save_character(saved)
+    other=PostgresPlayerStore(os.environ['VT_TEST_DATABASE_URL'])
+    try:
+        resumed=VerticalSliceService(other); resumed.position_validator=hub.safe_position
+        assert resumed.enter_world(account,character).position == {'x':6,'z':14.5}
+        with service.store.transaction(character):
+            saved=service.store.get_character(character)
+            saved.position={'x':1000,'z':0,'y':900}
+            service.store.save_character(saved)
+        fixed=resumed.enter_world(account,character)
+        assert fixed.position == {'x':0,'z':4} and fixed.wallet['shell_chits']==17
+        assert service.store.get_character(character).position == fixed.position
+        with service.store.transaction(character):
+            saved=service.store.get_character(character)
+            saved.position={'x':-1000,'z':0}
+            service.store.save_character(saved)
+        original=other.save_character
+        def fail(record):
+            original(record)
+            raise OSError('simulated relocation write failure')
+        monkeypatch.setattr(other,'save_character',fail)
+        with pytest.raises(OSError): resumed.enter_world(account,character)
+        assert service.store.get_character(character).position == {'x':-1000,'z':0}
+        assert service.store.get_character(character).wallet['shell_chits']==17
+    finally:
+        other.engine.dispose()

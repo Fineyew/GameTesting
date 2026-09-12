@@ -58,3 +58,15 @@ collision faces. Integral JSON numbers are accepted in both runtimes because God
 JSON parser represents numbers as floats; booleans and fractional millimetres are rejected.
 Generated Fal assets remain source candidates outside the runtime export until art,
 license, import and Android budget acceptance; paid generation is not production approval.
+
+## 2026-09-12 — Activate one bounded terrain route through world2
+
+Use the proven shared single-floor surface for authority, prediction, mesh and collision.
+Keep existing modules/server and save x/z; derive altitude. Negotiate geometry revision/digest
+in world2 rather than allowing world1 clients to disagree about reachable space. Require
+paired rollout, no database reset or premature multi-server infrastructure.
+
+Use conservative swept square clearance around the capsule, bounded substeps and axis sliding
+for deterministic parity. This sacrifices corner clearance and requires subsequent feel review;
+it is not a claim of polished general-purpose 3D physics. Limit this increment to Mooring Rise.
+Preserve generated asset candidates for later reviewed imports; no new paid generation.

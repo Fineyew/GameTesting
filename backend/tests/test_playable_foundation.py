@@ -143,7 +143,7 @@ def test_two_real_websockets_presence_chat_and_auth(monkeypatch, tmp_path):
                 identities.append((token, response.json()['id'], headers))
             with client.websocket_connect('/api/v1/world/socket') as a, client.websocket_connect('/api/v1/world/socket') as b:
                 for socket, identity in zip([a,b], identities):
-                    socket.send_json({'type':'auth','protocol':1,'token':identity[0],'character_id':identity[1]})
+                    socket.send_json({'type':'auth','protocol':2,'geometry_digest':client.get('/api/v1/server-info').json()['geometry_digest'],'geometry_revision':2,'token':identity[0],'character_id':identity[1]})
                     assert socket.receive_json()['type'] == 'welcome'
                 frame = a.receive_json()
                 while len(frame['players']) < 2:

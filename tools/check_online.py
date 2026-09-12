@@ -1,5 +1,7 @@
 """Run actual Godot networking against an isolated API and another WebSocket player."""
 import asyncio
+from contextlib import suppress
+from backend.app.modules.world.terrain import TerrainSurface
 import json
 import os
 from pathlib import Path
@@ -38,13 +40,25 @@ async def main():
                 response.raise_for_status()
                 character_id = response.json()['id']
                 async with websockets.connect(f'ws://127.0.0.1:{port}/api/v1/world/socket', proxy=None) as other:
-                    await other.send(json.dumps({'type':'auth','protocol':1,'token':token,'character_id':character_id}))
+                    await other.send(json.dumps({'type':'auth','protocol':2,'geometry_digest':(await client.get(base+'/server-info')).json()['geometry_digest'],'geometry_revision':2,'token':token,'character_id':character_id}))
                     assert json.loads(await other.recv())['type']=='welcome'
                     async def keepalive():
                         while True:
                             await other.send('{"type":"ping"}')
                             await asyncio.sleep(3)
                     pulse = asyncio.create_task(keepalive())
+                    surface = TerrainSurface(json.loads((ROOT/'content/zones/dawnreef_atoll.json').read_text())["rules"]["world"]["terrain"])
+                    peak = [0.0]
+                    async def observe():
+                        async for raw in other:
+                            frame=json.loads(raw)
+                            assert frame["protocol"] == 2
+                            for player in frame.get("players",[]):
+                                expected=surface.sample(player["x"],player["z"])["height"]
+                                assert abs(player["y"]-expected)<.000001
+                                if player["id"] != character_id:
+                                    peak[0]=max(peak[0],player["y"])
+                    observer = asyncio.create_task(observe())
                     env['VT_TEST_API_URL'] = base
                     godot = await asyncio.create_subprocess_exec(os.environ.get('GODOT_BIN','godot'),'--headless','--path',str(ROOT/'godot_project'),'--script','res://tests/online.gd',env=env,stdout=asyncio.subprocess.PIPE,stderr=asyncio.subprocess.STDOUT)
                     communication = asyncio.create_task(godot.communicate())
@@ -57,7 +71,12 @@ async def main():
                         raise
                     finally:
                         pulse.cancel()
+                        observer.cancel()
+                        with suppress(asyncio.CancelledError):
+                            await observer
                     print(output.decode())
+                    assert peak[0]>=1.19, "second player never observed the terrace ascent"
+                    print("SECOND_PLAYER_HEIGHT_PASS: authoritative elevation observed on independent socket")
                     assert godot.returncode == 0 and b'GODOT_ONLINE_PASS' in output and b'ERROR:' not in output and b'SCRIPT ERROR' not in output
         finally:
             server.terminate()

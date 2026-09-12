@@ -5,6 +5,7 @@ var sun: DirectionalLight3D
 var well_light: MeshInstance3D
 var enemy: Node3D
 var elapsed := 0.0
+var terrain: TerrainSurface
 
 func _ready() -> void:
     geometry = GameData.definition("zones", "dawnreef_atoll").rules.world
@@ -46,8 +47,35 @@ func _environment() -> void:
     add_child(sun)
 
 func _landscape() -> void:
-    var ground = ReefKit.box(self,Vector3(48,.8,42),Vector3(0,-.4,-1),Color("709881"),true)
+    terrain = TerrainSurface.new()
+    var terrain_error = terrain.configure(geometry.get("terrain",{"bounds":geometry.bounds,"cells":{}}))
+    if not terrain_error.is_empty():
+        push_error(terrain_error)
+        return
+    var ground = MeshInstance3D.new()
+    ground.mesh = terrain.mesh()
     ground.material_override = ReefKit.ground(Color("709881"))
+    if not terrain._cells.is_empty():
+        var low = Vector2(INF,INF)
+        var high = Vector2(-INF,-INF)
+        for key in terrain._cells:
+            var parts = key.split(":")
+            var cell = Vector2(int(parts[0])+geometry.bounds[0],int(parts[1])+geometry.bounds[1])
+            low = low.min(cell)
+            high = high.max(cell+Vector2.ONE)
+        ground.material_override.set_shader_parameter("rise_enabled",true)
+        ground.material_override.set_shader_parameter("rise_bounds",Vector4(low.x,low.y,high.x,high.y))
+    add_child(ground)
+    var body = StaticBody3D.new()
+    var collision = CollisionShape3D.new()
+    collision.shape = terrain.collision_shape()
+    body.add_child(collision)
+    add_child(body)
+    if geometry.has("terrain"):
+        ReefKit.label(self,"MOORING RISE",Vector3(6,2.3,14.5))
+        for x in [3.8,8.2]:
+            for z in [13.8,14.8]:
+                ReefKit.cylinder(self,.14,1.6,Vector3(x,1.3,z),Color("aa9874"),.12)
     ReefKit.box(self,Vector3(450,.2,450),Vector3(0,-1.5,0),Color("357a8d"))
     # Existing road locations are painted into the flat ground material. They never
     # had movement collision; feathered verges avoid raised, perfectly straight slabs.
@@ -64,7 +92,7 @@ func _landscape() -> void:
     random.seed = 4096
     for i in 28:
         var at = Vector3(random.randf_range(-22,22),0,random.randf_range(-20,17))
-        if absf(at.x) < 4 or absf(at.z+4)<3 or _inside_building(at):
+        if absf(at.x) < 4 or absf(at.z+4)<3 or _inside_building(at) or (at.x>2 and at.x<10 and at.z>8):
             continue
         if Vector2(at.x,at.z+4).length() < 11:
             continue # The small benchmark uses authored foliage; distant trees remain blocked in.

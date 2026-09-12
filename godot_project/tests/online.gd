@@ -20,6 +20,19 @@ func walk(session, target: Vector2) -> void:
     assert(elapsed < 12,"navigation timed out")
     await create_timer(.5).timeout
 
+func terrain_walk(session, target: Vector2) -> void:
+    # Approach narrow landings with proportional stick input; full-speed navigation's
+    # braking distance can carry the character off a one-metre terrace after release.
+    var elapsed := 0.0
+    while Vector2(session.player.position.x,session.player.position.z).distance_to(target) > .1 and elapsed < 12:
+        var offset = target-Vector2(session.player.position.x,session.player.position.z)
+        session.hud.stick.axis = (offset*.5).limit_length()
+        await create_timer(.1).timeout
+        elapsed += .1
+    session.hud.stick.release()
+    assert(elapsed < 12,"terrain navigation timed out")
+    await create_timer(.5).timeout
+
 func run() -> void:
     var api = root.get_node("ApiClient")
     var app = load("res://scenes/app/bootstrap.tscn").instantiate()
@@ -223,6 +236,25 @@ func run() -> void:
     assert(session.character.vigor == healed and session.character.commerce_revision == 6)
     assert(session.character.inventory.sunthread_bandage == supply_count)
     print("GODOT_ITEM_USE_PASS: earned purchase, Bag use, capped healing, inventory and reconnect")
+    session.hud.close_panel()
+    await terrain_walk(session,Vector2(0,4))
+    await terrain_walk(session,Vector2(6,9))
+    await terrain_walk(session,Vector2(6,14.5))
+    assert(absf(session.player.position.y-1.2)<.02,"terrace feet height")
+    assert(absf(session.player.authoritative_position.y-1.2)<.02,"server terrace height")
+    await terrain_walk(session,Vector2(6,18.5))
+    assert(absf(session.player.position.y)<.02,"stair descent")
+    await terrain_walk(session,Vector2(6,14.5))
+    # A real disconnect/checkpoint/rejoin derives altitude from persisted x/z.
+    session.connection.socket.close()
+    await until(func(): return not session.connection.connected)
+    await until(func(): return session.connection.connected)
+    await create_timer(.5).timeout
+    assert(absf(session.player.authoritative_position.y-1.2)<.02,"reconnect terrace")
+    var terrace_save = await api.get_json("/world/characters/%s" % session.character.id)
+    # Inventory/quest/folio checks above remain authoritative; HTTP save has no writable y.
+    assert(not terrace_save.is_empty())
+    print("GODOT_TERRAIN_ROUTE_PASS: ramp, terrace, stair descent/ascent and reconnect")
     app.return_to_gateway()
     await api.post_json("/auth/logout",{})
     app.queue_free()

@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-09-12 — M1.7 terrain activation candidate
+
+- Add one Mooring Rise ramp/terrace/stair route, shared conservative traversal, derived
+  altitude, height-following camera and mesh/riser rendering in existing modules.
+- Negotiate world2/revision2/digest; reject stale clients and forged movement fields.
+  Preserve story/folio/commerce/item-use capabilities, identities and x/z save schema.
+- Add traversal/protocol regressions, old-save rollback coverage, cross-runtime motion
+  parity and full online route/second-player altitude checks. Target APK0.2.6/code8.
+- Local204 tests/30 subtests pass;10 PostgreSQL tests await CI. Full CI and artifact
+  evidence pending. Physical-phone/latency/feel acceptance remains open.
+- Retain prior Fal sources without runtime integration or additional spend.
+
 ## 2026-09-12 — M1.7 shared terrain surface checkpoint (all code gates pass)
 
 - Implemented bounded sparse millimetre height surfaces in Python and Godot, deterministic

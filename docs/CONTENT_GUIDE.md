@@ -270,3 +270,23 @@ scale/pivot, emissive core and mobile budget before integration. Sound sources a
 overs. Listening, seamless looping and in-game mix remain unverified. Preserve originals.
 Use the lantern in a future Dawnreef visual pass only after Godot/device checks; audio
 follows M1.9's buses/volume/lifecycle framework. No further paid generation is needed now.
+
+## Live terrain authoring (M1.7 activation)
+
+Dawnreef version4 activates `rules.world.terrain` and `geometry_revision: 2`. Reuse the
+core terrain schema: integer metre bounds, sparse `x:z` cell indices relative to bounds,
+SW/SE/NE/NW millimetre heights and deterministic SW–NE diagonal. Omitted cells are flat.
+All geometry numbers must be millimetre-precision. Keep terrain bounds equal to world bounds
+and elevation at least4m from existing spawn/interactions. Preserve existing definition IDs.
+
+Run catalog/authoring checks, backend tests and `python -m tools.check_terrain`; a catalog
+change alone is insufficient. Traversability checks entire touched cells and edge endpoints
+against42°/.3m, with .35m enclosing square clearance. Leave generous route/turning width.
+Mooring Rise is4m wide at x4..8,z10..18; ramp peaks1.2m. The ground path bounds derive
+from sparse cells, and surface triangles generate mesh and collision. Add separate visual
+review for new shapes; the sparse-cell bounding rectangle is only this route’s paint mask.
+
+Changes alter the negotiated geometry digest and require a matching client/backend release.
+No author may grant altitude through a save or movement message. Use the isolated preview
+workflow, online route tests and render budgets before exporting. Do not add broad terrain
+content before the route’s outstanding physical/feel review.

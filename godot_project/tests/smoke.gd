@@ -109,6 +109,15 @@ func run() -> void:
         root.get_texture().get_image().save_png("user://item-use.png")
     app.session.hud.close_panel()
     await VisualBenchmark.check(app,self)
+    # Framing fixture for the actual imported/generated terrain, not an online grant.
+    app.session.player.position = Vector3(6,1.2,14.4)
+    app.session.camera.yaw = .9
+    app.session.camera.pitch = -.5
+    await create_timer(.4).timeout
+    if DisplayServer.get_name() != "headless":
+        await RenderingServer.frame_post_draw
+        root.get_texture().get_image().save_png("user://terrain.png")
+        print("TERRAIN_DRAW_CALLS=",RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME))
     app.session.show_settings()
     assert(app.session.hud.modal)
     app.return_to_gateway()

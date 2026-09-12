@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 
 from backend.app.core.config import get_settings
 from backend.app.modules.characters.router import router as characters_router
@@ -14,11 +14,13 @@ api_router = APIRouter()
 
 
 @api_router.get("/server-info", tags=["server"])
-async def server_info() -> dict[str, str | int]:
+async def server_info(request: Request) -> dict[str, str | int]:
     settings = get_settings()
     return {
         "api_version": settings.api_version,
-        "world_protocol": 1,
+        "world_protocol": 2,
+        "geometry_digest": request.app.state.world_hub.digest,
+        "geometry_revision": request.app.state.world_hub.revision,
         "story_protocol": 1,
         "folio_protocol": 1,
         "commerce_protocol": 1,

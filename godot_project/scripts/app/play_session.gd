@@ -96,7 +96,7 @@ func _process(delta: float) -> void:
     var distance = 3.2
     for key in world.geometry.interactions:
         var at = world.geometry.interactions[key]
-        var candidate = Vector2(player.position.x-at[0],player.position.z-at[1]).length()
+        var candidate = player.position.distance_to(Vector3(at[0],world.terrain.sample(at[0],at[1]).height,at[1]))
         if candidate < distance:
             nearest = key
             distance = candidate
@@ -119,17 +119,17 @@ func _snapshot(frame: Dictionary) -> void:
     var present: Array = []
     for remote in frame.get("players",[]):
         if remote.id == character.id:
-            player.reconcile(Vector3(remote.x,0,remote.z))
+            player.reconcile(Vector3(remote.x,remote.y,remote.z))
             continue
         present.append(remote.id)
         if not remotes.has(remote.id):
             var avatar = WayfarerAvatar.new()
             world.add_child(avatar)
             avatar.build(remote.appearance)
-            avatar.position = Vector3(remote.x,0,remote.z)
+            avatar.position = Vector3(remote.x,remote.y,remote.z)
             var name_label = ReefKit.label(avatar,remote.name,Vector3(0,2.3,0))
             remotes[remote.id] = {"avatar":avatar,"label":name_label,"target":avatar.position}
-        remotes[remote.id].target = Vector3(remote.x,0,remote.z)
+        remotes[remote.id].target = Vector3(remote.x,remote.y,remote.z)
         remotes[remote.id].label.text = remote.name + ("\n" + remote.bubble if not remote.bubble.is_empty() else "")
     for identity in remotes.keys():
         if not identity in present:

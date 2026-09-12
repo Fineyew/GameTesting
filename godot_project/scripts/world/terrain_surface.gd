@@ -1,6 +1,6 @@
 class_name TerrainSurface
 extends RefCounted
-## M1.7 geometry only. Live movement/protocol remain planar until sweep validation.
+## M1.7 live single-floor geometry. TerrainTraversal owns movement clearance.
 var _bounds: Array = []
 var _cells: Dictionary = {}
 var _width: int
@@ -122,3 +122,30 @@ func collision_shape() -> ConcavePolygonShape3D:
     var shape = ConcavePolygonShape3D.new()
     shape.set_faces(vertices)
     return shape
+
+func mesh() -> ArrayMesh:
+    var tool = SurfaceTool.new()
+    tool.begin(Mesh.PRIMITIVE_TRIANGLES)
+    for face in triangles():
+        for p in face:
+            tool.add_vertex(Vector3(p[0],p[1],p[2]))
+    tool.generate_normals()
+    return tool.commit()
+
+static func digest(geometry: Dictionary) -> String:
+    return JSON.stringify(_normalized(geometry),"",true).sha256_text()
+
+static func _normalized(value: Variant) -> Variant:
+    if value is Dictionary:
+        var result = {}
+        for key in value:
+            result[key] = _normalized(value[key])
+        return result
+    if value is Array:
+        var result = []
+        for item in value:
+            result.append(_normalized(item))
+        return result
+    if value is int or value is float:
+        return roundi(value*1000)
+    return value

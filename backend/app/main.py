@@ -51,6 +51,7 @@ def create_app() -> FastAPI:
         app.state.encounters = EncounterService(players, CombatEngine(app.state.content_catalog), app.state.content_catalog, inventory_rules)
         geometry = app.state.content_catalog.get_definition("zones", "dawnreef_atoll").rules["world"]
         app.state.world_hub = WorldHub(geometry, players)
+        players.position_validator = app.state.world_hub.safe_position
         app.state.commerce = CommerceService(players, inventory_rules, app.state.world_hub.near)
         app.state.world_hub.start()
         try:

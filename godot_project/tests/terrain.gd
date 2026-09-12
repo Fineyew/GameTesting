@@ -5,6 +5,8 @@ func _init() -> void:
 
 func run() -> void:
     var fixture = JSON.parse_string(FileAccess.get_file_as_string(OS.get_cmdline_user_args()[0]))
+    assert(TerrainSurface.digest(fixture.geometry) == fixture.digest,"geometry digest parity")
+    var motions := 0
     var world = Node3D.new()
     root.add_child(world)
     var samples := 0
@@ -21,6 +23,11 @@ func run() -> void:
             assert(absf(actual.slope_degrees-expected.slope_degrees) < 0.000001, case.name+" slope")
             assert(actual.cell[0] == int(expected.cell[0]) and actual.cell[1] == int(expected.cell[1]) and actual.triangle == int(expected.triangle), case.name+" ownership")
             samples += 1
+        for motion in case.motions:
+            var moved = TerrainTraversal.move(terrain,Vector2(motion.start[0],motion.start[1]),Vector2(motion.delta[0],motion.delta[1]),case.get("blockers",[]))
+            assert(moved.position.distance_to(Vector2(motion.position[0],motion.position[1]))<.0001,case.name+" swept position")
+            assert(moved.stopped == motion.stopped,case.name+" swept stop")
+            motions += 1
         var triangles = terrain.triangles()
         assert(triangles.size() == case.expected_triangles.size(), case.name+" triangle count")
         for i in range(triangles.size()):
@@ -64,5 +71,5 @@ func run() -> void:
     assert(safe.sample(-.00001,0).is_empty() and safe.sample(1.00001,0).is_empty())
     world.queue_free()
     await process_frame
-    print("TERRAIN_PARITY_PASS cases=",fixture.cases.size()," samples=",samples," physics_rays=",rays," invalid=",fixture.invalid.size())
+    print("TERRAIN_PARITY_PASS cases=",fixture.cases.size()," samples=",samples," physics_rays=",rays," invalid=",fixture.invalid.size()," motions=",motions)
     quit()

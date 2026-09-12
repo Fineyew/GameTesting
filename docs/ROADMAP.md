@@ -6,7 +6,7 @@ Revised 2026-09-10 after inspecting the repository at
 and successful M0–M1.3 CI jobs. Roadmap checkpoint edec97b changed planning only.
 The owner subsequently authorized implementation; current evidence lives in PROJECT_STATE.
 
-**M1.6 engineering complete atd1f0929; M1.7 geometry groundwork passes atfe4551c. Shared surface parity is now implemented; live terrain authority is still pending.**
+**M1.6 engineering complete atd1f0929; M1.7 geometry groundwork passes atfe4551c. Terrain activation is now implemented as a candidate; current validation and open acceptance are in PROJECT_STATE.**
 On 2026-09-11 the owner requested full continuation after the device-gate handoff.
 Proceed with engineering checkpoints while recording M1.4/M1.5 physical acceptance as
 outstanding. This changes development ordering only; Device E/R/L evidence and final
@@ -317,7 +317,7 @@ PROJECT_STATE records code/handoff and CI artifact provenance.
 
 Geometry-validation groundwork passes atfe4551c22c39ee6533b6e086135532a06fbd318b,
 run34625951261:148 backend tests/30 subtests including9 PostgreSQL tests,7 Android
-readiness tests, full Godot/API/authoring/render/native gates. No elevated world, new
+readiness tests, full Godot/API/authoring/render/native gates. At that historical checkpoint no elevated world, new
 protocol or playable route is implemented. CI retains the same0.2.5/code7 version.
 ARCHITECTURE records the shared cell/triangle surface and compatibility plan before runtime
 changes. Complete this milestone in reviewable checkpoints: input validation, Python/Godot
@@ -327,10 +327,16 @@ These are stages within M1.7, not a claim that its completion criteria are satis
 2026-09-12 continuation: Code `7628d305519d041f6d44b1c91f98d293ca0c49dc` passes run34666830183.
 Python/Godot surface helpers, shared analytic/seeded fixtures,
 matching triangles and actual collision ray validation are implemented. Live geometry
-still rejects elevation. Next prove capsule sweeps/slide/step/slope legality, then
-negotiate protocol2 and activate the route. PROJECT_STATE records executed gates.
+still rejected elevation at that checkpoint. The subsequent activation implements
+conservative swept-footprint traversal, protocol2 and the small Mooring Rise route. PROJECT_STATE records executed gates.
 Fal lantern/audio candidates are preserved outside runtime exports for the appropriate
 visual/audio pass; they do not complete art, lighting, audio or physical-device gates.
+
+Activation candidate (2026-09-12): bounds/blockers, 42° slope limit and .3m steps share
+Python/Godot rules; derived-y snapshots, stale-contract rejection and transactional old-save
+entry are implemented. No DDL. Test route, two-player altitude/reconnect, render and APK
+are separate gates; physical Device R and latency/feel acceptance remain open. Conservative
+square clearance and discrete stair following are not a claim of final locomotion polish.
 
 - **Kind / purpose:** Engineering foundation, gameplay systems, polish. Make real terrain safe.
 - **Adds:** A bounded shared height/collision representation, one slope/stair test route,
@@ -1009,8 +1015,8 @@ If too much placeholder debt remains, return to bounded production batches befor
 | Release | M5.1 → M5.2 → M5.3 → M5.4 → M5.5 | Whole-game cohesion, phone certification, recovery/security, beta and approved launch |
 
 **Recommended immediate work: M1.7 terrain authority and movement.** M1.5 and M1.6
-engineering are checkpointed. ARCHITECTURE now records the shared height/collision and
-protocol/save compatibility plan; prove Python/Godot parity before activating it. Keep the concrete M1.4 art/phone review and
+engineering are checkpointed. Validate/checkpoint the activation candidate, inspect its
+retained render/APK, then address bounded latency/terrain feel and Device R acceptance. Keep the concrete M1.4 art/phone review and
 M1.5 online Device E checklist open alongside engineering; no release gate is waived.
 
 Postpone bulk quest/spell generation until the authoring/art benchmark exists; additional

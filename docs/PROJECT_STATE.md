@@ -5,6 +5,25 @@ Read README → PROJECT_STATE → ARCHITECTURE → relevant source. Main remains
 
 ## Current milestone
 
+**M1.7 terrain activation candidate implemented; physical/feel acceptance remains open.**
+Mooring Rise is a small live Dawnreef ramp, 1.2m terrace and .3m descending steps.
+Python authority and Godot prediction share bounded conservative swept-footprint traversal;
+protocol2 negotiates geometry revision2/digest and snapshots server-derived altitude.
+Old JSON/PostgreSQL saves retain x/z and identity; unsafe entries relocate transactionally
+without resetting progression. Camera follows height; ground/riser mesh and route framing
+extend the existing modular world. No new quests, rewards or asset families.
+
+Local backend:204 tests/30 subtests pass,10 PostgreSQL tests explicitly skipped here.
+Terrain parity:32 surfaces/2,067 samples/278 actual physics rays/17 invalid definitions/
+740 movement comparisons pass. Full CI/render/Android activation evidence is pending.
+Export target is0.2.6/code8, not yet a validated artifact. No public deployment, paid
+asset generation or physical-phone test. Existing Fal candidates remain unintegrated.
+Traversal uses an enclosing square footprint, entire touched-cell slope checks and .3m
+maximum automatic step up/down; conservative corner blocking is a known feel limitation.
+Do not mark M1.7 finished movement/Device R acceptance complete from these automated checks.
+
+### Previous validated surface checkpoint (preserved)
+
 **M1.7 surface parity implemented; full terrain milestone remains incomplete.**
 Pure Python/Godot helpers now validate/query the bounded sparse height contract and
 build matching top/riser triangles. An isolated CI gate compares analytic/seeded

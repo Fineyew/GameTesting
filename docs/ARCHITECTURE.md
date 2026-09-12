@@ -51,10 +51,10 @@ The active Godot main scene is `scenes/app/bootstrap.tscn`. `PlaySession` orches
 HTTP/WS, HUD and encounters; character motion, avatar, orbit rig, touch stick, theme and
 world assembly remain separate. Preserve `scenes/vertical_slice_client.tscn` as legacy.
 Source catalog JSON is validated and bundled by `tools/build_catalog.py`. The client
-checks server world_protocol=1 and matching geometry before entry.
+checks server world_protocol=2 and matching geometry revision/digest before entry.
 
 WebSocket `/api/v1/world/socket` authenticates in its first message (type=auth,
-protocol=1, token, character_id); tokens never belong in query strings. One process owns
+protocol=2, geometry_revision, geometry_digest, token, character_id); tokens never belong in query strings. One process owns
 Dawnreef, at most 32 players: 20 Hz integration, 10 Hz snapshots. Move messages carry bounded
 monotonic seq and finite axis:[x,z]; the server integrates speed/acceleration and checks
 expanded rectangular blockers/bounds. Remote avatars interpolate; local motion reconciles.
@@ -420,3 +420,32 @@ capsule sweep and does not establish safe locomotion. Live catalog, WS protocol1
 geometry digest, saves and player feet remain unchanged. Next implement bounded capsule
 sweeps/sliding against blockers, steep faces and crossed edges before protocol2 activation.
 No y persistence, database migration, public deployment or physical acceptance is claimed.
+
+## M1.7 activation candidate — current runtime
+
+Supersedes the historical plan/surface-only sections above. Dawnreef definition version4
+contains world geometry revision2 and one sparse Mooring Rise surface. Core terrain_schema
+is shared by content validation and world geometry without cross-module internal imports.
+Geometry values are millimetre-precision; protocol hashes sorted recursively milli-normalized
+JSON. World2 auth/welcome/snapshots bind revision and SHA256 digest; stale clients close4004
+with an update message. Story/folio/commerce/item-use capabilities remain1.
+
+TerrainTraversal in Python/Godot encloses the .35m capsule in a swept square, subdivides
+movement into <=.1m increments, resolves x then z for sliding, rejects touched slopes above
+42° and adjacent edge discontinuities above .30m in either direction. This conservatively
+overblocks corners/partial cells. It is a bounded single-floor kinematic rule, not a full
+3D capsule physics solver. No jumping, falling or stacked floors. The existing controller
+uses this rule for prediction/correction; OrbitRig smooths target altitude. Render and
+collision tops/risers come from the same surface. Snapshots derive y; clients send only axes.
+
+Persistence stays schema1 x/z: safe old locations retain position; unsafe entries relocate
+to the existing safe spawn, re-reading/saving under the existing transaction. Normal reads
+do not write. PG failure rolls back the correction and JSON transactions preserve other
+aggregate fields. No DDL, import, reset or client-owned altitude. Proximity uses derived3D
+distance. Preserve character IDs, economy, folio, story and receipt behavior.
+
+Deploy client0.2.6 and backend together after backup/staging gates; old world1 clients must
+update. No public rollout has occurred. Rollback requires restoring the paired prior runtime
+and its matching catalog; evaluate new positions against that surface before reopening.
+Never silently serve new terrain through world1. Physical feel, adverse-latency reconciliation
+and Device R acceptance remain open; parity and desktop/API tests do not substitute for them.

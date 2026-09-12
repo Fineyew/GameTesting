@@ -4,6 +4,7 @@ from contextlib import suppress
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from backend.app.core.security import decode_access_token
 from backend.app.modules.world.hub import Presence
+from backend.app.modules.world.protocol import PROTOCOL
 
 router = APIRouter()
 
@@ -19,15 +20,20 @@ async def world_socket(socket: WebSocket):
         if len(raw) > 4096:
             raise ValueError("authentication too large")
         message = json.loads(raw)
-        if not isinstance(message, dict) or message.get("type") != "auth" or message.get("protocol") != 1:
-            raise ValueError("unsupported world protocol")
+        if not isinstance(message, dict) or message.get("type") != "auth":
+            raise ValueError("invalid authentication")
+        if message.get("protocol") != PROTOCOL or message.get("geometry_digest") != hub.digest or message.get("geometry_revision") != hub.revision:
+            await socket.close(code=4004, reason="update required: world geometry changed")
+            return
+        if set(message) != {"type","protocol","token","character_id","geometry_digest","geometry_revision"}:
+            raise ValueError("unsupported authentication fields")
         claims = decode_access_token(message["token"])
         account_id = await asyncio.to_thread(players.validate_session, claims)
         character = await asyncio.to_thread(players.enter_world, account_id, message["character_id"])
         member = Presence(socket, account_id, character.id, character.name, character.appearance, claims["exp"], [character.position["x"], character.position["z"]])
         member.in_combat = character.encounter.get("state") == "active"
         await hub.join(member)
-        await socket.send_json({"type": "welcome", "protocol": 1, "character_id": character.id})
+        await socket.send_json({"type": "welcome", **hub.contract(), "character_id": character.id})
         while True:
             raw = await asyncio.wait_for(socket.receive_text(), 20)
             if len(raw) > 1024:

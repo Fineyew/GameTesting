@@ -5,6 +5,9 @@ import logging
 import math
 import time
 from backend.app.modules.world.simulation import step
+from backend.app.modules.world.terrain import TerrainSurface
+from backend.app.modules.world.traversal import clear
+from backend.app.modules.world.protocol import PROTOCOL, geometry_digest
 
 logger = logging.getLogger(__name__)
 PHRASES = {"hello": "Hello, Wayfarer!", "help": "Could you lend a light?", "thanks": "Thank you!", "follow": "Let's explore together.", "farewell": "Safe tides!"}
@@ -33,9 +36,29 @@ class Presence:
 class WorldHub:
     def __init__(self, geometry, players):
         self.geometry, self.players = geometry, players
+        self.surface = TerrainSurface(geometry.get("terrain", {"bounds":geometry["bounds"],"cells":{}}))
+        self.digest = geometry_digest(geometry)
+        self.revision = geometry.get("geometry_revision",1)
         self.members = {}
         self.task = None
         self.tick = 0
+
+    def safe_position(self, position):
+        try:
+            at = [position["x"],position["z"]]
+            self.surface.sample(*at)
+            if clear(self.surface,at,at,self.geometry["blockers"]):
+                return {"x":at[0],"z":at[1]}
+        except (KeyError,TypeError,ValueError):
+            pass
+        logger.info("world_entry_relocation_required",extra={"reason":"unsafe_saved_location"})
+        return dict(zip(("x","z"),self.geometry["spawn"]))
+
+    def height(self, at):
+        return self.surface.sample(*at)["height"]
+
+    def contract(self):
+        return {"protocol":PROTOCOL,"geometry_revision":self.revision,"geometry_digest":self.digest}
 
     def start(self):
         self.task = asyncio.create_task(self._loop())
@@ -72,9 +95,14 @@ class WorldHub:
     def near(self, character_id, target, distance=3.5):
         member = self.members.get(character_id)
         at = self.geometry["interactions"].get(target)
-        return bool(member and at and math.dist(member.position, at) <= distance)
+        return bool(member and at and math.dist([*member.position,self.height(member.position)], [*at,self.height(at)]) <= distance)
 
     def receive(self, member, message):
+        if not isinstance(message,dict):
+            raise ValueError("invalid world message")
+        fields = {"ping":{"type"},"move":{"type","seq","axis"},"say":{"type","phrase"}}.get(message.get("type"))
+        if fields is None or set(message) != fields:
+            raise ValueError("unsupported world fields")
         if self.members.get(member.character_id) is not member:
             raise ValueError("session replaced")
         now = time.monotonic()
@@ -83,7 +111,7 @@ class WorldHub:
             return
         if message.get("type") == "move":
             axis, seq = message.get("axis"), message.get("seq")
-            if not isinstance(axis, list) or len(axis) != 2 or any(type(v) not in (float, int) or not math.isfinite(v) or abs(v) > 1 for v in axis):
+            if not isinstance(axis, list) or len(axis) != 2 or any(type(v) not in (float, int) or abs(v) > 1 or not math.isfinite(v) for v in axis):
                 raise ValueError("invalid movement")
             if type(seq) is not int or not 0 <= seq < 2**31:
                 raise ValueError("invalid sequence")
@@ -121,11 +149,11 @@ class WorldHub:
                     await self.leave(member)
                     continue
                 axis = [0, 0] if started - member.last_packet > .4 or member.in_combat else member.axis
-                member.position, member.velocity = step(member.position, member.velocity, axis, .05, self.geometry)
+                member.position, member.velocity = step(member.position, member.velocity, axis, .05, self.geometry, self.surface)
             if self.tick % 2 == 0:
-                frame = {"type": "snapshot", "protocol": 1, "tick": self.tick, "players": [
+                frame = {"type": "snapshot", **self.contract(), "tick": self.tick, "players": [
                     {"id": m.character_id, "name": m.name, "appearance": m.appearance,
-                     "x": m.position[0], "z": m.position[1], "seq": m.seq,
+                     "x": m.position[0], "y": self.height(m.position), "z": m.position[1], "seq": m.seq,
                      "bubble": m.bubble if started < m.bubble_until else ""} for m in self.members.values()]}
                 await asyncio.gather(*(self._send(m, frame) for m in list(self.members.values())))
             if self.tick % 100 == 0:

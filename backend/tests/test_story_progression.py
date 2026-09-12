@@ -143,7 +143,7 @@ def test_story_api_requires_live_proximity_and_owner(monkeypatch, tmp_path):
     try:
         with TestClient(create_app()) as client:
             info = client.get("/api/v1/server-info").json()
-            assert info["world_protocol"] == 1 and info["story_protocol"] == 1
+            assert info["world_protocol"] == 2 and info["story_protocol"] == 1
             identities = []
             for index in range(2):
                 token = client.post("/api/v1/auth/register", json={"email": f"story{index}@example.test", "display_name": "Listener", "password": "test-only-password"}).json()["access_token"]
@@ -156,7 +156,7 @@ def test_story_api_requires_live_proximity_and_owner(monkeypatch, tmp_path):
             assert client.post(path, headers=identities[1][2]).status_code == 403
             assert client.post(path, headers=headers).status_code == 409
             with client.websocket_connect("/api/v1/world/socket") as socket:
-                socket.send_json({"type": "auth", "protocol": 1, "token": token, "character_id": character})
+                socket.send_json({"type": "auth", "protocol": 2, "geometry_digest":info["geometry_digest"],"geometry_revision":2, "token": token, "character_id": character})
                 assert socket.receive_json()["type"] == "welcome"
                 assert client.post(path, headers=headers, json={"position": [-4, -4]}).status_code == 409
                 # Test setup owns the authoritative member; no API lets a client assign this position.

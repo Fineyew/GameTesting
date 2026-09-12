@@ -1,48 +1,22 @@
-"""M1.7 single-floor surface contract. Not enabled in the live world yet.
+"""M1.7 single-floor surface contract shared by live terrain and validation.
 
 One-metre cells relative to integer bounds; millimetre SW/SE/NE/NW corners.
 Queries and collision use the SW--NE diagonal, never bilinear interpolation.
 This is geometry, not movement permission: capsule sweeps are a separate gate.
 """
 import math
-import re
 from types import MappingProxyType
 
 
-def _integer(value, limit):
-    # Godot parses JSON numbers as floats; accept integral numbers in both runtimes.
-    return type(value) in (int, float) and abs(value) <= limit and value == int(value)
+from backend.app.core.terrain_schema import validate_surface
 
 
 class TerrainSurface:
     def __init__(self, definition):
-        if not isinstance(definition, dict) or set(definition) != {"bounds", "cells"}:
-            raise ValueError("terrain requires only bounds and cells")
-        bounds, cells = definition["bounds"], definition["cells"]
-        if not isinstance(bounds, list) or len(bounds) != 4 or any(
-            not _integer(v, 4096) for v in bounds
-        ):
-            raise ValueError("terrain bounds must be four bounded integers")
-        bounds = [int(v) for v in bounds]
-        self.bounds = tuple(bounds)
-        self.width, self.depth = bounds[2] - bounds[0], bounds[3] - bounds[1]
-        if not (1 <= self.width <= 128 and 1 <= self.depth <= 128):
-            raise ValueError("terrain extent must be 1..128 metres per axis")
-        if not isinstance(cells, dict) or len(cells) > self.width * self.depth:
-            raise ValueError("invalid terrain cell map")
-        normalized = {}
-        for key, heights in cells.items():
-            if not isinstance(key, str) or not re.fullmatch(r"(0|[1-9][0-9]*):(0|[1-9][0-9]*)", key):
-                raise ValueError("noncanonical terrain cell key")
-            x, z = map(int, key.split(":"))
-            if x >= self.width or z >= self.depth:
-                raise ValueError("terrain cell outside bounds")
-            if not isinstance(heights, list) or len(heights) != 4 or any(
-                not _integer(v, 8000) for v in heights
-            ):
-                raise ValueError("terrain corners must be four integer millimetres within +/-8000")
-            normalized[(x, z)] = tuple(v / 1000 for v in heights)
-        self.cells = MappingProxyType(normalized)
+        self.bounds, cells = validate_surface(definition)
+        self.width = self.bounds[2] - self.bounds[0]
+        self.depth = self.bounds[3] - self.bounds[1]
+        self.cells = MappingProxyType(cells)
 
     def corners(self, x, z):
         return self.cells.get((x, z), (0., 0., 0., 0.))
