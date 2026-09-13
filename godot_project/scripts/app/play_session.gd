@@ -23,6 +23,7 @@ var commerce_shop := ""
 var commerce_error := ""
 var short_spell_effects := false
 var application_active := true
+var online_ready_announced := false
 
 func _notification(what: int) -> void:
     if what == NOTIFICATION_APPLICATION_PAUSED or what == NOTIFICATION_APPLICATION_FOCUS_OUT:
@@ -49,11 +50,11 @@ func begin(zone: DawnreefWorld, profile: Dictionary, offline: bool) -> void:
     world.add_child(player)
     player.setup(character.get("appearance",{}),world.geometry)
     var at = character.get("position",{"x":0,"z":4})
-    player.position = Vector3(at.x,.1,at.z)
+    player.position = Vector3(at.x,world.terrain.sample(at.x,at.z).height,at.z)
     player.networked = not preview
     camera = OrbitRig.new()
     world.add_child(camera)
-    camera.target = player
+    camera.follow(player)
     camera.arm.add_excluded_object(player.get_rid())
     hud = GameHUD.new()
     add_child(hud)
@@ -78,6 +79,12 @@ func begin(zone: DawnreefWorld, profile: Dictionary, offline: bool) -> void:
 func _process(delta: float) -> void:
     if not is_instance_valid(player):
         return
+    if not preview and not connection.connected:
+        online_ready_announced = false
+    elif not preview and not online_ready_announced and online_ready():
+        online_ready_announced = true
+        if OS.is_debug_build():
+            print("VT_ONLINE_READY")
     var axis = hud.stick.axis
     axis += Vector2(float(Input.is_physical_key_pressed(KEY_D) or Input.is_physical_key_pressed(KEY_RIGHT))-float(Input.is_physical_key_pressed(KEY_A) or Input.is_physical_key_pressed(KEY_LEFT)),float(Input.is_physical_key_pressed(KEY_S) or Input.is_physical_key_pressed(KEY_DOWN))-float(Input.is_physical_key_pressed(KEY_W) or Input.is_physical_key_pressed(KEY_UP)))
     if not Input.get_connected_joypads().is_empty():
@@ -107,12 +114,16 @@ func _process(delta: float) -> void:
         var motion = remote.avatar.position-before
         remote.avatar.set_travel_velocity(motion/maxf(delta,.001))
         if remote.avatar.walking:
-            remote.avatar.rotation.y = lerp_angle(remote.avatar.rotation.y,atan2(-motion.x,-motion.z),delta*10)
+            remote.avatar.face_travel(atan2(-motion.x,-motion.z),delta,10.0)
     if not preview:
         refresh_elapsed += delta
         if refresh_elapsed > 600:
             refresh_elapsed = 0
             _refresh_auth()
+
+func online_ready() -> bool:
+    return not preview and is_instance_valid(connection) and connection.connected \
+        and player.has_snapshot and camera.settled()
 
 func _snapshot(frame: Dictionary) -> void:
     var present: Array = []
@@ -125,6 +136,7 @@ func _snapshot(frame: Dictionary) -> void:
             var avatar = WayfarerAvatar.new()
             world.add_child(avatar)
             avatar.build(remote.appearance)
+            avatar.follow_terrain(world.terrain)
             avatar.position = Vector3(remote.x,remote.y,remote.z)
             var name_label = ReefKit.label(avatar,remote.name,Vector3(0,2.3,0))
             remotes[remote.id] = {"avatar":avatar,"label":name_label,"target":avatar.position}
@@ -292,6 +304,7 @@ func retry_action() -> void:
     var result = await ApiClient.post_json("/world/characters/%s/encounters/actions" % character.id,pending_action.payload,pending_action.key)
     if not result.is_empty():
         var action: String = pending_action.payload.action
+        var vigor_before = int(character.encounter.player_vigor)
         pending_action.clear()
         character = result.character
         hud.set_character(character,preview)
@@ -299,6 +312,11 @@ func retry_action() -> void:
             await present_glimmer()
         else:
             world.spell_impact(action)
+        # Acknowledged state drives reactions; animation never resolves a beat.
+        if int(character.encounter.player_vigor) < vigor_before:
+            player.avatar.play_hit()
+        elif int(character.encounter.player_vigor) > vigor_before:
+            player.avatar.play_recovery()
     busy = false
     show_combat()
 

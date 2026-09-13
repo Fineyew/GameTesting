@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-09-13 — M1.8 motion and crowded-rig candidate
+
+- Add editable Walk/Run/turn/hit/recovery clips, phase/cadence/facing transitions and
+  terrain foot fitting through the current rig; preserve authority, speed and saved IDs.
+- Derive two distant meshes from original editable sources after the32-rig render
+  exposed410,324 primitives. The candidate passes locally at118,988 primitives/200 calls.
+- Seed the entry camera and require actual welcome/self-snapshot/settled native evidence
+  plus visible online touch movement. Extend actual-engine clip/foot/LOD/crowd gates.
+- Local Godot/API/render checks pass.0.2.10/code12 full CI/native build validation pending.
+  Physical/owner acceptance remains open; no server protocol/schema or deployment change.
+
 ## 2026-09-13 — M1.8 live creator preview validated
 
 - Recover clean/pushed572eb62 and continue the recorded existing-choice creator task.

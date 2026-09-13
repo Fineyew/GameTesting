@@ -9,7 +9,8 @@ import sys
 import tempfile
 import httpx
 from PIL import Image, ImageChops
-from tools.check_android import ROOT, OUT, PACKAGE, adb, capture, wait_for, wait_for_world, wait_for_input_ready, dismiss_keyboard
+from tools.check_android import (ROOT, OUT, PACKAGE, adb, capture, wait_for, wait_for_world,
+                                wait_for_settled_world, changed_world, wait_for_input_ready, dismiss_keyboard)
 
 
 def check_creator():
@@ -125,12 +126,21 @@ def check_creator():
                     character = saved.json()[0]
                     assert character['appearance'] == {'robe': 'coral', 'skin': 'deep'}
                     tap('Enter Dawnreef')
-                    wait_for_world('creator-native-world')
+                    # This marker requires the actual socket welcome, our first
+                    # authoritative snapshot and the player-follow camera.
+                    wait_for(lambda: 'VT_ONLINE_READY' in log(), 45)
+                    before_world = wait_for_settled_world('creator-native-world')
+                    wait_for_input_ready()
+                    adb('shell', 'input', 'swipe', str(round(width*.0875)), str(round(height*.844)),
+                        str(round(width*.155)), str(round(height*.844)), '1000')
+                    moved_world = wait_for_settled_world('creator-native-moved')
+                    assert changed_world(before_world, moved_world) > .025, 'Online touch did not visibly move the world'
                     logs = log()
                     assert 'ERROR:' not in logs and 'SCRIPT ERROR' not in logs
                     (OUT / 'creator-result.txt').write_text(
                         'ANDROID_CREATOR_PASS\nLoopback login, touch-opened color menus with keyboard selection, '
-                        'visible tint changes, touch drag/front reset, native creation, saved appearance and world entry.\n'
+                        'visible tint changes, touch drag/front reset, native creation, saved appearance, '
+                        'socket welcome/authoritative snapshot, settled player camera and visible online touch movement.\n'
                         'Emulator only; physical phone/safe-cutout/thermal acceptance remains open.\n')
                     print('ANDROID_CREATOR_PASS')
             except BaseException:

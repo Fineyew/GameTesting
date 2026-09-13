@@ -519,3 +519,25 @@ nondefault choices, rejects an invalid name without replacing the draft, reads s
 appearance, rebuilds selection and compares the world avatar. Native QA connects only
 to its own temporary loopback API through adb reverse; it exercises login/creator/world
 entry using ordinary account APIs. No schema, content or authority change is introduced.
+
+## M1.8 expanded motion and crowded rigs
+
+The editable wayfarer_motion.tres library shares immutable Walk/Run/TurnLeft/TurnRight/
+Hit/Recovery clips between all instances. Each AnimationPlayer owns its clip-name map;
+imported Idle/Cast remain. Cadence follows horizontal speed, run hysteresis2.8/2.4m/s,
+walk hysteresis.18/.08 and exponential facing/speed smoothing. Gait changes preserve
+cycle position. Cast/reaction clips use their authored timing. Confirmed net Vigor loss
+triggers Hit then Recovery; net restoration triggers Recovery. They never mutate a turn.
+
+WayfarerFooting runs after AnimationMixer via SkeletonModifier3D, samples the same
+TerrainSurface under each ankle and solves two bones per foot with a bounded visual
+pelvis drop for.3m treads. It leaves controller/root position and authority untouched.
+Distant rigs beyond20m retain baked foot poses. Named binds and palette slots match
+between detailed and derived distant meshes;8.5/7.5m thresholds avoid detail flicker.
+The same rig/animation is retained on switches. No extra rig is rendered for the LOD.
+
+OrbitRig.follow seeds the initial position/orientation before the first physics frame.
+PlaySession.online_ready requires a real socket welcome, authoritative self snapshot
+and current settled camera. Debug VT_ONLINE_READY contains no identity/credential data.
+Native creator QA waits for this state and stable rendered frames before its online
+touch movement assertion. The real Godot/API gate uses the same readiness predicate.

@@ -315,3 +315,18 @@ unknown/missing IDs retain teal/warm fallback without rewriting saves. Use the i
 RobeTint/SkinTint mesh material slots; preview changes reuse one rig and six cached tint
 materials. Add no choice label without a corresponding saved-ID/world mapping and real
 creator/API/render/native acceptance. New asset/clip families remain later M1.8 work.
+
+## Editable motion and distant characters
+
+Keep the original Blender rigs and Idle/Cast. Regenerate the separately editable Godot
+AnimationLibrary with `godot --headless --path godot_project --script ../art_sources/build_wayfarer_motion.gd`.
+Its analytic two-bone poses use120Hz source sampling for flat-foot contact. The library
+contains no controller/root motion or gameplay events. Review all six clips in the
+retained wayfarer-motion movie and motion frames; phone/owner acceptance remains required.
+
+`blender --background --factory-startup --python art_sources/build_wayfarer_lod.py`
+derives1.7k-triangle distant meshes from the existing .blend sources. The recipe reduces
+geometry before skinning and validates/removes duplicate faces after collapse. It must
+then pass clean mesh validation. Preserve13 named bones, bind poses, material order and
+robe/skin slots; actual-engine regressions compare them to the detailed source. The
+existing32-rig dense budget remains250 draws/150k primitives. Do not raise it to pass.

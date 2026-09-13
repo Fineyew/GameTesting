@@ -5,6 +5,40 @@ Read README → PROJECT_STATE → ARCHITECTURE → relevant source. Main remains
 
 ## Current milestone
 
+**M1.8 motion and online-entry engineering candidate implemented; Android/full CI pending.**
+The owner requested continued engineering through the roadmap on2026-09-13. Continue
+without routine confirmation; physical/owner acceptance still needs actual evidence.
+Current candidate is0.2.10/code12. The last verified downloadable build is0.2.9 below.
+
+An editable Godot animation library adds grounded Walk, Run, TurnLeft/Right, Hit and
+Recovery to the existing13-bone Wayfarer/Mara rigs; original Idle/Cast and Blender sources
+remain. Walk/Run uses2.8/2.4m/s hysteresis, horizontal-speed cadence, phase-preserving
+blends and elapsed-time facing. Confirmed Vigor changes trigger reactions. A bounded
+SkeletonModifier fits feet to the shared terrain and lowers the visual pelvis across
+.3m treads; it cannot change the controller root, collision or authority.
+
+The first32-rig render exposed410,324 primitives (200 calls), exceeding the150k geometry
+budget. Lowering imported LOD bias alone still produced306,700. Original distant meshes
+are now derived from the existing editable Blender sources:1,676 Wayfarer /1,654 Mara
+triangles, the same13 named binds/material slots and appearance fallback. Distance
+hysteresis switches meshes at8.5/7.5m, preserving the rig and animation. The final local
+full-room render passes at118,988 primitives/200 calls with all32 actors in frame; actual
+near/appearance and crowd frames inspected. This is software-renderer evidence, not phone FPS.
+
+Local engine tests pass for30/60/120 FPS cadence/facing, Walk/Run thresholds, cast/hit/
+recovery, sampled grounded soles/no skating, actual .3m stair fitting/root invariance,
+near/far binds/materials/hysteresis, real remote caller and creator regression. Full
+Godot/API progression/reconnect/terrain passes with actual online readiness. Camera entry
+now seeds the player view immediately; native QA requires socket welcome, first self
+snapshot and settled camera before capture, then real online touch movement. Native
+changes are not yet validated on the emulator; do not claim a new verified APK before F.
+
+Next: finish full F and native online-motion evidence, retain/source-verify0.2.10, then
+continue M1.9 audio foundation. M1.8 owner motion/art acceptance, physical Device E/R and
+sustained mobile measurements remain open; no launch completion is claimed.
+
+### Previous validated creator checkpoint
+
 **M1.8 live creator/world appearance preview implemented and validated.**
 Resumed from clean/pushed572eb62 after the interrupted conversation; no prior source
 work was lost. Code `74070f3cda1489940601749dd02510cd7b49b121` passes all three jobs in

@@ -61,7 +61,7 @@ func run() -> void:
     assert(session != null,"world did not open")
     await process_frame
     assert(app.identity_preview == null and CreatorChecks.colors(session.player.avatar) == chosen_colors,"World avatar differs from saved preview")
-    await until(func(): return session.connection.connected and session.remotes.size() == 1)
+    await until(func(): return session.online_ready() and session.remotes.size() == 1)
     await walk(session,Vector2(-4,-3))
     await session.open_dialogue()
     assert(session.dialogue.node == "greeting","dialogue did not come from server")

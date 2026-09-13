@@ -25,6 +25,19 @@ func _ready() -> void:
     camera.current = true
     arm.add_child(camera)
 
+func follow(actor: Node3D) -> void:
+    target = actor
+    # Seed the first rendered view before the spring arm's first physics tick.
+    position = target.position + Vector3(0,1.35,0)
+    rotation = Vector3(pitch,yaw,0)
+    camera.position.z = arm.spring_length
+    height_ready = true
+
+func settled() -> bool:
+    return is_instance_valid(target) and height_ready and camera.is_current() \
+        and position.distance_to(target.position+Vector3(0,1.35,0)) < .03 \
+        and camera.global_position.y > target.global_position.y+1.0
+
 func _process(delta: float) -> void:
     if is_instance_valid(target):
         var desired = target.position + Vector3(0,1.35,0)

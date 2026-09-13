@@ -13,6 +13,7 @@ destination.mkdir(parents=True,exist_ok=True)
 source=Path.home()/'.local/share/godot/app_userdata/Veilbound Tides'
 names=['gateway.png','dawnreef.png','folio.png','vendor.png','equipment.png','item-use.png','benchmark.png','mara.png','wayfarer.png','glimmer.png','terrain.png']
 names += ['creator-'+name+'.png' for name in ['teal','coral','indigo','rotated','tablet','wide','selection']]
+names += ['motion-'+name+'.png' for name in ['crowd','walk','run','turnleft','turnright','hit','recovery']]
 # Keep available evidence before rejecting a failed render. This never publishes an APK.
 (destination/'result.txt').write_text(output)
 for name in names:
@@ -31,3 +32,9 @@ terrain_calls=int(re.search(r"TERRAIN_DRAW_CALLS=(\d+)",output).group(1))
 assert terrain_calls<=150,f"terrain view exceeded draw-call budget: {terrain_calls}"
 creator_calls=int(re.search(r"CREATOR_DRAW_CALLS=(\d+)",output).group(1))
 assert creator_calls<=150,f"creator view exceeded draw-call budget: {creator_calls}"
+
+crowd_calls=int(re.search(r"CROWD_DRAW_CALLS=(\d+)",output).group(1))
+crowd_primitives=int(re.search(r"CROWD_PRIMITIVES=(\d+)",output).group(1))
+assert 'CROWD_RIGS=32' in output and 'MOTION_VISUALS_PASS' in output
+assert crowd_calls<=250,f"32-rig scene exceeded dense draw budget: {crowd_calls}"
+assert crowd_primitives<=150_000,f"32-rig scene exceeded geometry budget: {crowd_primitives}"

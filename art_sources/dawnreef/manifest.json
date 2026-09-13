@@ -1,5 +1,5 @@
 {
-  "revision": 1,
+  "revision": 2,
   "status": "benchmark candidate; owner art-direction acceptance and physical-phone validation pending",
   "provenance": "Original geometry, palette, rig and animation authored for Veilbound Tides. No third-party asset pack.",
   "authoring_tool": "Blender 4.5.3 LTS",
@@ -47,11 +47,50 @@
         "Cast"
       ],
       "bones": 13
+    },
+    {
+      "file": "wayfarer_far.glb",
+      "source": "art_sources/dawnreef/wayfarer.blend",
+      "recipe": "art_sources/build_wayfarer_lod.py",
+      "max_triangles": 2000,
+      "max_materials": 4,
+      "animations": [
+        "Idle",
+        "Walk",
+        "Cast"
+      ],
+      "bones": 13
+    },
+    {
+      "file": "mara_far.glb",
+      "source": "art_sources/dawnreef/mara.blend",
+      "recipe": "art_sources/build_wayfarer_lod.py",
+      "max_triangles": 2000,
+      "max_materials": 3,
+      "animations": [
+        "Idle",
+        "Walk",
+        "Cast"
+      ],
+      "bones": 13
     }
   ],
   "placeholders_remaining": [
     "Two other Dawnreef houses, distant trees, coastline/vistas, dock, cistern, lurker and its motion",
     "Other spell effects and all region/combat audio",
     "Creator variety, complete locomotion/interaction/reaction rig, full HUD icons/safe-area and accessibility passes"
-  ]
+  ],
+  "motion_library": {
+    "file": "godot_project/assets/dawnreef/wayfarer_motion.tres",
+    "recipe": "art_sources/build_wayfarer_motion.gd",
+    "clips": [
+      "Walk",
+      "Run",
+      "TurnLeft",
+      "TurnRight",
+      "Hit",
+      "Recovery"
+    ],
+    "status": "original editable motion candidate; owner/device acceptance pending"
+  }
 }

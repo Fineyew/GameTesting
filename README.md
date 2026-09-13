@@ -4,13 +4,12 @@ An original Android-first online fantasy RPG built with Godot 4.5.1, FastAPI,
 PostgreSQL, Docker and Nginx. Continue this repository; do not recreate working systems.
 The active work is `feature/android-foundation`, [draft PR #4](https://github.com/Fineyew/GameTesting/pull/4).
 
-Current continuation: **M1.8 live creator preview validated** at `74070f3`,
-[run34769922414](https://github.com/Fineyew/GameTesting/actions/runs/34769922414). Three robe colors and three skin tones update the same Wayfarer
-rig used in exploration, with drag/button rotation and saved-character preview.
-Godot/API appearance parity, render and full native Android interaction gates pass.
-[Verified ARM64 **0.2.9/code11**](https://github.com/Fineyew/GameTesting/actions/runs/34769922414/artifacts/10321917205) is the current development handoff.
-PROJECT_STATE records exact provenance. Full M1.8 animation and physical/owner
-acceptance remain open; saved creator play requires the matching backend below.
+Current continuation: **M1.8 motion/crowd and online-entry candidate**. Grounded Walk/Run,
+turn/hit/recovery, terrain foot fitting and distant rigs pass local engine/API/render
+checks, including32 visible characters at118,988 primitives/200 calls.0.2.10/code12 awaits
+full CI/native validation. The last verified development handoff remains
+[ARM640.2.9/code11](https://github.com/Fineyew/GameTesting/actions/runs/34769922414/artifacts/10321917205).
+PROJECT_STATE owns exact evidence and outstanding owner/physical-device acceptance.
 
 Run `python -m tools.check_movement_network` after Godot import to reproduce36 impairment
 scenarios. This does not simulate every mobile transport condition or replace phone testing.
@@ -133,7 +132,7 @@ isolated database migrated to head. CI runs both migrations and the PostgreSQL t
 ## Android build and runtime checks
 
 Use the checked-in **Android** export preset: ARM64, INTERNET permission, app ID
-`work.surveyroute.veilboundtides`, version 0.2.9/code 11. Use Godot 4.5.1 export templates,
+`work.surveyroute.veilboundtides`, version 0.2.10/code 12. Use Godot 4.5.1 export templates,
 JDK17, Android SDK platform35 and build-tools35.0.0. See the
 [official engine export instructions](https://docs.godotengine.org/en/4.5/tutorials/export/exporting_for_android.html).
 The exported engine minimum is API24, target API35; minimum OS is not a device-performance guarantee.

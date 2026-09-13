@@ -54,7 +54,7 @@ func run() -> void:
         for frame in range(1,fps/3):
             tick(avatar,1.0/fps)
         rates.append(avatar.animation.speed_scale)
-        assert(avatar.animation.current_animation == "Walk")
+        assert(avatar.animation.current_animation == "Run")
         # A cast keeps its authored timing while the next movement state changes.
         avatar.play_cast()
         avatar.set_travel_velocity(Vector3.ZERO)
@@ -67,6 +67,95 @@ func run() -> void:
         avatar.free()
     assert(absf(rates[0]-rates[1]) < .001 and absf(rates[1]-rates[2]) < .001,
         "Cadence smoothing must not depend on render FPS")
+
+    avatar = actor()
+    for speed in [3.0,2.7,2.5]:
+        avatar.set_travel_velocity(Vector3(speed,0,0))
+        tick(avatar,.05)
+        assert(avatar.running and avatar.animation.current_animation == "Run")
+    avatar.set_travel_velocity(Vector3(2.3,0,0))
+    tick(avatar,.05)
+    assert(not avatar.running and avatar.animation.current_animation == "Walk")
+    for speed in [2.5,2.7]:
+        avatar.set_travel_velocity(Vector3(speed,0,0))
+        tick(avatar,.05)
+        assert(not avatar.running)
+    avatar.play_hit()
+    tick(avatar,.21)
+    assert(avatar.animation.current_animation == "Recovery")
+    tick(avatar,.37)
+    tick(avatar,.02)
+    assert(avatar.animation.current_animation == "Walk")
+    # Casts and their confirmed hit/recovery timing are independent of gait rate.
+    avatar.play_cast()
+    avatar.play_hit()
+    assert(avatar.cast_remaining == 0 and avatar.animation.speed_scale == 1)
+    avatar.free()
+
+    var headings: Array[float] = []
+    for fps in [30,60,120]:
+        avatar = actor()
+        avatar.set_travel_velocity(Vector3(.5,0,0))
+        avatar.face_travel(PI/2,1.0/fps)
+        tick(avatar,1.0/fps)
+        assert(avatar.animation.current_animation == "TurnLeft")
+        for frame in range(1,fps/3):
+            avatar.face_travel(PI/2,1.0/fps)
+        headings.append(avatar.rotation.y)
+        avatar.free()
+    assert(absf(headings[0]-headings[2]) < .001,"Turning must follow elapsed time")
+
+    # Sample the actual imported skeleton after the editable library is applied.
+    # Both soles stay level and the stance ankle moves back at reference speed.
+    avatar = actor()
+    var skeleton = avatar.model.find_child("Skeleton3D",true,false) as Skeleton3D
+    for clip in ["Walk","Run"]:
+        var duration = avatar.animation.get_animation(clip).length
+        var duty = .33 if clip == "Run" else .52
+        var speed = 4.0 if clip == "Run" else 1.8
+        var previous := Vector3.INF
+        for sample in 61:
+            var time = float(sample)/60*duration
+            avatar.animation.play(clip,0)
+            avatar.animation.seek(time,true)
+            avatar.animation.advance(0)
+            skeleton.force_update_all_bone_transforms()
+            for side in ["L","R"]:
+                var index = skeleton.find_bone("Foot"+side)
+                var foot = skeleton.get_bone_global_pose(index)
+                assert(foot.origin.y >= .133,"Foot penetrates ground: %s %s sample%s %s" % [clip,side,sample,foot.origin])
+                var up = foot.basis*skeleton.get_bone_global_rest(index).basis.inverse()*Vector3.UP
+                assert(up.distance_to(Vector3.UP) < .001,"Soles stay level")
+                if side == "L" and time/duration < duty-.02:
+                    assert(absf(foot.origin.y-.135) < .002,"Stance foot stays grounded")
+                    if previous.is_finite():
+                        assert(absf((foot.origin.z-previous.z)/(duration/60)-speed) < .025,"Stance cannot skate at reference cadence")
+                    previous = foot.origin
+    avatar.free()
+
+    # Near/far resources keep the same material semantics and named bind poses.
+    for is_mara in [false,true]:
+        avatar = WayfarerAvatar.new()
+        root.add_child(avatar)
+        avatar.build({"robe":"coral","skin":"deep"},is_mara)
+        avatar.set_process(false)
+        var near_names: Array = []
+        for index in avatar.near_mesh.get_surface_count():
+            near_names.append(avatar.near_mesh.surface_get_material(index).resource_name)
+            assert(near_names[index] == avatar.far_mesh.surface_get_material(index).resource_name)
+        assert(avatar.near_skin.get_bind_count() == avatar.far_skin.get_bind_count())
+        for index in avatar.near_skin.get_bind_count():
+            assert(avatar.near_skin.get_bind_name(index) == avatar.far_skin.get_bind_name(index))
+            assert(avatar.near_skin.get_bind_pose(index).is_equal_approx(avatar.far_skin.get_bind_pose(index)))
+        var rig_before = avatar.animation
+        avatar.update_detail(9)
+        assert(avatar.distant and avatar.body.mesh == avatar.far_mesh)
+        avatar.update_detail(8)
+        assert(avatar.distant,"LOD threshold must not flicker")
+        avatar.update_detail(7)
+        assert(not avatar.distant and avatar.body.mesh == avatar.near_mesh)
+        assert(avatar.animation == rig_before and avatar.current_appearance == {"robe":"coral","skin":"deep"})
+        avatar.free()
 
     # Exercise the real remote interpolation caller, which previously used total
     # 3D displacement and a frame-dependent .003m walking cutoff.
@@ -89,7 +178,26 @@ func run() -> void:
             "A real slow remote mover must animate at every supported frame rate")
         app.session.remotes.erase("motion-fixture")
         avatar.free()
+    # Exact terrain modifier output at a .3m stair edge, including the lowered
+    # pelvis needed to reach the lower tread. This uses the real engine callback.
+    var surface = TerrainSurface.new()
+    assert(surface.configure({"bounds":[-1,-1,1,1],"cells":{"1:0":[300,300,300,300],"1:1":[300,300,300,300]}}).is_empty())
+    avatar = actor()
+    avatar.position = Vector3(0,.3,0)
+    avatar.follow_terrain(surface)
+    var rig = avatar.model.find_child("Skeleton3D",true,false) as Skeleton3D
+    var modifier = rig.get_child(rig.get_child_count()-1) as WayfarerFooting
+    var contact_checks = {"count":0}
+    modifier.modification_processed.connect(func():
+        for side in ["L","R"]:
+            var foot = rig.to_global(rig.get_bone_global_pose(rig.find_bone("Foot"+side)).origin)
+            assert(absf(foot.y-surface.sample(foot.x,foot.z).height-.135) < .003,"Both feet must reach their stair tread")
+        contact_checks.count += 1)
+    var at_before = avatar.position
+    await create_timer(.12).timeout
+    assert(contact_checks.count > 0 and avatar.position == at_before,"Foot fitting must not move the controller")
+    avatar.free()
     app.queue_free()
     await process_frame
-    print("AVATAR_MOTION_PASS: horizontal travel, jitter thresholds, 30/60/120 FPS cadence, cast return, remote caller")
+    print("AVATAR_MOTION_PASS: horizontal travel, Walk/Run hysteresis, 30/60/120 FPS cadence/turns, cast/hit/recovery, planted soles, remote caller")
     quit()

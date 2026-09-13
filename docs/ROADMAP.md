@@ -391,6 +391,13 @@ Device E acceptance remains open. Next bounded engineering work is a Run clip an
 Walk/Run transition through the existing rig; later turn/hit/recovery, foot contact and
 crowded-rig review remain required. This does not complete the full milestone.
 
+Motion/crowd continuation2026-09-13 is implemented with local engine/API/render validation;
+full F/native evidence is pending. It adds Run/turn/hit/recovery, phase-preserving blends,
+.3m terrain foot fitting and derived distant meshes. Actual32-rig render fell from410,324
+to118,988 primitives after fixing the exposed budget failure;200 calls. No budget increase.
+0.2.10/code12 is a candidate until F passes. Physical/owner motion acceptance stays open.
+After its verified handoff, continue M1.9 engineering under the owner's continuation request.
+
 - **Kind / purpose:** Visual production, polish. Make the character feel expressive and substantial.
 - **Adds:** Finish the reusable player/NPC rig and bounded current creator options; idle,
   walk/run, turning, cast, hit and recovery clips; foot contact and locomotion blending.
@@ -1051,15 +1058,10 @@ If too much placeholder debt remains, return to bounded production batches befor
 | Entire-game art | M4.1 → M4.2 → M4.3 → M4.4 | Every launch environment, character/collectible, effect/audio and UI surface complete |
 | Release | M5.1 → M5.2 → M5.3 → M5.4 → M5.5 | Whole-game cohesion, phone certification, recovery/security, beta and approved launch |
 
-**Current engineering: continue M1.8 with a bounded Run clip and Walk/Run transition.**
-First refine the native online-ready/camera-settled capture; the creator run's initial
-world frame is transitional, not settled online visual acceptance (PROJECT_STATE).
-Recovery, locomotion-transition consistency and creator/world appearance parity pass
-full automated gates with retained APK inspection. Keep the current rig, saved appearance
-IDs, movement authority and gameplay speeds. Later turn/hit/recovery clips, foot contact
-and crowded-rig/owner review remain part of M1.8. Keep
-M1.7 Device R/subjective feel and final route presentation open. Keep the concrete M1.4 art/phone review and
-M1.5 online Device E checklist open alongside engineering; no release gate is waived.
+**Current engineering: validate/checkpoint M1.8 motion/crowd and native online entry.**
+Local rig/ground contact/LOD/API/render checks pass; full F and retained0.2.10/code12 are
+pending. Then continue the bounded M1.9 audio foundation. Keep all physical/owner art,
+motion and sustained mobile acceptance gates open; engineering evidence does not waive them.
 
 Postpone bulk quest/spell generation until the authoring/art benchmark exists; additional
 magical disciplines until the first three show build depth; regions beyond the approved

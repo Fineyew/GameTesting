@@ -32,6 +32,8 @@ func setup(appearance: Dictionary, zone_geometry: Dictionary) -> void:
     avatar = WayfarerAvatar.new()
     add_child(avatar)
     avatar.build(appearance)
+    if terrain:
+        avatar.follow_terrain(terrain)
 
 func _physics_process(delta: float) -> void:
     var axis = input_axis if enabled else Vector2.ZERO
@@ -75,7 +77,7 @@ func _physics_process(delta: float) -> void:
     if avatar:
         avatar.set_travel_velocity(velocity)
         if avatar.walking:
-            avatar.rotation.y = lerp_angle(avatar.rotation.y, atan2(-velocity.x, -velocity.z), delta*12)
+            avatar.face_travel(atan2(-velocity.x,-velocity.z),delta)
 
 func reconcile(at: Vector3) -> void:
     authoritative_position = at
