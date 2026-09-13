@@ -96,6 +96,11 @@ func _build_gateway() -> void:
     panel.add_child(scroll)
     card = VBoxContainer.new()
     card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    card.child_entered_tree.connect(func(child):
+        if child is BaseButton:
+            # Android scrolling uses emulated mouse drags. Let the existing scroll
+            # container receive them and cancel a button press when a drag begins.
+            child.mouse_filter = Control.MOUSE_FILTER_PASS)
     scroll.add_child(card)
     if OS.has_feature("debug"):
         scroll.get_v_scroll_bar().value_changed.connect(func(_value): _debug_gateway_layout.call_deferred())

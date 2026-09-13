@@ -186,3 +186,18 @@ render review and native0.2.9 creator validation remain pending. Dedicated run/t
 recovery clips, foot planting, crowded-rig measurements and physical/owner acceptance
 remain unfinished. Synthetic side insets and emulator rendering do not certify a
 physical phone cutout, touch feel, thermal behavior or color calibration.
+
+### Creator native validation correction (2026-09-13)
+
+Initial code9ed2a71/run34766994707 passes214 backend tests/30 subtests, PostgreSQL,
+full Godot/API/authoring/terrain/network, render and walkthrough gates. Creator75,
+town71 and terrain52 draw calls pass. Inspected coral/tablet/wide/selection frames.
+Native existing movement/Folio/Bag/resume passes, then new creator QA times out revealing
+Server connection after a swipe. No ARM64 artifact was published; retained native
+10320098524 and render10320063696 preserve the failed attempt.
+Gateway buttons use the engine's STOP mouse filter, blocking emulated touch-drag input
+from reaching the ScrollContainer. The correction uses PASS only for gateway buttons;
+the existing scroll container owns scrolling and cancels the press on drag. A GUI-input
+regression requires propagation and no accidental offline entry. Native QA additionally
+waits for a focused, stable window after its deliberate restart and captures failures
+before cleanup changes the screen. Existing thresholds are preserved. Fresh CI required.

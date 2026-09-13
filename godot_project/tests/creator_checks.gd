@@ -36,6 +36,39 @@ static func capture(tree: SceneTree, name: String) -> void:
         tree.root.get_texture().get_image().save_png("user://"+name+".png")
 
 static func check(app: Node, tree: SceneTree) -> void:
+    # Godot's native ScrollContainer consumes emulated mouse drags on touchscreens.
+    # Verify propagation through a real gateway button; native QA proves scrolling.
+    var received: Array = []
+    var observe = func(event):
+        if event is InputEventMouseButton or event is InputEventMouseMotion:
+            received.append(event)
+    app.card_scroll.gui_input.connect(observe)
+    var start = Vector2.ZERO
+    for child in app.card.get_children():
+        if child is Button and child.text == "Explore the offline preview":
+            start = child.get_global_rect().get_center()
+    assert(start != Vector2.ZERO)
+    var press = InputEventMouseButton.new()
+    press.position = start
+    press.global_position = start
+    press.button_index = MOUSE_BUTTON_LEFT
+    press.button_mask = MOUSE_BUTTON_MASK_LEFT
+    press.pressed = true
+    tree.root.push_input(press,true)
+    var motion = InputEventMouseMotion.new()
+    motion.position = start-Vector2(0,180)
+    motion.global_position = motion.position
+    motion.relative = Vector2(0,-180)
+    motion.button_mask = MOUSE_BUTTON_MASK_LEFT
+    tree.root.push_input(motion,true)
+    press.pressed = false
+    press.button_mask = 0
+    press.position = motion.position
+    press.global_position = motion.position
+    tree.root.push_input(press,true)
+    assert(received.size() >= 2,"Gateway buttons must pass drag input to their scroll container")
+    assert(app.session == null,"A scroll gesture must not activate the preview button")
+    app.card_scroll.gui_input.disconnect(observe)
     app.show_creator()
     await tree.process_frame
     await tree.process_frame

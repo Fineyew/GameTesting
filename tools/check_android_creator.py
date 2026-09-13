@@ -9,7 +9,7 @@ import sys
 import tempfile
 import httpx
 from PIL import Image, ImageChops
-from tools.check_android import ROOT, OUT, PACKAGE, adb, capture, wait_for, wait_for_world
+from tools.check_android import ROOT, OUT, PACKAGE, adb, capture, wait_for, wait_for_world, wait_for_input_ready
 
 
 def check_creator():
@@ -77,6 +77,7 @@ def check_creator():
                     adb('shell', 'am', 'force-stop', PACKAGE)
                     adb('shell', 'monkey', '-p', PACKAGE, '-c', 'android.intent.category.LAUNCHER', '1')
                     wait_for_world('gateway')
+                    wait_for_input_ready()
                     # Use real form navigation and text input; no auth or UI bypass.
                     if 'Server connection' not in layout()['controls']:
                         adb('shell', 'input', 'swipe', str(round(width*.8)), str(round(height*.83)),
@@ -126,6 +127,12 @@ def check_creator():
                         'visible tint changes, touch drag/front reset, native creation, saved appearance and world entry.\n'
                         'Emulator only; physical phone/safe-cutout/thermal acceptance remains open.\n')
                     print('ANDROID_CREATOR_PASS')
+            except BaseException:
+                # Retain the actual failure before force-stop changes the screen.
+                capture('creator-failed')
+                (OUT / 'creator-failed-window.txt').write_text(adb('shell', 'dumpsys', 'window'))
+                (OUT / 'creator-failed-layout.json').write_text(json.dumps(layout(), indent=2))
+                raise
             finally:
                 # Stop the client before removing its disposable API; preserve earlier native logs.
                 adb('shell', 'am', 'force-stop', PACKAGE)
