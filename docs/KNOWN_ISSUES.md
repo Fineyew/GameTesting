@@ -175,17 +175,25 @@ Horizontal-only remote cadence and frame-rate-independent walk/idle sampling are
 at5972031/run34764740003 with real-engine tests and all three CI jobs passing. Verified
 ARM640.2.8/code10 is retained (PROJECT_STATE). The same three clips
 remain; fast travel still speeds the Walk clip rather than playing a newly authored Run.
-Foot planting/IK, turn/hit/recovery clips, creator matching, crowded-rig profiling and
+Foot planting/IK, turn/hit/recovery clips, crowded-rig profiling and
 owner/phone motion acceptance remain unfinished. No cosmetic family or rig was replaced.
 
 ## M1.8 creator preview continuation
 
-Creator/world appearance parity is implemented using current assets and IDs. Local
-choice/fallback/rotation/cleanup and real API persistence checks pass; full CI, actual
-render review and native0.2.9 creator validation remain pending. Dedicated run/turn/hit/
-recovery clips, foot planting, crowded-rig measurements and physical/owner acceptance
+Creator/world appearance parity using current assets/IDs passes all CI gates at
+74070f3/run34769922414, including actual render review and native0.2.9 creator validation.
+The gateway touch-scroll issue and native test keyboard-navigation issue below are
+corrected; failed evidence remains preserved. Dedicated run/turn/hit/recovery clips,
+foot planting, crowded-rig measurements and physical/owner acceptance
 remain unfinished. Synthetic side insets and emulator rendering do not certify a
 physical phone cutout, touch feel, thermal behavior or color calibration.
+
+The retained native creator world-entry frame is captured before camera/network
+readiness and shows transitional geometry plus Connecting. HTTP world entry and
+WebSocket acceptance are logged, but this is not a settled online world visual review.
+Creator colors/rotation/saved preview are inspected; full world/material/presence tests
+pass separately in Godot/API. Next native evidence refinement: wait for online readiness
+and a settled camera before taking the world frame. Physical online acceptance stays open.
 
 ### Creator native validation correction (2026-09-13)
 

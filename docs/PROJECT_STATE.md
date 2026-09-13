@@ -5,30 +5,73 @@ Read README → PROJECT_STATE → ARCHITECTURE → relevant source. Main remains
 
 ## Current milestone
 
-**M1.8 live creator/world appearance preview implemented; full validation in progress.**
-Resumed from clean/pushed572eb62 after the interrupted conversation. The preceding
-handoff CI34765370645 passed on attempt2; Notion records the unchanged Android retry
-after a Pixel Launcher ANR on attempt1. No prior source work was lost.
+**M1.8 live creator/world appearance preview implemented and validated.**
+Resumed from clean/pushed572eb62 after the interrupted conversation; no prior source
+work was lost. Code `74070f3cda1489940601749dd02510cd7b49b121` passes all three jobs in
+[run34769922414](https://github.com/Fineyew/GameTesting/actions/runs/34769922414). This completes the bounded creator increment; full M1.8 remains partial.
 
-The creator and saved-character selection now use one temporary isolated3D stage and
-WayfarerAvatar.apply_appearance, sharing the exact world tint/fallback path. All nine
-existing robe/skin combinations update in place without allocating another rig. Touch
-drag plus Left/Front/Right controls rotate the preview. Hidden stages stop rendering;
-creator/selection/login/world transitions release their viewport. Gateway button removal
-now defers until native input dispatch completes. Android display safe-area insets augment
-the existing gateway margins. Appearance IDs, assets, gameplay, protocols and saves stay.
+The creator and saved-character selection use one temporary isolated3D stage and
+WayfarerAvatar.apply_appearance, sharing the world tint/fallback path. All nine existing
+robe/skin combinations update in place without another rig. Touch drag plus
+Left/Front/Right controls rotate the preview. Hidden stages stop rendering and navigation
+releases the viewport. Gateway buttons allow the existing scroll container to receive
+drags; retired controls defer deletion until native dispatch completes. Android safe-area
+insets augment gateway margins. Startup copy now says0.2.9. IDs, assets, gameplay,
+protocols, schemas and existing saves remain compatible.
 
-Local:204 backend tests/30 subtests pass with10 explicit PostgreSQL skips. Godot preview
-checks cover nine combinations, old/missing-ID fallback, six-material cache, GUI/touch
-rotation, narrow960x720 and wide1600x720 layouts with58px side insets, and repeated cleanup.
-Real Godot/API checks include invalid creation retaining the draft, saved nondefault
-colors, reloaded selection and matching in-world rig, plus all existing progression.
-Full CI, actual creator renders and Android0.2.9/code11 native creator checks are pending.
-Do not treat the candidate as a verified deliverable until those gates pass.
+CI:214 backend tests/30 subtests including10 PostgreSQL tests and both migrations;
+32 terrain cases/2,067 samples/278 collision rays/17 invalid definitions/740 motions;
+36 impaired-controller cases; Godot import/smoke/motion, full two-player API progression
+and isolated authoring; nine Android readiness/keyboard tests; render/walkthroughs;
+actual emulator install/touch/Folio/Bag/locomotion/visible-resume and native creator pass.
+Creator checks cover nine choices, old/missing-ID fallback, six cached tint materials,
+rig reuse, GUI/touch rotation,960x720/1600x720 framing with58px synthetic side insets,
+and repeated cleanup. Real API checks reject invalid creation without losing the draft,
+reload nondefault saved colors and compare the in-world rig. Native creator QA uses a
+disposable loopback server and ordinary login, touch-opened menus/keyboard selection,
+visible color change, touch drag/Front, creation, persisted appearance and world entry.
+Local Godot smoke/API and nine Android harness tests also pass.
 
-Next after this bounded increment: remaining M1.8 run/turn/hit/recovery clips and foot
-contact through the existing rig, followed by crowded-rig profiling and owner/device review.
-M1.8 remains partial; physical performance/art acceptance and public deployment stay open.
+Verified ARM64 **0.2.9/code11**,29,165,015 bytes,
+[artifact10321917205](https://github.com/Fineyew/GameTesting/actions/runs/34769922414/artifacts/10321917205); native10322236423/render10322186546,
+retained through2026-12-12. Downloaded ZIP/APK CRC/SHA, ARM64-only libraries,
+version/code, packaged creator scripts and retained v2/v3 signing report checked.
+APK SHA256 `1e1973d26f105d37bb94cab35862f883a4bb34c68f3c8397f6b4a80c0a1ece90`;
+manifest source74070f3, tested merge `2c80ce0b54828c6cabda01c7040ba1a1516da4bb`.
+Inspected creator colors/rotation/saved selection, initial world entry and native resume frames.
+Creator75 draw calls; town71 calls/87,774 primitives/
+15,325,211 texture bytes; terrain52 calls, within existing budgets.
+These are rendered samples, not physical-phone performance measurements. Debug signing
+is ephemeral. A matching local backend is required for saved creator play; public
+deployment, release signing, phone/thermal and owner art/motion acceptance remain open.
+The native world-entry frame is transitional (camera below the scene, Connecting label).
+Server logs confirm world HTTP200 and WebSocket acceptance, but this capture does not
+prove a settled online camera or completed socket welcome. Full world/material/presence
+checks pass separately in real Godot/API. Improve the native online-ready/camera-settled
+capture before using it for online world visual acceptance; do not label this frame a
+completed in-world appearance review.
+
+Four failed candidates remain recorded below:34766994707 exposed gateway drag propagation;
+34767828121 confirmed scrolling, then exposed an unconditional Back key in the native
+test;34768581707 reached the creator, then exposed incorrect keyboard focus assumptions
+in the color-menu test;34769314494 completed creation but exposed the Python verifier
+expecting Godot's internal wrapper instead of the direct HTTP list. None published an
+APK. The direct-list persistence/world contract was also checked against a local isolated
+API before the final run. Text entry now replaces prefilled values
+and dismisses only a visible IME. Native menu selection starts from the actual unfocused
+state, covered by a real-window/PopupMenu regression. Passing evidence above supersedes
+their pending status without erasing failed attempts.
+
+Next native evidence refinement: wait for online readiness and a settled camera before
+the world capture. Next bounded feature task: add/review a Run clip and Walk/Run transition through the existing
+rig without changing movement authority or gameplay speed. Turn/hit/recovery clips,
+foot contact, crowded-rig profiling and owner/device review still belong to M1.8.
+Do not start M1.9 or broad cosmetic/content production from this checkpoint.
+
+The subsequent handoff changes documentation only; code/build/test evidence refers to
+74070f3 above. Its documentation commit uses [skip ci] to avoid rebuilding identical
+runtime/tests solely for status updates. Do not describe the documentation SHA as the
+APK's tested source; PR4 and Notion record both identities.
 
 ### Previous validated M1.8 motion increment
 

@@ -6,7 +6,7 @@ Revised 2026-09-10 after inspecting the repository at
 and successful M0–M1.3 CI jobs. Roadmap checkpoint edec97b changed planning only.
 The owner subsequently authorized implementation; current evidence lives in PROJECT_STATE.
 
-**M1.7 recovery passes at3f2d81c/handoffcf8bc0c. M1.8's first locomotion-transition increment passes all automated gates at5972031. Creator/world avatar parity is implemented with local checks passing; full CI/render/native validation is pending. The full milestone and physical/owner acceptance remain open. PROJECT_STATE owns evidence.**
+**M1.7 recovery passes at3f2d81c/handoffcf8bc0c. M1.8's first locomotion-transition increment passes all automated gates at5972031. Creator/world avatar parity passes full CI/render/native gates at74070f3/run34769922414, with verified0.2.9/code11 retained. The full milestone and physical/owner acceptance remain open. PROJECT_STATE owns evidence.**
 On 2026-09-11 the owner requested full continuation after the device-gate handoff.
 Proceed with engineering checkpoints while recording M1.4/M1.5 physical acceptance as
 outstanding. This changes development ordering only; Device E/R/L evidence and final
@@ -381,12 +381,15 @@ Implemented/validated2026-09-13 at5972031/run34764740003: real-rig/remote-caller
 authoring/render/native gates pass. Verified ARM640.2.8/code10 artifact10320930156 retained.
 This completes the first engineering checkpoint only; the whole M1.8 remains partial.
 
-Creator/world avatar parity continuation (2026-09-13, implemented; full validation pending): preview the
+Creator/world avatar parity continuation (2026-09-13, validated at74070f3/run34769922414): preview the
 existing three robe and three skin choices in the creator using the same Wayfarer asset
 and fallback mappings as exploration. Preserve saved IDs and the current form/navigation;
 test choice changes, creation, reload, viewport cleanup and Android touch/safe areas.
-No new cosmetic family or backend/schema change. This remains within M1.8 and requires
-a fresh gated APK and Device E acceptance; it does not replace the later rig/clip work.
+No new cosmetic family or backend/schema change. Verified ARM640.2.9/code11 artifact10321917205
+is retained after engine/API/render and native creator/scroll/rotation/creation/world checks.
+Device E acceptance remains open. Next bounded engineering work is a Run clip and
+Walk/Run transition through the existing rig; later turn/hit/recovery, foot contact and
+crowded-rig review remain required. This does not complete the full milestone.
 
 - **Kind / purpose:** Visual production, polish. Make the character feel expressive and substantial.
 - **Adds:** Finish the reusable player/NPC rig and bounded current creator options; idle,
@@ -1048,10 +1051,13 @@ If too much placeholder debt remains, return to bounded production batches befor
 | Entire-game art | M4.1 → M4.2 → M4.3 → M4.4 | Every launch environment, character/collectible, effect/audio and UI surface complete |
 | Release | M5.1 → M5.2 → M5.3 → M5.4 → M5.5 | Whole-game cohesion, phone certification, recovery/security, beta and approved launch |
 
-**Current engineering: validate and checkpoint M1.8 creator/world avatar parity.**
-M1.7 recovery and M1.8's first motion-transition checkpoint pass full gates and retained
-APK inspection. Preview the existing saved appearance options before creating a character,
-using the same avatar asset and fallback mappings as the world. Keep
+**Current engineering: continue M1.8 with a bounded Run clip and Walk/Run transition.**
+First refine the native online-ready/camera-settled capture; the creator run's initial
+world frame is transitional, not settled online visual acceptance (PROJECT_STATE).
+Recovery, locomotion-transition consistency and creator/world appearance parity pass
+full automated gates with retained APK inspection. Keep the current rig, saved appearance
+IDs, movement authority and gameplay speeds. Later turn/hit/recovery clips, foot contact
+and crowded-rig/owner review remain part of M1.8. Keep
 M1.7 Device R/subjective feel and final route presentation open. Keep the concrete M1.4 art/phone review and
 M1.5 online Device E checklist open alongside engineering; no release gate is waived.
 

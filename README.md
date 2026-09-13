@@ -4,13 +4,13 @@ An original Android-first online fantasy RPG built with Godot 4.5.1, FastAPI,
 PostgreSQL, Docker and Nginx. Continue this repository; do not recreate working systems.
 The active work is `feature/android-foundation`, [draft PR #4](https://github.com/Fineyew/GameTesting/pull/4).
 
-Current continuation: **M1.8 live creator preview implemented; validation in progress**.
-The existing three robe colors and three skin tones now update the same Wayfarer rig
-used in exploration, with drag/button rotation and saved-character preview. Local
-Godot preview and real API creation/reload/world appearance checks pass. Android
-**0.2.9/code11** is the candidate; full CI/render/native evidence is still pending.
-The previous verified Android0.2.8/code10 remains the handoff until those gates pass.
-PROJECT_STATE records exact evidence and outstanding physical/owner acceptance.
+Current continuation: **M1.8 live creator preview validated** at `74070f3`,
+[run34769922414](https://github.com/Fineyew/GameTesting/actions/runs/34769922414). Three robe colors and three skin tones update the same Wayfarer
+rig used in exploration, with drag/button rotation and saved-character preview.
+Godot/API appearance parity, render and full native Android interaction gates pass.
+[Verified ARM64 **0.2.9/code11**](https://github.com/Fineyew/GameTesting/actions/runs/34769922414/artifacts/10321917205) is the current development handoff.
+PROJECT_STATE records exact provenance. Full M1.8 animation and physical/owner
+acceptance remain open; saved creator play requires the matching backend below.
 
 Run `python -m tools.check_movement_network` after Godot import to reproduce36 impairment
 scenarios. This does not simulate every mobile transport condition or replace phone testing.
@@ -67,7 +67,7 @@ run `python -m tools.check_terrain` after Godot import. The subsequent activatio
 Mooring Rise, southeast of spawn, adds a ramp to a1.2m terrace and descending steps.
 The server derives altitude and restores safe terrain positions after reconnect.
 
-Create an account and one Wayfarer with appearance/affinity; enter a small original
+Create an account and preview one Wayfarer with live robe/skin choices, rotation and affinity; enter a small original
 Dawnreef with a small authored Lantern Well/Mara art benchmark; move with touch/WASD/controller stick; orbit/recenter the camera;
 see other connected players and use preset chat; follow Mara's branching dialogue, accept the first quest,
 fight the Fog-Thorn Lurker in server-owned Tidebeat turns and retain XP, currency and
@@ -133,7 +133,7 @@ isolated database migrated to head. CI runs both migrations and the PostgreSQL t
 ## Android build and runtime checks
 
 Use the checked-in **Android** export preset: ARM64, INTERNET permission, app ID
-`work.surveyroute.veilboundtides`, version 0.2.9/code 11 (candidate; full validation pending). Use Godot 4.5.1 export templates,
+`work.surveyroute.veilboundtides`, version 0.2.9/code 11. Use Godot 4.5.1 export templates,
 JDK17, Android SDK platform35 and build-tools35.0.0. See the
 [official engine export instructions](https://docs.godotengine.org/en/4.5/tutorials/export/exporting_for_android.html).
 The exported engine minimum is API24, target API35; minimum OS is not a device-performance guarantee.
@@ -181,7 +181,11 @@ adb reverse tcp:8000 tcp:8000
 
 Run the local backend above, select **Server connection** →
 `http://127.0.0.1:8000/api/v1`, create a test account and character, and complete Mara's
-quests and spell lessons while a second client is connected. Save a folio, reconnect,
+quests and spell lessons while a second client is connected. Before creating a fresh
+test character, change both color options, drag the preview and use Front. Create it,
+sign out/in and compare the saved preview and world avatar. Check touch scrolling and
+text entry with the phone keyboard visible. Existing accounts retain their one character.
+Save a folio, reconnect,
 and verify that only prepared spells appear in combat. Buy the vest with quest-earned
 chits, compare/equip it, reconnect, verify the saved balance/equipment and test Guard in
 combat; unequip it and confirm that robe appearance stays unchanged. Buy and use one

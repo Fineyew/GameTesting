@@ -507,6 +507,9 @@ contains no persistence. Orthographic framing accommodates the body/staff at nar
 and wide aspects. Touch is owned by one finger until release; button rotation also works.
 Hidden previews disable rendering. Bootstrap hides/queues the stage on navigation and
 before PlaySession entry; input-emitting gateway controls also use deferred deletion.
+Gateway BaseButtons use MOUSE_FILTER_PASS so the existing ScrollContainer receives
+emulated touch drags and cancels button activation when scrolling begins. Native test
+text entry replaces prefilled values and only sends Back when API35 reports a visible IME.
 Android display-safe insets augment the existing42px margins; physical cutouts remain
 part of Device E validation. Debug-only bounds logs contain labels/placeholders, never
 field contents or credentials. Native QA uses those actual bounds for real GUI input.

@@ -1,6 +1,6 @@
 # Changelog
 
-## 2026-09-13 — M1.8 live creator preview candidate
+## 2026-09-13 — M1.8 live creator preview validated
 
 - Recover clean/pushed572eb62 and continue the recorded existing-choice creator task.
 - Share live robe/skin tinting with the world avatar; preserve all nine combinations,
@@ -12,8 +12,16 @@
   world parity. Retain creator screenshots and enforce the existing150-call budget.
 - Extend native QA through disposable-loopback login, touch-opened color menus,
   keyboard selection, actual touch rotation, creation/saved appearance and world entry.
-- Candidate Android0.2.9/code11; full CI/render/native validation remains pending.
-  No new assets, paid generation, protocol/schema changes or public deployment.
+- Code74070f3/run34769922414 passes backend214 tests/30 subtests including10 PG tests,
+  full Godot/API/terrain/network/authoring, nine Android harness tests, render and native
+  creator plus existing movement/resume gates. Creator75/town71/terrain52 draw calls.
+- Verified ARM640.2.9/code11 artifact10321917205, native10322236423/render10322186546;
+  hashes/CRC, architecture/version, compiled scripts/signing report and actual frames checked.
+  PROJECT_STATE records full provenance and all four corrected failed native attempts.
+- Correct gateway touch-drag propagation and native-test prefilled text/keyboard handling;
+  retain original assertions and diagnostics. Correct stale startup version caption.
+- Full M1.8 clip/foot-contact/device work remains partial. No new assets, paid generation,
+  protocol/schema changes or public deployment.
 
 
 ## 2026-09-13 — M1.8 first motion-transition checkpoint validated
