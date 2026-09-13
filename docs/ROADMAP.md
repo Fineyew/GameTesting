@@ -6,7 +6,7 @@ Revised 2026-09-10 after inspecting the repository at
 and successful M0–M1.3 CI jobs. Roadmap checkpoint edec97b changed planning only.
 The owner subsequently authorized implementation; current evidence lives in PROJECT_STATE.
 
-**M1.6 engineering complete atd1f0929; M1.7 geometry groundwork passes atfe4551c. Terrain activation is now implemented as a candidate; current validation and open acceptance are in PROJECT_STATE.**
+**M1.7 terrain/recovery engineering passes at3f2d81c; physical/feel acceptance remains open. The next narrow engineering task is M1.8 existing-rig locomotion transitions. PROJECT_STATE owns validation evidence.**
 On 2026-09-11 the owner requested full continuation after the device-gate handoff.
 Proceed with engineering checkpoints while recording M1.4/M1.5 physical acceptance as
 outstanding. This changes development ordering only; Device E/R/L evidence and final
@@ -360,12 +360,22 @@ square clearance and discrete stair following are not a claim of final locomotio
 
 2026-09-12 recovery continuation:36 deterministic actual-controller impairment scenarios
 reproduce15 baseline settling failures; resting convergence/ordinary correction cap and
-label/framing edits are implemented. Full CI pending; no protocol/schema change. Physical
+label/framing edits are implemented. On2026-09-13 code3f2d81c/run34763944468 passes all
+three CI jobs,214 backend tests/30 subtests,36 impairment cases and native Android gates.
+Verified ARM640.2.7/code9 artifact10320225025 is retained. Inspected frame clears the avatar;
+large label/full-route framing remains presentation work. No protocol/schema change. Physical
 Device R remains open. Once these gates and frame inspection pass, the next engineering
 increment may tackle M1.8’s existing-rig locomotion transitions while retaining all physical
 acceptance gates; do not launch a broad creator/content production batch.
 
 ### M1.8 — Character identity and animation foundation
+
+First bounded engineering checkpoint: make existing-rig locomotion transitions consistent
+for local and remote avatars. Use horizontal travel speed, stable walk/idle thresholds and
+smooth cadence through the current Idle/Walk/Cast interface. Validate equal elapsed motion
+at 30/60/120 FPS, vertical-only remote correction, stopping and cast return. Preserve all
+assets, appearance IDs, authority and collision. This starts M1.8; it does not finish new
+run/turn/hit/recovery clips, foot contact, creator matching, crowded-rig profiling or Device E.
 
 - **Kind / purpose:** Visual production, polish. Make the character feel expressive and substantial.
 - **Adds:** Finish the reusable player/NPC rig and bounded current creator options; idle,
@@ -1027,9 +1037,9 @@ If too much placeholder debt remains, return to bounded production batches befor
 | Entire-game art | M4.1 → M4.2 → M4.3 → M4.4 | Every launch environment, character/collectible, effect/audio and UI surface complete |
 | Release | M5.1 → M5.2 → M5.3 → M5.4 → M5.5 | Whole-game cohesion, phone certification, recovery/security, beta and approved launch |
 
-**Recommended immediate work: M1.7 terrain authority and movement.** M1.5 and M1.6
-engineering are checkpointed. Validate/checkpoint the activation candidate, inspect its
-retained render/APK, then address bounded latency/terrain feel and Device R acceptance. Keep the concrete M1.4 art/phone review and
+**Recommended immediate engineering: M1.8 existing-rig locomotion transitions.**
+The M1.7 activation/recovery code gates and retained APK inspection now pass. Keep
+M1.7 Device R/subjective feel and final route presentation open. Keep the concrete M1.4 art/phone review and
 M1.5 online Device E checklist open alongside engineering; no release gate is waived.
 
 Postpone bulk quest/spell generation until the authoring/art benchmark exists; additional

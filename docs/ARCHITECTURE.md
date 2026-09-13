@@ -40,6 +40,13 @@ PROJECT_STATE records actual restoration/verification, not design aspirations.
 Push stable feature-branch checkpoints during long sessions and update state
 before handoff. No secrets or build products belong in source control.
 
+The [Notion project hub](https://app.notion.com/p/3da7c14b111981a4999dcac630171c88)
+is a manual status/review companion, not a runtime dependency or second content store.
+Canonical plans, decisions, source and test evidence remain in this repository and CI.
+Record the source checkpoint and update date in Notion; resolve disagreement against Git
+and promote accepted owner feedback into the appropriate canonical document. No automatic
+sync, background development agent, paid project-management service or deployment is added.
+
 ## Implemented interfaces and runtime constraints
 
 The composition root (`backend/app/main.py`) injects the immutable content catalog,

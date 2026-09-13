@@ -1,12 +1,26 @@
 # Changelog
 
-## 2026-09-12 — M1.7 delayed-snapshot recovery candidate
+## 2026-09-13 — M1.7 recovery validated and Notion handoff
+
+- Recover the paused tree without rebuilding systems; code `3f2d81cf68c96a3ae3c50fefc7f2d5f1bcbb3cca`
+  passes all three jobs in run34763944468.214 backend tests/30 subtests including10 PG tests,
+  both migrations, terrain parity/740 motions,36 impairment cases, Godot/API/authoring,
+  seven readiness regressions, render, walkthroughs and native touch/resume pass.
+- Retain verified ARM640.2.7/code9 artifact10320225025, native10319249315/render10319288921
+  through2026-12-12. PROJECT_STATE records source/merge hashes and APK digest. Inspected
+  town71/terrain52 draw-call frames; label clears the avatar but full-route framing remains open.
+- Create the Notion project hub and three owner-facing pages; GitHub stays canonical,
+  with manual status updates and no additional paid service or background agent.
+- Next narrow engineering scope is M1.8 existing-rig transitions. Physical/art acceptance
+  stays unverified; no public deployment, broad content or paid asset generation.
+
+## 2026-09-12 — M1.7 delayed-snapshot recovery candidate (validated above)
 
 - Add36 deterministic impairment scenarios using real Godot movement against Python authority.
   Baseline15 scenarios failed to settle; resting reconciliation now closes the old .55m gap
   and caps ordinary correction at6m/s. Existing moving tolerance/emergency recovery remain.
 - Move the terrain label and improve the profile capture; target Android0.2.7/code9.
-- No WS/schema/content/persistence rule changes. Full CI/artifact validation pending;
+- No WS/schema/content/persistence rule changes. Full CI/artifact validation was pending at pause;
   physical-phone/owner feel acceptance remains unverified. Prior checkpoints are preserved.
 
 ## 2026-09-12 — M1.7 terrain activation candidate

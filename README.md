@@ -4,21 +4,24 @@ An original Android-first online fantasy RPG built with Godot 4.5.1, FastAPI,
 PostgreSQL, Docker and Nginx. Continue this repository; do not recreate working systems.
 The active work is `feature/android-foundation`, [draft PR #4](https://github.com/Fineyew/GameTesting/pull/4).
 
-Current continuation: **M1.7 terrain activation candidate**, including Mooring Rise,
-world protocol2 and persistent safe terrain entry. All three jobs in
-[run34669362714](https://github.com/Fineyew/GameTesting/actions/runs/34669362714) pass at
-`cd6df1dcd471a526260b2ba12e2443deb8c4a7fe`. Retained
-[ARM64 APK0.2.6/code8](https://github.com/Fineyew/GameTesting/actions/runs/34669362714/artifacts/10290647152)
-passes automated gates; PROJECT_STATE records hashes/provenance. Physical-phone and
-adverse-latency/feel acceptance remain open.
-The older checkpoint evidence below remains history.
+Current continuation: **M1.7 recovery engineering validated**. Resting terrain position
+now converges under delayed/lost snapshots. All three jobs in
+[run34763944468](https://github.com/Fineyew/GameTesting/actions/runs/34763944468) pass at
+`3f2d81cf68c96a3ae3c50fefc7f2d5f1bcbb3cca`. Retained
+[ARM64 APK0.2.7/code9](https://github.com/Fineyew/GameTesting/actions/runs/34763944468/artifacts/10320225025)
+has verified download/provenance; PROJECT_STATE records hashes, tests and inspected renders.
+Physical-phone and owner movement/art acceptance remain open. The next narrow engineering
+step is M1.8's existing-rig locomotion transitions. Earlier checkpoint evidence below is history.
 
-Current work adds deterministic delayed/lost-snapshot recovery checks and fixes resting
-position disagreement. Target APK0.2.7/code9; see PROJECT_STATE for validation status.
 Run `python -m tools.check_movement_network` after Godot import to reproduce36 impairment
 scenarios. This does not simulate every mobile transport condition or replace phone testing.
 
 ## Start here
+
+The [Notion project hub](https://app.notion.com/p/3da7c14b111981a4999dcac630171c88)
+provides a progress overview, road to beta and owner playtest/art review checklist.
+GitHub remains canonical for code, design, roadmap, tests and checkpoint evidence.
+The hub is updated during working sessions; automatic synchronization is not installed.
 
 Read [PROJECT_STATE](docs/PROJECT_STATE.md), [ARCHITECTURE](docs/ARCHITECTURE.md),
 [GAME_DESIGN](docs/GAME_DESIGN.md), [ROADMAP](docs/ROADMAP.md), [CONTENT_GUIDE](docs/CONTENT_GUIDE.md),
@@ -117,6 +120,8 @@ python -m tools.build_catalog
 python -m tools.check_art
 python -m tools.author_content check
 python -m tools.check_godot
+python -m tools.check_terrain
+python -m tools.check_movement_network
 python -m tools.check_online
 python -m tools.check_authoring
 ```
@@ -129,7 +134,7 @@ isolated database migrated to head. CI runs both migrations and the PostgreSQL t
 ## Android build and runtime checks
 
 Use the checked-in **Android** export preset: ARM64, INTERNET permission, app ID
-`work.surveyroute.veilboundtides`, version 0.2.6/code 8 (automated activation gates passed; physical validation open). Use Godot 4.5.1 export templates,
+`work.surveyroute.veilboundtides`, version 0.2.7/code 9 (automated gates passed; physical validation open). Use Godot 4.5.1 export templates,
 JDK17, Android SDK platform35 and build-tools35.0.0. See the
 [official engine export instructions](https://docs.godotengine.org/en/4.5/tutorials/export/exporting_for_android.html).
 The exported engine minimum is API24, target API35; minimum OS is not a device-performance guarantee.
@@ -171,7 +176,7 @@ With Android platform-tools and USB debugging enabled:
 
 ```bash
 adb devices
-adb install -r veilbound-tides-0.2.6-android.apk
+adb install -r veilbound-tides-0.2.7-android.apk
 adb reverse tcp:8000 tcp:8000
 ```
 

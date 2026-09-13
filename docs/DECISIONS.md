@@ -77,3 +77,12 @@ Preserve generated asset candidates for later reviewed imports; no new paid gene
 .55m tolerance. Keep that tolerance while moving; use1mm at rest and6m/s ordinary correction
 cap through existing terrain clearance. Preserve protocol2, server authority and module
 boundaries. Do not introduce a second simulation stack or claim physical-network acceptance.
+
+## 2026-09-13 — Notion accompanies the canonical GitHub project
+
+Create a project hub, road-to-beta overview, owner playtest/art review and workflow pages
+in the owner's connected Notion workspace. Keep repository docs, source, CI and exact
+checkpoints authoritative. Update the hub manually at session handoffs with a date and
+source SHA; no automatic sync or background agent is implied. Do not duplicate gameplay
+definitions or put secrets/player records there. No additional paid service is needed.
+The repository remains fully maintainable without access to Notion.

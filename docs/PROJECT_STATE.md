@@ -1,12 +1,15 @@
 # Veilbound Tides — project state
 
-Updated 2026-09-12. Branch `feature/android-foundation`, draft [PR #4](https://github.com/Fineyew/GameTesting/pull/4).
+Updated 2026-09-13. Branch `feature/android-foundation`, draft [PR #4](https://github.com/Fineyew/GameTesting/pull/4).
 Read README → PROJECT_STATE → ARCHITECTURE → relevant source. Main remains bd98746; no merge/deployment.
 
 ## Current milestone
 
-**M1.7 latency/reconciliation continuation implemented; full CI pending.**
-The previous handoff7bc4e00 passes run34669910393. A new deterministic network schedule
+**M1.7 recovery engineering validated; physical/feel acceptance remains open.**
+The previous handoff7bc4e00 passes run34669910393. The paused tree was recovered intact
+after workspace maintenance and pushed as code `3f2d81cf68c96a3ae3c50fefc7f2d5f1bcbb3cca`.
+All three jobs in [run34763944468](https://github.com/Fineyew/GameTesting/actions/runs/34763944468)
+pass. A new deterministic network schedule
 exercises the actual Godot controller against Python20Hz authority:36 combinations of
 ramp/stairs/wall/terrace edge,50/150/300ms one-way delay, one-second packet silence or
 rejoin. Baseline exposed15 scenarios left permanently outside3cm agreement; the .55m
@@ -16,11 +19,29 @@ Tests require <=3cm final error, settling within2.5s of stick release, <=.101m c
 per60Hz frame and <=2.5m peak divergence, with terrain clearance and foot-height checks.
 This is deterministic controller evidence, not real cellular/physical-phone measurement.
 
-Mooring Rise label moves beside/above the terrace and render framing changes to show its
-profile. Target APK0.2.7/code9; not yet a validated artifact. No protocol/schema/catalog,
-backend rule, progression, saved ID or paid-asset change. Physical acceptance stays open.
-Local204 backend tests/30 subtests pass with10 explicit PG skips; Godot smoke and36 new
-network cases pass. Full Godot/API/render/Android evidence is pending.
+CI passes214 backend tests/30 subtests including10 PostgreSQL tests and both migrations;
+32 terrain cases/2,067 samples/278 collision rays/17 invalid definitions/740 movement
+comparisons;36 impaired-controller cases; Godot smoke/full two-player progression/terrain
+route/reconnect and isolated authoring. Seven Android readiness tests, both walkthroughs,
+render and actual emulator install/touch/Folio/Bag/locomotion/visible-resume pass.
+Maximum impairment-case peak divergence2.031m, ordinary correction0.1m/frame, final0.001m,
+settling1.6s after release. These are deterministic fixtures, not measured cellular behavior.
+Fresh local Godot import/smoke also passes in the recovered workspace.
+
+Retained ARM64 **0.2.7/code9**,29,156,650 bytes,
+[artifact10320225025](https://github.com/Fineyew/GameTesting/actions/runs/34763944468/artifacts/10320225025);
+native10319249315/render10319288921, through2026-12-12. Downloaded ZIP/APK CRC/SHA,
+ARM64-only libraries, version/code and retained v2/v3 signing report verified.
+APK SHA256 `8ab9cdfc49e4a1ee3b1458cc3e4559af2aa268cd851f762ffc0f03f622c1eb1b`;
+manifest source3f2d81c, tested merge `8046d27a220d6fa7a6ffbb481b8dc675db8d1a67`.
+Debug identity is ephemeral. Inspected town and terrain frames:71 town/52 terrain calls,
+87,774 town primitives/15,182,467 texture bytes. The label clears the avatar in this view;
+it remains large over the steps and the full route is not framed. Final terrain art is open.
+No protocol/schema/catalog/backend-rule/progression/saved-ID or paid-asset change.
+
+The [Notion hub](https://app.notion.com/p/3da7c14b111981a4999dcac630171c88) is now available
+with road-to-beta, owner playtest/art review and workflow pages. It is updated manually;
+GitHub remains canonical. No public deployment, physical-phone test or new paid job occurred.
 
 ### Previous validated terrain activation (preserved)
 
@@ -215,13 +236,11 @@ trading, gathering/crafting, mounts/housing/pets or broad social content were ad
 Recovery/moderation, load tests, JSON→PG import/restore, staging/production, signing and
 updater remain future work. One process owns the room;32-player cap is unbenchmarked.
 
-**Next: M1.7 latency/terrain feel acceptance.** Measure delayed/lost snapshot recovery and
-edge/corner/stair stopping behavior on this route, then refine only demonstrated issues. Include a clearer ramp/stair profile capture and
-move the Mooring Rise label away from the avatar silhouette in the next presentation pass.
-Use bounded 50/150/300ms delays, brief snapshot loss and reconnect on ramp/landing as
-reproducible fixtures; measure maximum correction and settling time, not just final position.
-Obtain Device R physical-phone evidence before calling finished movement accepted. Preserve
-server authority and the existing player/camera modules; no broad M1.8 content increment yet.
+**Next engineering: M1.8 existing-rig locomotion transitions**, scoped in ROADMAP.
+The deterministic M1.7 delay/silence/rejoin gate now passes. Preserve its correction/settling
+assertions and obtain Device R evidence before calling finished movement accepted. Physical
+edge/corner/stair feel, variable-rate/jitter/long-outage behavior and the full-route visual
+review remain open. No broad creator, asset-family or content production increment yet.
 Current tools cover catalog templates/diagnostics, scene/asset binding/status checks and
 an isolated authored preview example. No bulk live content. Keep M1.4/M1.5
 Device E open alongside engineering; README provides local backend/USB reverse testing.
@@ -230,7 +249,8 @@ The inherited public endpoint has not been updated or verified.
 ## Build / continue
 
 Install backend/requirements.lock; run pytest backend/tests, tools.build_catalog,
-tools.check_art, tools.author_content check, tools.check_godot, tools.check_terrain, tools.check_online and
+tools.check_art, tools.author_content check, tools.check_godot, tools.check_terrain,
+tools.check_movement_network, tools.check_online and
 tools.check_authoring with GODOT_BIN set to4.5.1.
 Android job adds Pillow11.3.0 and unittest discover -s tools/tests. CI supplies PG16,
 JDK17/SDK35/templates, render and emulator. README has exact commands and phone checklist.

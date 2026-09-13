@@ -18,8 +18,8 @@ lurker is drawn to that disturbance; defeating it helps the town but does not ex
 the voice. The sealed Saltglass Cistern points toward the first major investigation.
 
 Target subareas: Lantern Commons, reed terraces, fog-thorn margins, mooring walk, and
-Saltglass Cistern. Current Dawnreef is a small flat engineering scene with landmarks;
-these names do not mean five finished environments exist.
+Saltglass Cistern. Current Dawnreef is a small engineering area with landmarks and one
+Mooring Rise ramp/terrace/stair route; these names do not mean five finished environments exist.
 
 ## Magical disciplines
 
