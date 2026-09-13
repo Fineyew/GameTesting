@@ -5,7 +5,7 @@ Read README → PROJECT_STATE → ARCHITECTURE → relevant source. Main remains
 
 ## Current milestone
 
-**M1.11 combat/progression expansion is implemented; Android relaunch gate recovery in progress.**
+**M1.11 combat/progression passes full runtime CI; installer retention correction is pending.**
 The owner requested continued work through completion on 2026-09-13. Continue stable
 remote checkpoints without routine confirmations. No final-game/physical-device or
 owner art/listening acceptance is implied by automated engineering checks.
@@ -24,13 +24,14 @@ owner art/listening acceptance is implied by automated engineering checks.
   armor, Focus protection, lesson levels and next threshold. Sound set: 15 assets / 563,018 bytes.
 - The client requires additive `tidebeat_protocol: 2`. Existing aggregate fields and active
   encounters read optional armor/drain values as zero; no database migration or save reset.
-- Local backend passes 231 tests / 39 subtests; 11 PostgreSQL checks await CI. Local engine
+- CI backend passes 242 tests / 39 subtests including 11 PostgreSQL checks. Engine
   smoke/audio/motion and 22 low/high spell views pass. High preset peaks at 128 calls /
   147,488 primitives after retaining only raised terrain in the floor shadow pass; flat
   terrain still receives shadows, raised triangles/collision are unchanged. Budgets stay fixed.
 - A second bounded Godot client continues the character genuinely earned by the existing
-  online route against the same isolated API. New progression route and final regression
-  are being validated. Candidate 0.2.13/code 15 awaits full CI/native and artifact verification.
+  online route against the same isolated API. The full earned progression route passes,
+  including all three new lessons, six-slot preparation, real effects and reconnect.
+  Candidate 0.2.13/code 15 still awaits a correctly retained and verified installer.
 
 Recovery on 2026-09-13: source `36aa66ebcc62cbcc544425219ba1cbf712fdf842`
 was clean and pushed. Run34775850505 passes backend, Godot/API, render/export and native
@@ -41,7 +42,24 @@ but its **requested** size remains720x1280. The parser mistook that request for 
 actual frame. The correction reads the focused window's laid-out `Frames: ... frame=`
 from `dumpsys window -a`, with `mHaveFrame=true`, the same surface/focus/rotation
 requirements and three-second stabilization. Twelve harness regressions pass locally;
-full CI/native and the0.2.13 artifact remain pending. No movement/image/audio gate is relaxed.
+the unchanged native route now passes. No movement/image/audio gate is relaxed.
+
+All three jobs pass at `a9f31ae20dd8e15abfb049cf85979610302bda14`,
+[run34786789784](https://github.com/Fineyew/GameTesting/actions/runs/34786789784), tested merge
+`4009cca515a3871e10c441b70b9dc0e0379c58a5`. Native10327176919 and render10327451138
+retain actual success. The downloaded native window passes the corrected parser. Inspected
+settled online world, Prism Needle/Shellfold and Stillwater Knot/Hushfin views. Town72 calls /
+79,066 primitives; terrain69;32-rig crowd224 /120,196; high effects peak128 /147,488.
+These are software-renderer samples, not physical-phone measurements.
+
+**That run did not retain an APK.** Artifact10327565358 contains render/audio/manifest only:
+the export helper still named its version0.2.13 binary `veilbound-tides-0.2.12-android.apk`,
+while the upload listed0.2.13. Post-download verification caught the missing installer;
+never claim that archive as a usable phone build. Current verified download remains0.2.11.
+The correction derives filename/version/code from the Android preset, checks actual package
+badging and adds a delivery gate that validates file/hash/ABI/signing report/provenance,
+then stages only the phone APK/report/manifest for upload.17 local packaging/window tests
+pass. The final retained-installer pipeline is under CI validation.
 
 Next: complete/checkpoint M1.11 and retain its APK; then M1.12's bounded chapter, followed
 by M2.1 staging. Physical Device E/R/L, owner review, public service and launch remain open.

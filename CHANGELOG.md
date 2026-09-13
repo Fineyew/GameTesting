@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-09-13 — M1.11 runtime validated; installer retention follow-up
+
+- Sourcea9f31ae/run34786789784 passes all three jobs:242 backend tests/39 subtests,
+  PostgreSQL, complete earned Godot/API progression, render and native creator/touch/audio/resume.
+- Verify and inspect retained native10327176919/render10327451138.
+- Catch missing APK in downloaded artifact10327565358: export used stale0.2.12 filename
+  while the upload expected0.2.13. That archive is not an installable delivery.
+- Derive export identity from the Android preset and verify actual badging; add an
+  explicit file/hash/ABI/report/provenance gate and curated phone-only upload folder.
+-17 local packaging/window tests pass; new full CI and installer verification pending.
+
 ## 2026-09-13 — M1.11 Android relaunch recovery
 
 - Recover clean/pushed36aa66e; diagnose run34775850505 from retained native10323951508.

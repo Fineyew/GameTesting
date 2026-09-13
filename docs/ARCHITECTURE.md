@@ -620,3 +620,14 @@ rotation animation for three seconds. It fails closed on missing/malformed layou
 another window's frame. Movement, image, audio and creator input assertions are unchanged.
 AOSP documents these fields in [WindowState](https://android.googlesource.com/platform/frameworks/base/+/master/services/core/java/com/android/server/wm/WindowState.java)
 and [WindowFrames](https://android.googlesource.com/platform/frameworks/base/+/master/services/core/java/com/android/server/wm/WindowFrames.java).
+
+
+## Android deliverable identity and retention
+
+The named Android preset is the sole filename/version/code source for export. Package
+badging must match it. After native checks, `prepare_android_delivery` validates the
+manifest's exact ARM64 filename/version/source SHA, actual file size/hash/ZIP/ABI and
+retained v2/v3 signing/badging report, then stages only the APK/report/manifest. CI
+uploads that folder with evidence. Missing APKs fail before upload even when render
+files exist; the x86_64 QA file is excluded. Final artifact bytes are still downloaded
+and independently checked before a user-facing build is called verified.

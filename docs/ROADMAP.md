@@ -452,11 +452,11 @@ awaits full F/native; owner visual acceptance and Device R remain open.
 
 ### M1.11 — First combat and progression expansion
 
-**Local candidate 2026-09-13; full F/native pending.** Two new encounters, three earned
+**All runtime F/native pass at a9f31ae/run34786789784; installer retention correction pending.** Two new encounters, three earned
 lessons/spells, affinity/cross-training and content-driven progression/rewards retain old
 numerical rules and six slots. Original creature motion/audio and eleven effect shapes
 are integrated. Backend and local engine/render pass; earned online continuation, final
-CI/artifact retention and physical Device E remain required. Run34775850505 passed native audio/movement but exposed a stale requested-size assumption at creator relaunch; focused actual-frame recovery is under validation. PROJECT_STATE owns evidence.
+Artifact retention and physical Device E remain required. The native focused-frame fix passes; post-download inspection exposed a stale export filename and missing APK in the green run. The corrected delivery gate is being validated. PROJECT_STATE owns evidence.
 
 - **Kind / purpose:** Gameplay systems, authored content. Prove strategic variety before bulk spells.
 - **Adds:** Catalog-driven progression thresholds/reward sources, at most two additional

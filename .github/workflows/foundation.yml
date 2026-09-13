@@ -147,15 +147,16 @@ jobs:
           # The old swiftshader_indirect GLES translator failed uniform linking.
           emulator-options: -no-window -gpu swangle -noaudio -no-boot-anim -camera-back none
           script: python -m tools.check_android
+      - name: Verify and stage the installable phone handoff
+        run: python -m tools.prepare_android_delivery
       - name: Retain installable ARM64 artifact and render evidence
         uses: actions/upload-artifact@v4
         with:
           name: veilbound-tides-android-foundation
           retention-days: 90
+          if-no-files-found: error
           path: |
-            builds/veilbound-tides-0.2.13-android.apk
-            builds/veilbound-tides-0.2.13-android.apk.verification.txt
-            builds/build-manifest.json
+            builds/android-delivery/
             builds/render-check/
             builds/audio-check/
       - name: Retain Android runtime evidence

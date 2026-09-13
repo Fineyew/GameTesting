@@ -7,9 +7,9 @@ The active work is `feature/android-foundation`, [draft PR #4](https://github.co
 Current continuation: **M1.11 combat/progression candidate**. Two tactical reef enemies,
 three earned spells/lessons, affinity and cross-training, catalog XP/rewards and eleven
 bounded action effects are implemented. The six-slot folio and old save/rule values remain.
-Local backend/engine/render checks pass; 0.2.13/code 15 full CI/native is pending. M1.10's
-Android movement passed visually but missed a footstep; a physics-onset fix preserves the
-native gate. Current verified Android download remains **0.2.11/code 13**; see PROJECT_STATE
+Full runtime CI passes at a9f31ae/run34786789784, including the footstep and
+Android relaunch fixes. Post-download verification caught a stale export filename that
+omitted the installer from the artifact. The corrected0.2.13/code15 packaging is pending. Current verified Android download remains **0.2.11/code 13**; see PROJECT_STATE
 for exact source/build evidence and open physical/owner acceptance.
 
 Run `python -m tools.check_movement_network` after Godot import to reproduce36 impairment
@@ -149,8 +149,11 @@ xvfb-run -a python -m tools.check_render
 python -m tools.check_android
 ```
 
-The build script creates the ARM64 deliverable, a separate x86_64 QA APK, signature
-verification reports and a SHA-256/source-commit manifest. Only the ARM64 file is for
+The build script derives its filename/version from the Android preset and creates the
+ARM64 deliverable, a separate x86_64 QA APK, signature verification reports and a
+SHA-256/source-commit manifest. After native checks, `python -m tools.prepare_android_delivery`
+validates the phone file/hash/ABI/version/signing report and stages `builds/android-delivery`
+for retention; the QA APK is never included. Only the ARM64 file is for
 phones. CI retains it as `veilbound-tides-android-foundation` with render evidence;
 `android-runtime-evidence` records emulator touch/resume checks. Artifact retention
 is 90 days. `dawnreef-render-evidence` also retains captures on failure. Debug keys are ephemeral; a differently signed later test APK can require

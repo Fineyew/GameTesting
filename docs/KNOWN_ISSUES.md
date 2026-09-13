@@ -22,8 +22,9 @@ Updated 2026-09-13. See PROJECT_STATE for current CI/artifact status.
 
 ## Gameplay/art
 
-- One enemy and five quests, including three short lessons; six obtainable spells and an
-  editable six-slot folio. Affinity-specific progression and cooperative combat remain planned.
+- Three enemies, eight quests and nine obtainable spells now pass M1.11 runtime CI.
+  Affinity lessons open at level2 and cross-training at3; the folio stays six slots.
+  This remains a small prototype; cooperative combat and the full chapter are planned.
 - Catalog-driven Mara dialogue and one investigation now exist. Collect-item/repeatable
   quests, broader objective types and visual authoring tools remain planned. M1.1 integration
   and Android gates pass at 4efd3a6; additional NPC visual/interaction bindings need scene work.
@@ -46,11 +47,17 @@ Updated 2026-09-13. See PROJECT_STATE for current CI/artifact status.
 
 ## Engineering
 
+- Installer verification of green run34786789784 found no APK in artifact10327565358:
+  exporter used a stale0.2.12 filename while CI uploaded0.2.13. Runtime/native evidence
+  remains valid, but that archive is not a phone deliverable. Filename/version now derive
+  from the preset, and a mandatory staging gate validates presence/hash/ABI/report before
+  upload.17 local tests pass; corrected artifact remains pending. Verified download0.2.11.
+
 - M1.11 source36aa66e/run34775850505 passes backend/Godot/render/export and native
   footsteps/resume, then times out at creator relaunch readiness. Inspected native
   artifact10323951508 shows a landscape gateway with a stale portrait `Requested w/h`.
   The harness now requests verbose window data and checks the exact focused window's
-  actual layout frame;12 local regressions pass. Full CI/native remains pending.
+  actual layout frame;12 local regressions and full CI/native pass at a9f31ae/run34786789784.
 
 - M1.6 handoff a0b495c/run34552851591 attempt1 failed the visible gateway gate. Retained
   native10181631699 was downloaded and inspected: Pixel Launcher ANR modal covers the
