@@ -9,6 +9,7 @@ var travel_speed := 0.0
 var animation: AnimationPlayer
 var cast_remaining := 0.0
 var gait_rate := 1.0
+var model: Node3D
 
 func set_travel_velocity(motion: Vector3) -> void:
     # Animation follows horizontal travel, not stair height or pixels per frame.
@@ -17,22 +18,9 @@ func set_travel_velocity(motion: Vector3) -> void:
     walking = travel_speed > (.08 if walking else .18)
 
 func build(appearance: Dictionary, is_mara := false) -> void:
-    var model = (MARA if is_mara else WAYFARER).instantiate()
+    model = (MARA if is_mara else WAYFARER).instantiate()
     add_child(model)
-    var robe = Color({"teal":"287d7e","coral":"c66a61","indigo":"665997"}.get(appearance.get("robe","teal"),"287d7e"))
-    var skin = Color({"warm":"c38d65","deep":"795443","pale":"e3baa0"}.get(appearance.get("skin","warm"),"c38d65"))
-    # Only per-character tint materials are duplicated; common accessories stay shared.
-    for part in model.find_children("*","MeshInstance3D",true,false):
-        for index in part.mesh.get_surface_count():
-            var source = part.get_active_material(index)
-            if source.resource_name == "RobeTint" or source.resource_name == "SkinTint":
-                var color = robe if source.resource_name == "RobeTint" else skin
-                var key = source.resource_name + color.to_html()
-                if not appearance_materials.has(key):
-                    var tint = source.duplicate() as StandardMaterial3D
-                    tint.albedo_color = color
-                    appearance_materials[key] = tint
-                part.set_surface_override_material(index,appearance_materials[key])
+    apply_appearance(appearance)
     animation = model.find_child("AnimationPlayer",true,false)
     assert(animation != null,"Wayfarer art must include its authored animation player")
     for clip in ["Idle","Walk","Cast"]:
@@ -41,6 +29,23 @@ func build(appearance: Dictionary, is_mara := false) -> void:
         animation.get_animation(clip).loop_mode = Animation.LOOP_LINEAR
     animation.play("Idle")
     ReefKit.contact_shadow(self,Vector3(0,.088,0),Vector2(1.25,.85))
+
+func apply_appearance(appearance: Dictionary) -> void:
+    # Creator and world share the same tint/fallback path without rebuilding rigs.
+    var robe = Color({"teal":"287d7e","coral":"c66a61","indigo":"665997"}.get(appearance.get("robe","teal"),"287d7e"))
+    var skin = Color({"warm":"c38d65","deep":"795443","pale":"e3baa0"}.get(appearance.get("skin","warm"),"c38d65"))
+    # Only per-character tint materials are duplicated; common accessories stay shared.
+    for part in model.find_children("*","MeshInstance3D",true,false):
+        for index in part.mesh.get_surface_count():
+            var source = part.mesh.surface_get_material(index)
+            if source.resource_name == "RobeTint" or source.resource_name == "SkinTint":
+                var color = robe if source.resource_name == "RobeTint" else skin
+                var key = source.resource_name + color.to_html()
+                if not appearance_materials.has(key):
+                    var tint = source.duplicate() as StandardMaterial3D
+                    tint.albedo_color = color
+                    appearance_materials[key] = tint
+                part.set_surface_override_material(index,appearance_materials[key])
 
 func play_cast() -> void:
     cast_remaining = animation.get_animation("Cast").length

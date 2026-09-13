@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-09-13 — M1.8 live creator preview candidate
+
+- Recover clean/pushed572eb62 and continue the recorded existing-choice creator task.
+- Share live robe/skin tinting with the world avatar; preserve all nine combinations,
+  old-save fallback, six shared tint materials and the current imported rig.
+- Add an isolated creator/selection stage, touch drag and rotation buttons, responsive
+  framing and gateway safe insets. Free the stage before world entry/sign-out; defer
+  retiring gateway controls until native input dispatch finishes.
+- Add real-engine choice/fallback/rotation/aspect/cleanup checks and API creation/reload/
+  world parity. Retain creator screenshots and enforce the existing150-call budget.
+- Extend native QA through disposable-loopback login, touch-opened color menus,
+  keyboard selection, actual touch rotation, creation/saved appearance and world entry.
+- Candidate Android0.2.9/code11; full CI/render/native validation remains pending.
+  No new assets, paid generation, protocol/schema changes or public deployment.
+
+
 ## 2026-09-13 — M1.8 first motion-transition checkpoint validated
 
 - Continue from clean M1.7 recovery handoffcf8bc0c. Sample horizontal velocity in the

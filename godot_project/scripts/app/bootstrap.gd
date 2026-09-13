@@ -11,6 +11,19 @@ var server_url := "https://game.surveyroute.work/api/v1"
 var busy := false
 var session: PlaySession
 var selected_character: Dictionary = {}
+var title_column: VBoxContainer
+var identity_column: VBoxContainer
+var identity_preview: WayfarerPreview
+var gateway_margin: MarginContainer
+var card_scroll: ScrollContainer
+var creator_robe: OptionButton
+var creator_skin: OptionButton
+var creator_name: LineEdit
+var creator_affinity: OptionButton
+var debug_layout_pending := false
+var last_debug_layout := ""
+const ROBE_IDS = ["teal","coral","indigo"]
+const SKIN_IDS = ["warm","deep","pale"]
 
 func _ready() -> void:
     GameData.load_bundle()
@@ -46,41 +59,123 @@ func _build_gateway() -> void:
     shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     gateway.add_child(shade)
     var margin = MarginContainer.new()
+    gateway_margin = margin
     margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     for side in ["left","right","top","bottom"]:
         margin.add_theme_constant_override("margin_"+side,42)
     gateway.add_child(margin)
+    # Wrapping text can temporarily raise the minimum size during a form swap.
+    # Re-anchor after it settles so that a smaller form does not keep stale offsets.
+    margin.minimum_size_changed.connect(func(): margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT))
     var row = HBoxContainer.new()
     row.add_theme_constant_override("separation",42)
     margin.add_child(row)
-    var title_column = VBoxContainer.new()
+    identity_column = VBoxContainer.new()
+    identity_column.alignment = BoxContainer.ALIGNMENT_CENTER
+    identity_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    row.add_child(identity_column)
+    title_column = VBoxContainer.new()
     title_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     title_column.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-    row.add_child(title_column)
+    identity_column.add_child(title_column)
     title_column.add_child(TideUI.label("A WORLD ABOVE THE GLIMMERDEEP",16,TideUI.GOLD))
     title_column.add_child(TideUI.label("VEILBOUND\nTIDES",62))
     title_column.add_child(TideUI.paragraph("Follow the light.\nDiscover what answers beneath it.",25))
     var air = Control.new()
     air.custom_minimum_size.y = 36
     title_column.add_child(air)
-    title_column.add_child(TideUI.paragraph("DAWNREEF ATOLL\nDawnreef art benchmark · 0.2.5",16))
+    title_column.add_child(TideUI.paragraph("DAWNREEF ATOLL\nDawnreef art benchmark · 0.2.9",16))
     var panel = PanelContainer.new()
     panel.custom_minimum_size.x = 460
     panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
     row.add_child(panel)
     var scroll = ScrollContainer.new()
+    card_scroll = scroll
     scroll.custom_minimum_size = Vector2(428,550)
     scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
     panel.add_child(scroll)
     card = VBoxContainer.new()
     card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     scroll.add_child(card)
+    if OS.has_feature("debug"):
+        scroll.get_v_scroll_bar().value_changed.connect(func(_value): _debug_gateway_layout.call_deferred())
+    get_viewport().size_changed.connect(_update_gateway_safe_area)
+    _update_gateway_safe_area()
+
+func _update_gateway_safe_area() -> void:
+    if OS.get_name() != "Android":
+        return
+    var window_size = Vector2(DisplayServer.window_get_size())
+    if window_size.x <= 0 or window_size.y <= 0:
+        return
+    var ratio = get_viewport_rect().size/window_size
+    var safe = DisplayServer.get_display_safe_area()
+    if safe.size.x <= 0 or safe.size.y <= 0:
+        return
+    var insets = [safe.position.x*ratio.x,(window_size.x-safe.end.x)*ratio.x,safe.position.y*ratio.y,(window_size.y-safe.end.y)*ratio.y]
+    var sides = ["left","right","top","bottom"]
+    for i in 4:
+        gateway_margin.add_theme_constant_override("margin_"+sides[i],int(maxf(42,insets[i]+16)))
+
+func _clear_identity_preview() -> void:
+    if is_instance_valid(identity_preview):
+        identity_preview.hide()
+        identity_preview.queue_free()
+        identity_preview = null
+    title_column.show()
+
+func _show_identity_preview(appearance: Dictionary) -> void:
+    title_column.hide()
+    identity_preview = WayfarerPreview.new()
+    identity_column.add_child(identity_preview)
+    identity_preview.set_appearance(appearance)
 
 func clear_card(title: String) -> void:
+    _clear_identity_preview()
     for child in card.get_children():
-        card.remove_child(child)
+        # Keep the pressed control alive until native input dispatch has finished.
+        child.hide()
         child.queue_free()
     card.add_child(TideUI.label(title,30))
+    card_scroll.scroll_vertical = 0
+    if OS.has_feature("debug"):
+        _debug_gateway_layout.call_deferred()
+
+func _debug_gateway_layout() -> void:
+    # Debug-only bounds help native tests target the actual laid-out controls.
+    # Record labels/placeholders only, never passwords, tokens or field contents.
+    if debug_layout_pending:
+        return
+    debug_layout_pending = true
+    await get_tree().process_frame
+    await get_tree().process_frame
+    debug_layout_pending = false
+    if not gateway.is_visible_in_tree():
+        return
+    var controls: Dictionary = {}
+    var candidates = card.get_children()
+    if is_instance_valid(identity_preview):
+        candidates.append_array([identity_preview.turn_left,identity_preview.reset_button,identity_preview.turn_right,identity_preview.surface])
+    for child in candidates:
+        if not child is Control or not child.is_visible_in_tree() or child.is_queued_for_deletion():
+            continue
+        var label := ""
+        if child is LineEdit:
+            label = child.placeholder_text
+        elif child is BaseButton:
+            label = child.text
+        elif child is SubViewportContainer:
+            label = "avatar"
+        if label.is_empty():
+            continue
+        var rect = child.get_global_rect()
+        if child.get_parent() == card and not card_scroll.get_global_rect().encloses(rect):
+            continue
+        controls[label] = [rect.position.x,rect.position.y,rect.size.x,rect.size.y]
+    var layout = JSON.stringify({"controls":controls,"width":get_viewport_rect().size.x,"height":get_viewport_rect().size.y})
+    if layout != last_debug_layout:
+        print("VT_GATEWAY_LAYOUT=",layout)
+        last_debug_layout = layout
 
 func add_status(words := "") -> void:
     status_label = TideUI.paragraph(words,16)
@@ -164,25 +259,40 @@ func authenticate(registering: bool) -> void:
 func show_creator() -> void:
     clear_card("Make your Wayfarer")
     var name_field = TideUI.edit("Character name · 2–24 characters")
+    creator_name = name_field
     name_field.max_length = 24
     card.add_child(name_field)
     card.add_child(TideUI.label("Your first affinity",18,TideUI.GOLD))
     var affinity = TideUI.option(["Lanterncraft · reveal & focus","Rootbinding · restrain & protect","Tideseaming · mend & redirect"])
+    creator_affinity = affinity
     card.add_child(affinity)
     card.add_child(TideUI.paragraph("All Wayfarers begin with Glimmer Spark, Root Snare and Tide Mend. Affinity is a starting identity; cross-training will grow later.",16))
     var robe = TideUI.option(["Reef teal robe","Warm coral robe","Evening indigo robe"])
+    creator_robe = robe
     card.add_child(robe)
     var skin = TideUI.option(["Warm skin","Deep skin","Pale skin"])
+    creator_skin = skin
     card.add_child(skin)
+    _show_identity_preview({})
+    robe.item_selected.connect(_creator_appearance_changed)
+    skin.item_selected.connect(_creator_appearance_changed)
     card.add_child(TideUI.button("Create Wayfarer",func(): create_character(name_field.text,affinity.selected,robe.selected,skin.selected),true))
     add_status()
+    if OS.has_feature("debug"):
+        print("VT_CREATOR_READY")
+
+func _creator_appearance_changed(_index: int) -> void:
+    identity_preview.set_appearance({"robe":ROBE_IDS[creator_robe.selected],"skin":SKIN_IDS[creator_skin.selected]})
+    if OS.has_feature("debug"):
+        print("VT_CREATOR_COLORS=",ROBE_IDS[creator_robe.selected],",",SKIN_IDS[creator_skin.selected])
+        _debug_gateway_layout.call_deferred()
 
 func create_character(character_name: String, affinity: int, robe: int, skin: int) -> void:
     if busy:
         return
     busy = true
     status_label.text = "Saving your Wayfarer…"
-    var result = await ApiClient.post_json("/characters",{"name":character_name,"affinity":["lanterncraft","rootbinding","tideseaming"][affinity],"appearance":{"robe":["teal","coral","indigo"][robe],"skin":["warm","deep","pale"][skin]}})
+    var result = await ApiClient.post_json("/characters",{"name":character_name,"affinity":["lanterncraft","rootbinding","tideseaming"][affinity],"appearance":{"robe":ROBE_IDS[robe],"skin":SKIN_IDS[skin]}})
     busy = false
     if not result.is_empty():
         show_character(result)
@@ -190,6 +300,7 @@ func create_character(character_name: String, affinity: int, robe: int, skin: in
 func show_character(character: Dictionary) -> void:
     selected_character = character
     clear_card("Welcome, " + character.name)
+    _show_identity_preview(character.get("appearance",{}))
     card.add_child(TideUI.paragraph("Level %s · %s\nDawnreef Atoll awaits." % [character.level,character.get("affinity","lanterncraft").capitalize()],22))
     card.add_child(TideUI.button("Enter Dawnreef",enter_world,true))
     card.add_child(TideUI.button("Sign out",sign_out))
@@ -212,6 +323,7 @@ func start_preview() -> void:
     _play({"id":"preview","name":"Visiting Wayfarer","level":1,"appearance":{"robe":"teal","skin":"warm"},"position":{"x":0,"z":4},"quest_state":{},"wallet":{},"inventory":{}},true)
 
 func _play(character: Dictionary, offline: bool) -> void:
+    _clear_identity_preview()
     gateway.hide()
     session = PlaySession.new()
     add_child(session)

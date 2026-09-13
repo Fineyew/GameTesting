@@ -4,16 +4,13 @@ An original Android-first online fantasy RPG built with Godot 4.5.1, FastAPI,
 PostgreSQL, Docker and Nginx. Continue this repository; do not recreate working systems.
 The active work is `feature/android-foundation`, [draft PR #4](https://github.com/Fineyew/GameTesting/pull/4).
 
-Current continuation: **M1.8 first motion-transition increment validated**. Local/remote
-avatars share horizontal-speed walk/idle transitions and smooth cadence; vertical stair
-correction no longer speeds remote walking. All three jobs in
-[run34764740003](https://github.com/Fineyew/GameTesting/actions/runs/34764740003) pass at
-`5972031c6771f9a29da31d8e38b4318bcc5945ad`. Verified
-[ARM64 APK0.2.8/code10](https://github.com/Fineyew/GameTesting/actions/runs/34764740003/artifacts/10320930156)
-is retained; PROJECT_STATE records hashes, tests and inspected renders. M1.7 recovery
-remains validated at3f2d81c/handoffcf8bc0c. Full M1.8 animation/creator work and physical/owner
-movement/art acceptance remain open. Next: live creator preview using existing avatar choices.
-Earlier checkpoint evidence below is history.
+Current continuation: **M1.8 live creator preview implemented; validation in progress**.
+The existing three robe colors and three skin tones now update the same Wayfarer rig
+used in exploration, with drag/button rotation and saved-character preview. Local
+Godot preview and real API creation/reload/world appearance checks pass. Android
+**0.2.9/code11** is the candidate; full CI/render/native evidence is still pending.
+The previous verified Android0.2.8/code10 remains the handoff until those gates pass.
+PROJECT_STATE records exact evidence and outstanding physical/owner acceptance.
 
 Run `python -m tools.check_movement_network` after Godot import to reproduce36 impairment
 scenarios. This does not simulate every mobile transport condition or replace phone testing.
@@ -136,7 +133,7 @@ isolated database migrated to head. CI runs both migrations and the PostgreSQL t
 ## Android build and runtime checks
 
 Use the checked-in **Android** export preset: ARM64, INTERNET permission, app ID
-`work.surveyroute.veilboundtides`, version 0.2.8/code 10 (all automated gates pass; physical acceptance open). Use Godot 4.5.1 export templates,
+`work.surveyroute.veilboundtides`, version 0.2.9/code 11 (candidate; full validation pending). Use Godot 4.5.1 export templates,
 JDK17, Android SDK platform35 and build-tools35.0.0. See the
 [official engine export instructions](https://docs.godotengine.org/en/4.5/tutorials/export/exporting_for_android.html).
 The exported engine minimum is API24, target API35; minimum OS is not a device-performance guarantee.
@@ -178,7 +175,7 @@ With Android platform-tools and USB debugging enabled:
 
 ```bash
 adb devices
-adb install -r veilbound-tides-0.2.8-android.apk
+adb install -r veilbound-tides-0.2.9-android.apk
 adb reverse tcp:8000 tcp:8000
 ```
 

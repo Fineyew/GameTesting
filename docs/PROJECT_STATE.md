@@ -5,6 +5,33 @@ Read README → PROJECT_STATE → ARCHITECTURE → relevant source. Main remains
 
 ## Current milestone
 
+**M1.8 live creator/world appearance preview implemented; full validation in progress.**
+Resumed from clean/pushed572eb62 after the interrupted conversation. The preceding
+handoff CI34765370645 passed on attempt2; Notion records the unchanged Android retry
+after a Pixel Launcher ANR on attempt1. No prior source work was lost.
+
+The creator and saved-character selection now use one temporary isolated3D stage and
+WayfarerAvatar.apply_appearance, sharing the exact world tint/fallback path. All nine
+existing robe/skin combinations update in place without allocating another rig. Touch
+drag plus Left/Front/Right controls rotate the preview. Hidden stages stop rendering;
+creator/selection/login/world transitions release their viewport. Gateway button removal
+now defers until native input dispatch completes. Android display safe-area insets augment
+the existing gateway margins. Appearance IDs, assets, gameplay, protocols and saves stay.
+
+Local:204 backend tests/30 subtests pass with10 explicit PostgreSQL skips. Godot preview
+checks cover nine combinations, old/missing-ID fallback, six-material cache, GUI/touch
+rotation, narrow960x720 and wide1600x720 layouts with58px side insets, and repeated cleanup.
+Real Godot/API checks include invalid creation retaining the draft, saved nondefault
+colors, reloaded selection and matching in-world rig, plus all existing progression.
+Full CI, actual creator renders and Android0.2.9/code11 native creator checks are pending.
+Do not treat the candidate as a verified deliverable until those gates pass.
+
+Next after this bounded increment: remaining M1.8 run/turn/hit/recovery clips and foot
+contact through the existing rig, followed by crowded-rig profiling and owner/device review.
+M1.8 remains partial; physical performance/art acceptance and public deployment stay open.
+
+### Previous validated M1.8 motion increment
+
 **M1.8 first motion-transition increment implemented and validated; full M1.8 remains partial.**
 Local/remote avatars share horizontal-speed sampling and walk/idle hysteresis in the
 existing WayfarerAvatar. Remote stair interpolation no longer speeds the gait or starts

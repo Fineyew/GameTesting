@@ -306,3 +306,12 @@ No root-motion track may move the authoritative body. Run `python -m tools.check
 for the actual rig,30/60/120 FPS, cast-return and remote-caller regressions before changing
 animation bindings. Additional clips and appearance families need their own reviewed asset
 increment; the current source files and IDs are preserved.
+
+## Creator appearance binding
+
+The existing robe IDs teal/coral/indigo and skin IDs warm/deep/pale retain their colors.
+WayfarerAvatar.apply_appearance serves creator, saved selection and world rendering;
+unknown/missing IDs retain teal/warm fallback without rewriting saves. Use the imported
+RobeTint/SkinTint mesh material slots; preview changes reuse one rig and six cached tint
+materials. Add no choice label without a corresponding saved-ID/world mapping and real
+creator/API/render/native acceptance. New asset/clip families remain later M1.8 work.

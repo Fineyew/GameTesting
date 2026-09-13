@@ -495,3 +495,24 @@ content/art, render and native Android gates; ARM640.2.8/code10 is retained. Thi
 the presentation interface, not final rig/foot contact, physical performance or owner motion
 acceptance. No backend rule or save/protocol migration is introduced by this client-only
 increment; the existing world2-compatible backend is still required for online play.
+
+## M1.8 creator/world appearance parity
+
+WayfarerAvatar.build instantiates the existing rig once, then delegates color assignment
+to apply_appearance. Preview changes call the same method using original mesh material
+slots and the existing finite tint cache/fallback values; no saved ID or model changes.
+WayfarerPreview owns a temporary SubViewport with its own World3D, camera and shadowless
+lighting. It never changes the main camera, uses no gameplay input/network state, and
+contains no persistence. Orthographic framing accommodates the body/staff at narrow
+and wide aspects. Touch is owned by one finger until release; button rotation also works.
+Hidden previews disable rendering. Bootstrap hides/queues the stage on navigation and
+before PlaySession entry; input-emitting gateway controls also use deferred deletion.
+Android display-safe insets augment the existing42px margins; physical cutouts remain
+part of Device E validation. Debug-only bounds logs contain labels/placeholders, never
+field contents or credentials. Native QA uses those actual bounds for real GUI input.
+
+CreatorChecks runs on real imported rigs in smoke/render CI. The online gate submits
+nondefault choices, rejects an invalid name without replacing the draft, reads saved
+appearance, rebuilds selection and compares the world avatar. Native QA connects only
+to its own temporary loopback API through adb reverse; it exercises login/creator/world
+entry using ordinary account APIs. No schema, content or authority change is introduced.

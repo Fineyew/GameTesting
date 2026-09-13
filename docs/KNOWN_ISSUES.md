@@ -177,3 +177,12 @@ ARM640.2.8/code10 is retained (PROJECT_STATE). The same three clips
 remain; fast travel still speeds the Walk clip rather than playing a newly authored Run.
 Foot planting/IK, turn/hit/recovery clips, creator matching, crowded-rig profiling and
 owner/phone motion acceptance remain unfinished. No cosmetic family or rig was replaced.
+
+## M1.8 creator preview continuation
+
+Creator/world appearance parity is implemented using current assets and IDs. Local
+choice/fallback/rotation/cleanup and real API persistence checks pass; full CI, actual
+render review and native0.2.9 creator validation remain pending. Dedicated run/turn/hit/
+recovery clips, foot planting, crowded-rig measurements and physical/owner acceptance
+remain unfinished. Synthetic side insets and emulator rendering do not certify a
+physical phone cutout, touch feel, thermal behavior or color calibration.

@@ -168,3 +168,11 @@ The same Wayfarer rig now eases walking cadence and keeps stable idle/walk trans
 for nearby players across frame rates. Climbing a step does not make the remote stride
 speed up from vertical travel. This is a presentation correction using the current three
 clips; dedicated run/turn/hit/recovery animation and final foot contact remain planned.
+
+## M1.8 live appearance preview
+
+Choose among the existing reef teal, warm coral and evening indigo robes and warm,
+deep and pale skin tones while viewing the same Wayfarer used in Dawnreef. Drag the
+preview or use Left/Front/Right to inspect it. The saved-character welcome screen shows
+those saved colors before entry. Current affinities and equipment remain separate from
+appearance; this adds no cosmetic collection or replacement character art.

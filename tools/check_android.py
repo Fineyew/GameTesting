@@ -170,6 +170,8 @@ def main():
     logs=log()
     (OUT/'logcat.txt').write_text(logs)
     assert not re.search(r'ERROR:|SCRIPT ERROR|FATAL EXCEPTION|Fatal signal|ANR in '+re.escape(PACKAGE),logs),logs[-6000:]
+    from tools.check_android_creator import check_creator
+    check_creator()
     (OUT/'result.txt').write_text(f'ANDROID_RUNTIME_PASS\nInstall, visible gateway, touch preview, Folio open/close, Bag to vendor touch navigation, touch locomotion, background/resume with landscape visible world and repeat touch locomotion.\nChanged world pixels: {changed:.3f}\nEmulator x86_64; physical ARM64 device unverified.\n')
     print('ANDROID_RUNTIME_PASS')
 

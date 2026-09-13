@@ -24,6 +24,7 @@ func run() -> void:
     if DisplayServer.get_name() != "headless":
         await RenderingServer.frame_post_draw
         root.get_texture().get_image().save_png("user://gateway.png")
+    await CreatorChecks.check(app,self)
     app.start_preview()
     await create_timer(.4).timeout
     assert(app.session.player != null,"player did not spawn")

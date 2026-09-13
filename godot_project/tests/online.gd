@@ -44,11 +44,23 @@ func run() -> void:
     app.display_name.text = "Godot tester"
     await app.authenticate(true)
     assert(not api.access_token.is_empty(),"registration failed")
-    await app.create_character("Reef Tester",0,0,0)
+    CreatorChecks.choose(app.creator_robe,1)
+    CreatorChecks.choose(app.creator_skin,2)
+    var chosen_colors = CreatorChecks.colors(app.identity_preview.avatar)
+    var preview_rig = app.identity_preview.avatar.model
+    await app.create_character("R",0,1,2)
+    assert(app.selected_character.is_empty() and app.identity_preview.avatar.model == preview_rig,"Rejected creation must preserve the draft preview")
+    await app.create_character("Reef Tester",0,app.creator_robe.selected,app.creator_skin.selected)
     assert(not app.selected_character.is_empty(),"creation failed")
+    var listed = await api.get_json("/characters")
+    assert(listed.data[0].appearance == {"robe":"coral","skin":"pale"},"Saved appearance differs from the creator")
+    app.show_character(listed.data[0])
+    assert(CreatorChecks.colors(app.identity_preview.avatar) == chosen_colors,"Reloaded selection differs from draft")
     await app.enter_world()
     var session = app.session
     assert(session != null,"world did not open")
+    await process_frame
+    assert(app.identity_preview == null and CreatorChecks.colors(session.player.avatar) == chosen_colors,"World avatar differs from saved preview")
     await until(func(): return session.connection.connected and session.remotes.size() == 1)
     await walk(session,Vector2(-4,-3))
     await session.open_dialogue()
