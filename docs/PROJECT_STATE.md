@@ -344,3 +344,14 @@ creator render failure. Native10321285952/render10320904717 retain that failed a
 no ARM64 artifact was published. Text entry now selects/replaces prefilled values and
 sends Back only when API35 reports the IME visible. Nine local Android harness tests
 pass, including hidden/visible keyboard cases. Full native validation is still required.
+### Native creator menu-focus correction (2026-09-13)
+
+Code3ae529b/run34768581707 passes backend, Godot/API, render and walkthrough gates.
+Native checks now successfully scroll, replace the server URL, log in and display the
+creator. The color-menu test stops because a touch-opened Godot PopupMenu has no
+keyboard-focused item: one Down then Enter reselects the first item. Native10321610947
+and render10321895459 retain the failed attempt; no APK was published. The harness
+now sends two Down presses before Enter. A real-engine regression opens the actual
+OptionButton, confirms focus=-1, delivers those keys through the root window and
+requires the second item and visible appearance callback. Corrected local smoke and
+nine Android harness tests pass. Full native validation is still required.

@@ -95,12 +95,13 @@ def check_creator():
                     region = rect('avatar')
                     before = capture('creator-native-default')
                     tap('Reef teal robe')
-                    # Android keyboard activation of the touch-opened native menu.
-                    adb('shell', 'input', 'keyevent', 'KEYCODE_DPAD_DOWN')
+                    # Touch-opened Godot menus start with no keyboard focus (-1).
+                    # First Down focuses item 0; second Down reaches item 1.
+                    adb('shell', 'input', 'keyevent', 'KEYCODE_DPAD_DOWN', 'KEYCODE_DPAD_DOWN')
                     adb('shell', 'input', 'keyevent', 'KEYCODE_ENTER')
                     wait_for(lambda: 'VT_CREATOR_COLORS=coral,warm' in log())
                     tap('Warm skin')
-                    adb('shell', 'input', 'keyevent', 'KEYCODE_DPAD_DOWN')
+                    adb('shell', 'input', 'keyevent', 'KEYCODE_DPAD_DOWN', 'KEYCODE_DPAD_DOWN')
                     adb('shell', 'input', 'keyevent', 'KEYCODE_ENTER')
                     wait_for(lambda: 'VT_CREATOR_COLORS=coral,deep' in log())
                     wait_for(lambda: changed(before, capture('creator-native-colors'), region) > .015)

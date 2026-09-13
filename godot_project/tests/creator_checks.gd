@@ -74,6 +74,21 @@ static func check(app: Node, tree: SceneTree) -> void:
     await tree.process_frame
     var preview = app.identity_preview as WayfarerPreview
     var rig = preview.avatar.model
+    # Match native QA: a mouse/touch-opened option menu has no focused item.
+    # Verify actual menu key events instead of assuming the selected item is focused.
+    await click(tree,app.creator_robe)
+    var menu = app.creator_robe.get_popup()
+    assert(menu.visible)
+    assert(menu.get_focused_item() == -1)
+    for code in [KEY_DOWN,KEY_DOWN,KEY_ENTER]:
+        for down in [true,false]:
+            var key = InputEventKey.new()
+            key.keycode = code
+            key.pressed = down
+            tree.root.push_input(key,true)
+            await tree.process_frame
+    assert(app.creator_robe.selected == 1,"Two Down presses must reach the second item after touch opening")
+    assert(not menu.visible)
     assert(preview.viewport.find_world_3d() != app.world.get_world_3d(),"Preview must use an isolated world")
     assert(tree.root.get_camera_3d() == app.panorama,"Creator must not steal the world camera")
     var robes = ["287d7e","c66a61","665997"]
