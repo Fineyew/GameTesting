@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-09-12 — M1.7 delayed-snapshot recovery candidate
+
+- Add36 deterministic impairment scenarios using real Godot movement against Python authority.
+  Baseline15 scenarios failed to settle; resting reconciliation now closes the old .55m gap
+  and caps ordinary correction at6m/s. Existing moving tolerance/emergency recovery remain.
+- Move the terrain label and improve the profile capture; target Android0.2.7/code9.
+- No WS/schema/content/persistence rule changes. Full CI/artifact validation pending;
+  physical-phone/owner feel acceptance remains unverified. Prior checkpoints are preserved.
+
 ## 2026-09-12 — M1.7 terrain activation candidate
 
 - Add one Mooring Rise ramp/terrace/stair route, shared conservative traversal, derived

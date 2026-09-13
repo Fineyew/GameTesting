@@ -157,3 +157,11 @@ remain open. See CONTENT_GUIDE and candidate README for records and next checks.
 - Inspected terrace framing shows the label overlapping the avatar silhouette and only part
   of the stair/ramp profile. Improve label placement and capture angle in the next terrain
   presentation pass. Simple edge posts/path paint are candidate dressing, not final world art.
+
+## Delayed-snapshot continuation
+
+Resting .55m discrepancy reproduced and corrected locally;36 impairment cases pass.
+Full CI and revised terrain-frame inspection pending. Frame schedule is60Hz and uses fixed
+one-way delays; real transport jitter, variable frame rates and physical-phone feel remain
+unverified. The >2m emergency reset still snaps during large divergence; long outages need
+additional acceptance work. Target0.2.7/code9 is not yet a validated APK.

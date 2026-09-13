@@ -72,7 +72,7 @@ func _landscape() -> void:
     body.add_child(collision)
     add_child(body)
     if geometry.has("terrain"):
-        ReefKit.label(self,"MOORING RISE",Vector3(6,2.3,14.5))
+        ReefKit.label(self,"MOORING RISE",Vector3(8.4,3.2,14.5))
         for x in [3.8,8.2]:
             for z in [13.8,14.8]:
                 ReefKit.cylinder(self,.14,1.6,Vector3(x,1.3,z),Color("aa9874"),.12)

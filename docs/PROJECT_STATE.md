@@ -5,6 +5,25 @@ Read README → PROJECT_STATE → ARCHITECTURE → relevant source. Main remains
 
 ## Current milestone
 
+**M1.7 latency/reconciliation continuation implemented; full CI pending.**
+The previous handoff7bc4e00 passes run34669910393. A new deterministic network schedule
+exercises the actual Godot controller against Python20Hz authority:36 combinations of
+ramp/stairs/wall/terrace edge,50/150/300ms one-way delay, one-second packet silence or
+rejoin. Baseline exposed15 scenarios left permanently outside3cm agreement; the .55m
+moving correction dead zone also applied to resting feet. Rest now converges to1mm;
+ordinary correction is capped at6m/s while existing >2m emergency correction remains.
+Tests require <=3cm final error, settling within2.5s of stick release, <=.101m correction
+per60Hz frame and <=2.5m peak divergence, with terrain clearance and foot-height checks.
+This is deterministic controller evidence, not real cellular/physical-phone measurement.
+
+Mooring Rise label moves beside/above the terrace and render framing changes to show its
+profile. Target APK0.2.7/code9; not yet a validated artifact. No protocol/schema/catalog,
+backend rule, progression, saved ID or paid-asset change. Physical acceptance stays open.
+Local204 backend tests/30 subtests pass with10 explicit PG skips; Godot smoke and36 new
+network cases pass. Full Godot/API/render/Android evidence is pending.
+
+### Previous validated terrain activation (preserved)
+
 **M1.7 terrain activation candidate implemented; physical/feel acceptance remains open.**
 Mooring Rise is a small live Dawnreef ramp, 1.2m terrace and .3m descending steps.
 Python authority and Godot prediction share bounded conservative swept-footprint traversal;

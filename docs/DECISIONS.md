@@ -70,3 +70,10 @@ Use conservative swept square clearance around the capsule, bounded substeps and
 for deterministic parity. This sacrifices corner clearance and requires subsequent feel review;
 it is not a claim of polished general-purpose 3D physics. Limit this increment to Mooring Rise.
 Preserve generated asset candidates for later reviewed imports; no new paid generation.
+
+## 2026-09-12 — Fix measured resting drift without replacing prediction
+
+36 deterministic controller schedules exposed15 failures to settle inside3cm with the old
+.55m tolerance. Keep that tolerance while moving; use1mm at rest and6m/s ordinary correction
+cap through existing terrain clearance. Preserve protocol2, server authority and module
+boundaries. Do not introduce a second simulation stack or claim physical-network acceptance.

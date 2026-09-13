@@ -49,9 +49,11 @@ func _physics_process(delta: float) -> void:
             var distance = Vector2(position.x-authoritative_position.x,position.z-authoritative_position.z).length()
             if distance > 2:
                 position = authoritative_position
-            elif distance > .55:
+            elif (distance > .001 and axis.length() < .01 and Vector2(velocity.x,velocity.z).length() < .1) or distance > .55:
+                # Moving prediction tolerates snapshot delay; resting feet must converge.
+                # A permanent .55m dead zone can strand feet on the wrong stair height.
                 var correction = Vector2(authoritative_position.x-position.x,authoritative_position.z-position.z)*minf(1,delta*4)
-                var settled = TerrainTraversal.move(terrain,Vector2(position.x,position.z),correction.limit_length(1),geometry.blockers)
+                var settled = TerrainTraversal.move(terrain,Vector2(position.x,position.z),correction.limit_length(minf(1,delta*6)),geometry.blockers)
                 position.x = settled.position.x
                 position.z = settled.position.y
         var floor_state = terrain.sample(position.x,position.z)

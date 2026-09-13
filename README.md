@@ -13,6 +13,11 @@ passes automated gates; PROJECT_STATE records hashes/provenance. Physical-phone 
 adverse-latency/feel acceptance remain open.
 The older checkpoint evidence below remains history.
 
+Current work adds deterministic delayed/lost-snapshot recovery checks and fixes resting
+position disagreement. Target APK0.2.7/code9; see PROJECT_STATE for validation status.
+Run `python -m tools.check_movement_network` after Godot import to reproduce36 impairment
+scenarios. This does not simulate every mobile transport condition or replace phone testing.
+
 ## Start here
 
 Read [PROJECT_STATE](docs/PROJECT_STATE.md), [ARCHITECTURE](docs/ARCHITECTURE.md),

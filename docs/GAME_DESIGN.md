@@ -156,3 +156,8 @@ The first route uses automatic single-floor following, no jump button, a42° slo
 and .3m maximum step in either direction. Existing interactions remain on flat safe ground.
 Camera height follows smoothly. Square footprint clearance is conservative and stairs use
 discrete foot height; physical feel/latency acceptance and final animation polish are open.
+
+Resting Wayfarers now converge to the server’s terrain position instead of retaining up to
+.55m discrepancy. Moving prediction keeps its delay tolerance; this is a feel correction,
+not a new movement ability or progression change. Mooring Rise’s label moves off the terrace
+center so it does not obscure the standing avatar in the inspection view.

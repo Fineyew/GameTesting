@@ -454,3 +454,20 @@ Activation evidence: codecd6df1d/run34669362714 passes all full automated gates,
 10 real PostgreSQL tests (safe-entry preservation/rollback), both migrations,740 cross-runtime
 movement comparisons and two-player route/reconnect altitude validation. APK0.2.6/code8 is
 retained. Native emulator checks remain flat preview input/resume; no physical/latency claim.
+
+## M1.7 delayed-snapshot recovery
+
+Keep the world2 protocol, save schema and server rules. In the existing Godot controller,
+resting input/velocity now lowers reconciliation tolerance from .55m to .001m. Moving
+prediction retains .55m tolerance to avoid chasing every delayed snapshot. Ordinary
+terrain-constrained correction is bounded by6m/s; >2m emergency authoritative reset remains.
+No client-authoritative altitude or reward paths are introduced.
+
+`tools.check_movement_network` generates36 deterministic schedules with Python20Hz authority,
+10Hz commands/snapshots,60Hz client ticks,50/150/300ms one-way delay, one-second packet silence
+and rejoin. Silence drops newly sent messages while already in-flight packets can arrive.
+The actual Godot controller must remain on legal surfaces, converge within3cm by2.5s after
+release, cap ordinary correction at.101m/frame, and stay within2.5m peak divergence. Rejoin
+seeding is explicit and separate from ordinary correction. This is not a real-socket impairment
+proxy; the existing full Godot/API test separately validates actual transport/reconnect.
+Physical networks, jitter/long outages, frame-rate variation and subjective feel remain open.

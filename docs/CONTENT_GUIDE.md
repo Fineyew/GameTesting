@@ -290,3 +290,8 @@ Changes alter the negotiated geometry digest and require a matching client/backe
 No author may grant altitude through a save or movement message. Use the isolated preview
 workflow, online route tests and render budgets before exporting. Do not add broad terrain
 content before the route’s outstanding physical/feel review.
+
+Terrain authoring regression gate: run `python -m tools.check_movement_network` as well as
+terrain parity when changing landing/approach geometry. Its four authored-route probes validate
+resting correction under deterministic delay/silence/rejoin. Keep landmarks out of avatar
+silhouettes in the retained terrain frame; visual evidence remains separate from movement tests.

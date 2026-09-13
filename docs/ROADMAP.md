@@ -358,6 +358,13 @@ square clearance and discrete stair following are not a claim of final locomotio
 - **Delivery:** APK yes; P geometry/world changes expected, version negotiated; S additive
   vertical/location data may be needed with preserved-ID migration; Device R required.
 
+2026-09-12 recovery continuation:36 deterministic actual-controller impairment scenarios
+reproduce15 baseline settling failures; resting convergence/ordinary correction cap and
+label/framing edits are implemented. Full CI pending; no protocol/schema change. Physical
+Device R remains open. Once these gates and frame inspection pass, the next engineering
+increment may tackle M1.8’s existing-rig locomotion transitions while retaining all physical
+acceptance gates; do not launch a broad creator/content production batch.
+
 ### M1.8 — Character identity and animation foundation
 
 - **Kind / purpose:** Visual production, polish. Make the character feel expressive and substantial.

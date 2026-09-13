@@ -69,6 +69,8 @@ jobs:
         run: python -m tools.check_godot
       - name: Shared terrain surface and real Godot collision parity
         run: python -m tools.check_terrain
+      - name: Delayed and lost snapshot controller recovery
+        run: python -m tools.check_movement_network
       - name: Godot to API integration with two players
         run: python -m tools.check_online
       - name: Isolated authored example through Godot and API
@@ -146,8 +148,8 @@ jobs:
           name: veilbound-tides-android-foundation
           retention-days: 90
           path: |
-            builds/veilbound-tides-0.2.6-android.apk
-            builds/veilbound-tides-0.2.6-android.apk.verification.txt
+            builds/veilbound-tides-0.2.7-android.apk
+            builds/veilbound-tides-0.2.7-android.apk.verification.txt
             builds/build-manifest.json
             builds/render-check/
       - name: Retain Android runtime evidence
