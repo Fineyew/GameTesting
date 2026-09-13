@@ -120,6 +120,7 @@ func run() -> void:
         root.get_texture().get_image().save_png("user://terrain.png")
         print("TERRAIN_DRAW_CALLS=",RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME))
     await MotionVisuals.check(app,self)
+    await TidebeatChecks.check(app,self,DisplayServer.get_name() != "headless")
     app.session.show_settings()
     assert(app.session.hud.modal)
     app.session.show_audio_settings()

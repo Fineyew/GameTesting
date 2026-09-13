@@ -107,15 +107,17 @@ Original stylized silhouettes and colorful, restrained materials: teal/coral/war
 stone and luminous reeds; cool distant reefs. UI uses dark teal, cream type and gold
 primary actions, large touch targets and scrollable panels. Camera orbit and movement
 have separate thumb areas. Recenter and battery settings are accessible. Procedural
-models, primitive VFX and simple gait are explicitly placeholders for replaceable scenes.
+models outside the accepted benchmark remain placeholders for replaceable scenes.
 
 Target 30 FPS sustained on representative 6 GB Android hardware, optional 60 high tier;
 700 MB working memory/under 1 GB peak;150 draw calls typical/250 dense;150k visible triangles
 baseline;128 MB initial texture budget; base download under150 MB. Room cap 32 and 15 KB/s
 per-player network target require measurements, not assumptions. Test 20-minute thermal
 sessions and background/network transitions on actual phones. Settings currently expose
-FPS, shadows and render scale; LOD, view distance, effects and UI/accessibility scaling
-remain future work. M1.9 now has an original music/ambience/cue sample, saved bus controls and optional sound captions as an engineering candidate; full CI/physical listening and complete-region audio remain open.
+FPS, shadows and render scale, saved bus controls/captions and short/static effects.
+Distance meshes and grounded gait are engineering-validated. UI/accessibility scaling
+and broader view-distance controls remain future work. M1.9 audio passes full CI/native;
+physical listening and complete-region audio remain open.
 
 ## Authored slice specification and expansion
 
@@ -145,8 +147,11 @@ her own lanternwright apron, tools and swept hair with a braided bun. These are 
 awaiting owner direction approval, not acceptance of all future character/environment art.
 Glimmer Spark gathers through a lens, travels in a bright arc and breaks into eight warm
 shards; a short-effects setting removes its camera cut. Combat rules remain Tidebeat.
-Audio, the other spell effects, distant scenery and full animation/creator variety remain
-later roadmap work. Expand this visual language only after M1.4's review/device gates.
+M1.9 provides the first original audio sample. M1.10 is a locally validated presentation
+candidate for all six earned spells plus Brace/Gather: different shape families and cues,
+clear target/cost/effect/intent text, static reduced motion, accelerated playback and skip.
+Distant scenery and full animation/creator variety remain later work. Owner/device
+acceptance remains open; continued engineering was explicitly authorized.
 
 ## M1.7 Mooring Rise traversal candidate
 

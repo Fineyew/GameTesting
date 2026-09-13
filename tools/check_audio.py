@@ -30,7 +30,7 @@ def check():
         else:
             assert abs(samples[0])<.0001 and abs(samples[-1])<.0001,path
         report.append({'key':asset['key'],'peak':round(peak,6),'rms':round(rms,6),'seam_delta':round(seam,6),'duration':len(samples)/22050})
-    assert len(report)==11 and total<600_000,(len(report),total)
+    assert len(report)==13 and total<600_000,(len(report),total)
     out=ROOT/'builds/audio-check';out.mkdir(parents=True,exist_ok=True)
     source=os.environ.get('VT_SOURCE_COMMIT') or subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
     (out/'assets.json').write_text(json.dumps({'source':source,'total_source_bytes':total,'assets':report},indent=2)+'\n')

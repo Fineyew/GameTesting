@@ -74,6 +74,21 @@ func run() -> void:
     await walk(session,Vector2(10,-10))
     await session.start_encounter()
     assert(session.character.encounter.state == "active","server proximity rejected encounter")
+    # These are earned starter actions through the real server, not fixture grants.
+    for action in ["root_snare","brace","tide_mend"]:
+        var previous_round = int(session.character.encounter.round)
+        session.cast(action)
+        await until(func(): return session.playback.active)
+        var receipt = session.playback.shown.back()
+        var saved_result = session.character.encounter.duplicate(true)
+        session.playback.stop() # Skip after the server receipt; no second command.
+        await until(func(): return not session.busy)
+        assert(int(session.character.encounter.round) == previous_round+1)
+        var serial = session.playback.serial
+        await session.playback.play(action,saved_result,saved_result,receipt)
+        assert(session.playback.serial == serial)
+        var verified = await api.get_json("/world/characters/"+session.character.id)
+        assert(verified.encounter == session.character.encounter)
     for beat in 4:
         session.short_spell_effects = beat == 1
         session.cast("glimmer_spark")
@@ -216,6 +231,9 @@ func run() -> void:
         session.cast(spell)
         await until(func(): return not session.busy)
     assert(session.character.encounter.state == "victory")
+    for action in TidebeatEffect.PROFILES:
+        assert(session.playback.presented.get(action,0) > 0,"Online route missed presentation: "+action)
+    print("ONLINE_EIGHT_ACTIONS_PASS: earned/prepared actions, saved result before skip, duplicate receipt suppression")
     session.hud.close_panel()
     await walk(session,Vector2(0,-10))
     await walk(session,Vector2(-4,-4))

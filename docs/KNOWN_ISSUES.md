@@ -35,9 +35,11 @@ Updated 2026-09-13. See PROJECT_STATE for current CI/artifact status.
 - M1.4's small original art/rig/VFX candidate passes full CI/render/native validation at
   365993ce/run34483308643; actual captures and matching route frames were inspected.
   Owner art acceptance and physical-phone Device E remain open. Do not call it final.
-  Two houses, distant foliage/coast/vistas, dock, cistern, lurker and most spell effects
-  remain placeholders. The expanded motion library is engineering-validated; M1.9 audio framework is a locally tested candidate. Full soundtrack, owner acceptance and device listening remain open.
-  The sample has three clips and limited appearance tinting; it is not the full creator.
+  Two houses, distant foliage/coast/vistas, dock, cistern and the lurker remain placeholders.
+  The expanded motion library and M1.9 audio pass full engineering gates. M1.10
+  six-spell/Brace/Gather effects pass local engine/render/API; Android CI is pending.
+  Full soundtrack, owner visual acceptance and device listening remain open.
+  Current creator choices are robe/skin tinting, not full body/customization variety.
 - Historical planar checkpoint: capsule/gravity/floor snap existed, but stairs, slopes and vertical
   authority were not tested there; current activation has automated parity/API coverage. Full UI scaling, safe areas, left-handed controls and menu controller
   support remain accessibility work.

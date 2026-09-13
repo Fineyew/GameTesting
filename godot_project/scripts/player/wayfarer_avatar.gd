@@ -101,26 +101,33 @@ func update_detail(distance: float) -> void:
     body.skin = far_skin if distant else near_skin
     apply_appearance(current_appearance)
 
-func play_cast() -> void:
+func play_cast(speed := 1.0) -> void:
     reaction_remaining = 0
     recovering = false
-    cast_remaining = animation.get_animation("Cast").length
-    animation.speed_scale = 1
+    cast_remaining = animation.get_animation("Cast").length/clampf(speed,1,3)
+    animation.speed_scale = clampf(speed,1,3)
     animation.play("Cast",.12)
 
-func play_hit() -> void:
+func play_hit(speed := 1.0) -> void:
     cast_remaining = 0
     recovering = false
-    reaction_remaining = animation.get_animation("Hit").length
-    animation.speed_scale = 1
+    reaction_remaining = animation.get_animation("Hit").length/clampf(speed,1,3)
+    animation.speed_scale = clampf(speed,1,3)
     animation.play("Hit",.04)
 
-func play_recovery() -> void:
+func play_recovery(speed := 1.0) -> void:
     cast_remaining = 0
     recovering = true
-    reaction_remaining = animation.get_animation("Recovery").length
-    animation.speed_scale = 1
+    reaction_remaining = animation.get_animation("Recovery").length/clampf(speed,1,3)
+    animation.speed_scale = clampf(speed,1,3)
     animation.play("Recovery",.04)
+
+func finish_action_pose() -> void:
+    cast_remaining = 0
+    reaction_remaining = 0
+    recovering = false
+    animation.speed_scale = 1
+    animation.play("Idle",.08)
 
 func _process(delta: float) -> void:
     if animation == null:

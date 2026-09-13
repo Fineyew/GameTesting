@@ -335,10 +335,10 @@ existing32-rig dense budget remains250 draws/150k primitives. Do not raise it to
 
 `python audio_sources/build_dawnreef_audio.py` uses NumPy/FFmpeg for authoring only.
 It creates the original eight-bar80-BPM Dawnreef motif, related Tidebeat pulse, periodic
-filtered wind and eight mathematically synthesized cues; no recordings/voices/packs.
+filtered wind and ten mathematically synthesized cues; no recordings/voices/packs.
 The source/rights/status and exact hashes live in audio_sources/manifest.json. Runtime
 loops are Ogg Vorbis and short cues are mono16-bit WAV at22,050Hz; current source total
-472,459 bytes. Run `python -m tools.check_audio` after authoring; do not normalize away
+525,467 bytes. Run `python -m tools.check_audio` after authoring; do not normalize away
 failed headroom/seam checks. Runtime enables looping explicitly and real-engine tests
 seek across EOF. See [Godot audio streams](https://docs.godotengine.org/en/4.5/classes/class_audiostreamplayer.html)
 and [bus capture](https://docs.godotengine.org/en/4.5/classes/class_audioeffectcapture.html).
@@ -348,3 +348,20 @@ pause/resume playback under builds/audio-check for review. Listen on the exporte
 with speaker/headphones before acceptance; the recording is software-engine evidence.
 Every later spell/creature cue must keep a text/visual equivalent and the bounded pool.
 The older Fal candidates remain outside runtime and are not used by this source-authored sample.
+
+## Eight-action presentation authoring
+
+The editable source is godot_project/scripts/world/tidebeat_effect.gd, with profiles,
+silhouettes, phase timing and bounded transforms in one module. art_sources/tidebeat/
+manifest.json records scope/status/budgets. Use opaque, single-pass, shadow-free shapes;
+do not add alpha sheets or unbounded emitters. Keep different shapes without relying on
+hue; static mode retains those shapes. Playback/readouts consume existing receipts/rules.
+
+Run `python -m tools.build_spell_review` after legitimate engine/catalog changes and
+`python -m tools.build_spell_review --check` to verify review outcomes. These are isolated
+fixtures, never live grants. `tools.check_godot` and `tools.check_render` cover fixtures,
+actual GUI skip, receipt/lifecycle/camera restoration and both quality presets. The online
+route earns/prepares the spells and verifies real saved combat results separately.
+`tools.record_benchmark` retains tidebeat-spells.mp4 with the actual engine audio stream,
+in addition to the preserved before/after and motion routes. It uses [Godot Movie Maker](https://docs.godotengine.org/en/4.5/tutorials/animation/creating_movies.html);
+its fixed recording rate is not real-time FPS or physical-device evidence.

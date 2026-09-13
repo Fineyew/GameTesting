@@ -128,6 +128,7 @@ func open_panel(title: String) -> VBoxContainer:
         # Hide it now; queue_free keeps it in the tree until dispatch has finished.
         child.hide()
         child.queue_free()
+    panel_content.get_parent().set_deferred("scroll_vertical",0)
     modal = true
     stick.release()
     popup.show()

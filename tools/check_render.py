@@ -11,9 +11,10 @@ print(output)
 destination=ROOT/'builds/render-check'
 destination.mkdir(parents=True,exist_ok=True)
 source=Path.home()/'.local/share/godot/app_userdata/Veilbound Tides'
-names=['audio-settings.png','gateway.png','dawnreef.png','folio.png','vendor.png','equipment.png','item-use.png','benchmark.png','mara.png','wayfarer.png','glimmer.png','terrain.png']
+names=['combat-controls.png','spell-reduced.png','audio-settings.png','gateway.png','dawnreef.png','folio.png','vendor.png','equipment.png','item-use.png','benchmark.png','mara.png','wayfarer.png','glimmer.png','terrain.png']
 names += ['creator-'+name+'.png' for name in ['teal','coral','indigo','rotated','tablet','wide','selection']]
 names += ['motion-'+name+'.png' for name in ['crowd','walk','run','turnleft','turnright','hit','recovery']]
+names += ['spell-'+quality+'-'+key+'.png' for quality in ['low','high'] for key in ['glimmer_spark','beacon_trace','root_snare','reed_aegis','tide_mend','seam_lance','brace','gather']]
 # Keep available evidence before rejecting a failed render. This never publishes an APK.
 (destination/'result.txt').write_text(output)
 for name in names:
@@ -38,3 +39,8 @@ crowd_primitives=int(re.search(r"CROWD_PRIMITIVES=(\d+)",output).group(1))
 assert 'CROWD_RIGS=32' in output and 'MOTION_VISUALS_PASS' in output
 assert crowd_calls<=250,f"32-rig scene exceeded dense draw budget: {crowd_calls}"
 assert crowd_primitives<=150_000,f"32-rig scene exceeded geometry budget: {crowd_primitives}"
+
+spell_frames=re.findall(r"SPELL_RENDER=(low|high):([a-z_]+):(\d+):(\d+)",output)
+assert len(spell_frames)==16 and 'TIDEBEAT_PRESENTATION_PASS' in output
+for quality,key,draws,primitives in spell_frames:
+    assert int(draws)<=150 and int(primitives)<=150_000,(quality,key,draws,primitives)

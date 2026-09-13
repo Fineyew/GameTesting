@@ -6,7 +6,7 @@ Revised 2026-09-10 after inspecting the repository at
 and successful M0–M1.3 CI jobs. Roadmap checkpoint edec97b changed planning only.
 The owner subsequently authorized implementation; current evidence lives in PROJECT_STATE.
 
-**M1.7 recovery passes at3f2d81c/handoffcf8bc0c. M1.8's first locomotion-transition increment passes all automated gates at5972031. Creator and expanded motion/terrain-foot/LOD/online-entry gates pass at93a22c9/run34772233514 with verified0.2.10/code12. M1.9 audio is locally implemented;0.2.11 full CI/native is pending. The full milestone and physical/owner acceptance remain open. PROJECT_STATE owns evidence.**
+**M1.7 recovery passes at3f2d81c/handoffcf8bc0c. M1.8's first locomotion-transition increment passes all automated gates at5972031. Creator and expanded motion/terrain-foot/LOD/online-entry gates pass at93a22c9/run34772233514 with verified0.2.10/code12. M1.9 audio passes full CI/native at928054e/run34773533442 with verified0.2.11/code13. M1.10 presentation is the current local candidate. The full milestone and physical/owner acceptance remain open. PROJECT_STATE owns evidence.**
 On 2026-09-11 the owner requested full continuation after the device-gate handoff.
 Proceed with engineering checkpoints while recording M1.4/M1.5 physical acceptance as
 outstanding. This changes development ordering only; Device E/R/L evidence and final
@@ -412,11 +412,10 @@ stays open. M1.9 engineering continues under the owner's continuation request.
 
 ### M1.9 — Audio framework and Dawnreef sound sample
 
-Audio engineering is implemented locally:11 original assets, seven buses/controls,
-zone/combat/panel fades, bounded cues, limiter, captions and persisted pause/resume.
-Fresh import, real mixer loop/mute/overlap, GUI/persistence, complete engine/API/render
-and actual engine recording pass.0.2.11/code13 full F/native is pending. Owner listening,
-exported physical-device/headphone/speaker output and Device E remain open.
+Audio engineering passes full F/native at `928054e`, run 34773533442, with verified
+0.2.11/code 13. Eleven original assets, seven buses/controls, zone/combat/panel fades,
+bounded cues, limiter, captions, real mixer/GUI/persistence and native lifecycle pass.
+Owner listening, physical speaker/headphone output and Device E remain open.
 
 - **Kind / purpose:** Polish, content systems. Establish sound as part of the world early.
 - **Adds:** Music/ambience/spell/creature/UI buses, persistent volume controls, pause/ducking,
@@ -431,6 +430,12 @@ exported physical-device/headphone/speaker output and Device E remain open.
 - **Delivery:** APK yes; P none; S local settings only; Device E required.
 
 ### M1.10 — Tidebeat spell VFX and combat presentation pass
+
+Eight distinct action silhouettes, original family cues, target/effect/intent text,
+short/static playback and GUI skip/receipt/lifecycle restoration are implemented.
+Real-engine fixtures and low/high render/movie checks pass locally. High shadows use
+one 16m cascade to retain the 150k budget. The extended eight-action API route passes; 0.2.12/code 14 full F/native
+is pending; owner visual acceptance and Device R remain open.
 
 - **Kind / purpose:** Visual production, polish. Make the six earned spells feel distinct.
 - **Adds:** Authored anticipation/impact/reaction for all six spells and Brace/Gather,
@@ -1063,10 +1068,11 @@ If too much placeholder debt remains, return to bounded production batches befor
 | Entire-game art | M4.1 → M4.2 → M4.3 → M4.4 | Every launch environment, character/collectible, effect/audio and UI surface complete |
 | Release | M5.1 → M5.2 → M5.3 → M5.4 → M5.5 | Whole-game cohesion, phone certification, recovery/security, beta and approved launch |
 
-**Current engineering: validate/checkpoint M1.9 audio.**
-M1.8 full F/native passes with source-verified0.2.10/code12. Audio passes locally;
-0.2.11/code13 full F/native is pending. Next is M1.10 six-action-family presentation. Keep all physical/owner art,
-motion and sustained mobile acceptance gates open; engineering evidence does not waive them.
+**Current engineering: validate/checkpoint M1.10 presentation.**
+M1.9 full F/native passes with source-verified 0.2.11/code 13. Spell presentation passes
+local render/headless and eight-action online checks; 0.2.12 full F/native is pending.
+Next is M1.11's bounded combat/progression expansion. Keep physical/owner art, motion,
+listening and sustained mobile acceptance gates open.
 
 Postpone bulk quest/spell generation until the authoring/art benchmark exists; additional
 magical disciplines until the first three show build depth; regions beyond the approved

@@ -22,12 +22,16 @@ var pending_commerce: Dictionary = {}
 var commerce_shop := ""
 var commerce_error := ""
 var short_spell_effects := false
+var reduced_motion := false
+var playback: TidebeatPlayback
 var application_active := true
 var online_ready_announced := false
 
 func _notification(what: int) -> void:
     if what == NOTIFICATION_APPLICATION_PAUSED or what == NOTIFICATION_APPLICATION_FOCUS_OUT:
         application_active = false
+        if is_instance_valid(playback):
+            playback.stop()
         if is_instance_valid(player):
             hud.stick.release()
             player.input_axis = Vector2.ZERO
@@ -45,7 +49,11 @@ func begin(zone: DawnreefWorld, profile: Dictionary, offline: bool) -> void:
     preview = offline
     var settings = ConfigFile.new()
     settings.load("user://settings.cfg")
-    short_spell_effects = settings.get_value("accessibility","short_spell_effects",false)
+    short_spell_effects = settings.get_value("accessibility","short_spell_effects",false) == true
+    reduced_motion = settings.get_value("accessibility","reduced_motion",false) == true
+    playback = TidebeatPlayback.new()
+    playback.session = self
+    add_child(playback)
     player = preload("res://scenes/player/wayfarer.tscn").instantiate()
     world.add_child(player)
     player.setup(character.get("appearance",{}),world.geometry)
@@ -263,12 +271,15 @@ func start_encounter() -> void:
 func show_combat() -> void:
     Soundscape.set_combat(character.get("encounter",{}).get("state") == "active")
     var combat = character.get("encounter",{})
+    world.show_intent(combat)
     if combat.is_empty():
         return
     var panel = hud.open_panel("Tidebeat · " + combat.enemy_name)
-    panel.add_child(TideUI.paragraph("Your Vigor %s / 30     Focus %s / 6\nLurker Vigor %s / %s     Beat %s" % [combat.player_vigor,combat.focus,combat.enemy_vigor,combat.enemy_max_vigor,combat.round],22))
+    panel.add_child(TideUI.paragraph("Your Vigor %s / 30     Focus %s / 6\nFoe Vigor %s / %s     Beat %s" % [int(combat.player_vigor),int(combat.focus),int(combat.enemy_vigor),int(combat.enemy_max_vigor),int(combat.round)],22))
     if combat.state == "active":
-        panel.add_child(TideUI.paragraph("NEXT INTENT · %s · %s damage" % [combat.intent.name,combat.intent.power]))
+        panel.add_child(TideUI.paragraph("NEXT INTENT · " + CombatReadout.intent(combat)))
+        if int(combat.get("mark",0)) > 0:
+            panel.add_child(TideUI.paragraph("Beacon mark · next strike +%s damage" % int(combat.mark),17))
         if combat.get("equipment_guard",0) > 0:
             panel.add_child(TideUI.paragraph("Equipment Guard · %s less damage per hit" % int(combat.equipment_guard),17))
         if not pending_action.is_empty():
@@ -283,13 +294,18 @@ func show_combat() -> void:
                 var spell = combat.spells[key]
                 var cost = 0
                 for entry in spell.get("costs",[]):
-                    cost += entry.amount
-                var button = TideUI.button("%s · %s Focus" % [spell.name,cost],cast.bind(key))
+                    cost += int(entry.amount)
+                var detail = CombatReadout.describe(key,combat.spells)
+                var button = TideUI.button("%s · %s Focus\n%s · %s" % [spell.name,cost,detail.target,detail.effect],cast.bind(key))
+                button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+                button.custom_minimum_size.y = 86
                 button.disabled = cost > combat.focus
                 button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
                 grid.add_child(button)
             grid.add_child(TideUI.button("Brace · block 6",cast.bind("brace")))
             grid.add_child(TideUI.button("Gather · +2 Focus",cast.bind("gather")))
+            for action_button in grid.get_children():
+                action_button.mouse_filter = Control.MOUSE_FILTER_PASS
     else:
         panel.add_child(TideUI.label("Victory · rewards saved" if combat.state=="victory" else "Recovered at the Lantern Well",22,TideUI.GOLD))
         panel.add_child(TideUI.button("Return to Dawnreef",hud.close_panel,true))
@@ -309,50 +325,23 @@ func retry_action() -> void:
     var result = await ApiClient.post_json("/world/characters/%s/encounters/actions" % character.id,pending_action.payload,pending_action.key)
     if not result.is_empty():
         var action: String = pending_action.payload.action
-        var vigor_before = int(character.encounter.player_vigor)
+        var receipt: String = pending_action.key
+        var before: Dictionary = character.encounter.duplicate(true)
         pending_action.clear()
         character = result.character
         hud.set_character(character,preview)
-        if action == "glimmer_spark" and not short_spell_effects:
-            await present_glimmer()
-        else:
-            world.spell_impact(action)
-        # Acknowledged state drives reactions; animation never resolves a beat.
-        if int(character.encounter.player_vigor) < vigor_before:
-            player.avatar.play_hit()
-            Soundscape.cue("creature")
-        elif int(character.encounter.player_vigor) > vigor_before:
-            player.avatar.play_recovery()
+        # The receipt has already committed. Presentation cannot resolve another beat.
+        await playback.play(action,before,character.encounter,receipt)
+        if is_queued_for_deletion():
+            return
     busy = false
     show_combat()
 
 func present_glimmer() -> void:
-    # This is presentation of a confirmed result. Damage/rewards never come from VFX.
-    hud.close_panel()
-    hud.hide()
-    var target = world.enemy.global_position + Vector3.UP
-    var origin = player.global_position + Vector3.UP*1.45
-    var flat = Vector3(target.x-origin.x,0,target.z-origin.z)
-    if flat.length() > .02:
-        player.avatar.look_at(Vector3(target.x,player.avatar.global_position.y,target.z))
-    player.avatar.play_cast()
-    Soundscape.cue("cast")
-    var frame = Camera3D.new()
-    world.add_child(frame)
-    var middle = origin.lerp(target,.5)
-    var framed = OrbitRig.pair_frame(world.get_world_3d(),origin,target,player.get_rid())
-    if framed.is_finite():
-        frame.position = framed
-        frame.look_at(middle)
-    else:
-        frame.global_transform = camera.camera.global_transform
-    frame.fov = 60
-    frame.make_current()
-    world.glimmer_spark(origin,target)
-    await get_tree().create_timer(GlimmerPresentation.DURATION).timeout
-    camera.camera.make_current()
-    frame.queue_free()
-    hud.show()
+    # Compatibility entry for the isolated art fixture; never grants combat state.
+    var fixture = {"enemy_name":"Fog-thorn Lurker","enemy_vigor":32,"player_vigor":30,"focus":3,
+        "spells":{"glimmer_spark":{"name":"Glimmer Spark","costs":[{"amount":1}],"effects":[{"type":"deal_damage","power":8}]}}}
+    await playback.play("glimmer_spark",fixture,fixture,"art-fixture-"+command_id())
 
 func reload_character() -> void:
     if busy:
@@ -568,15 +557,23 @@ func show_settings() -> void:
     var effects = CheckButton.new()
     effects.text = "Short spell effects · no camera cut"
     effects.custom_minimum_size.y = 56
+    effects.mouse_filter = Control.MOUSE_FILTER_PASS
     effects.button_pressed = short_spell_effects
     effects.toggled.connect(func(value): short_spell_effects = value; save_settings())
     panel.add_child(effects)
+    var motion = CheckButton.new()
+    motion.text = "Reduced motion · still spell shapes, no camera cut"
+    motion.custom_minimum_size.y = 56
+    motion.button_pressed = reduced_motion
+    motion.mouse_filter = Control.MOUSE_FILTER_PASS
+    motion.toggled.connect(func(value): reduced_motion = value; save_settings())
+    panel.add_child(motion)
     var scale_option = TideUI.option(["Render resolution · 75%","Render resolution · 100%"])
     scale_option.select(1 if get_viewport().scaling_3d_scale > .9 else 0)
     scale_option.item_selected.connect(func(index): get_viewport().scaling_3d_scale = 1.0 if index else .75; save_settings())
     panel.add_child(scale_option)
     panel.add_child(TideUI.button("Sound",show_audio_settings))
-    panel.add_child(TideUI.paragraph("Battery targets30 FPS; Smooth targets60. If play feels slow, lower the render resolution or turn off shadows.",17))
+    panel.add_child(TideUI.paragraph("Battery targets 30 FPS; Smooth targets 60. If play feels slow, lower the render resolution or turn off shadows.",17))
     panel.add_child(TideUI.button("Return to sign in",return_requested.emit))
 
 func show_audio_settings() -> void:
@@ -590,6 +587,7 @@ func save_settings() -> void:
     config.set_value("graphics","fps",Engine.max_fps)
     config.set_value("graphics","shadows",world.sun.shadow_enabled)
     config.set_value("accessibility","short_spell_effects",short_spell_effects)
+    config.set_value("accessibility","reduced_motion",reduced_motion)
     config.set_value("graphics","scale",get_viewport().scaling_3d_scale)
     config.save("user://settings.cfg")
 
@@ -612,6 +610,8 @@ func _refresh_auth() -> void:
         connection.start(character.id)
 
 func _exit_tree() -> void:
+    if is_instance_valid(playback):
+        playback.stop()
     Soundscape.set_world(false)
     if connection:
         connection.stop()

@@ -1,0 +1,23 @@
+{
+  "revision": 1,
+  "status": "engineering candidate; owner/device visual and audio acceptance pending",
+  "source": "godot_project/scripts/world/tidebeat_effect.gd",
+  "playback": "godot_project/scripts/world/tidebeat_playback.gd",
+  "provenance": "Original code-authored geometry and mathematical audio synthesis. No third-party art pack or recording.",
+  "max_meshes": 16,
+  "max_triangles": 4000,
+  "transparency": false,
+  "cast_shadows": false,
+  "actions": [
+    "glimmer_spark",
+    "beacon_trace",
+    "root_snare",
+    "reed_aegis",
+    "tide_mend",
+    "seam_lance",
+    "brace",
+    "gather"
+  ],
+  "audio_manifest": "audio_sources/manifest.json",
+  "fixtures": "godot_project/tests/fixtures/tidebeat.json"
+}

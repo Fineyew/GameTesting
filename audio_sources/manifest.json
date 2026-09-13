@@ -1,5 +1,5 @@
 {
-  "revision": 1,
+  "revision": 2,
   "status": "original audio sample candidate; owner and physical-device listening pending",
   "source": "audio_sources/build_dawnreef_audio.py",
   "provenance": "Original composition and mathematical synthesis for Veilbound Tides. No external recordings, voices, sample packs or generated-service assets.",
@@ -16,7 +16,7 @@
       "channels": 1,
       "source_peak": 0.20911,
       "source_rms": 0.05044,
-      "sha256": "018e2c6b53e2f3e2fcc63dbeb2953add4665f60a0731da5c74e1c523e64e61d8"
+      "sha256": "a315e788f85d75a10a0abc0a3d976848f3ff7a3f8cf432ebca2231d776e363f1"
     },
     {
       "key": "tidebeat_theme",
@@ -29,7 +29,7 @@
       "channels": 1,
       "source_peak": 0.18583,
       "source_rms": 0.03792,
-      "sha256": "abb60e3269cedabf2f519b9160fee16badd83b958bf2bd4c7b02e5b84a088c6a"
+      "sha256": "a8cb4dcb92463bd62d2ac3fc1e15c89ca2228a5ee1d856a89c63c9905577974f"
     },
     {
       "key": "reef_wind",
@@ -42,7 +42,7 @@
       "channels": 1,
       "source_peak": 0.1044,
       "source_rms": 0.01883,
-      "sha256": "f7906f6964eb661025fff511f8bfa9a8117c97e67abc99a9a36ccfff26305309"
+      "sha256": "b7071de02ec6a79bcaba544dda6585781f55147093ad709e66602f54634c3283"
     },
     {
       "key": "ui",
@@ -147,6 +147,32 @@
       "source_peak": 0.32824,
       "source_rms": 0.07748,
       "sha256": "10a40ff4dffdfde3ad2a99a380ffdb856ccf512ccad30e75ead84df364bf30f6"
+    },
+    {
+      "key": "root_cast",
+      "file": "godot_project/audio/root_cast.wav",
+      "loop": false,
+      "bus": "Spells",
+      "caption": "Reed-roots tighten",
+      "duration_seconds": 0.55002,
+      "sample_rate": 22050,
+      "channels": 1,
+      "source_peak": 0.27445,
+      "source_rms": 0.03056,
+      "sha256": "7f869cf04f409291cf60394acb41b9f9b67e72e08d5e87eb19a51624c175cc6b"
+    },
+    {
+      "key": "tide_cast",
+      "file": "godot_project/audio/tide_cast.wav",
+      "loop": false,
+      "bus": "Spells",
+      "caption": "A tide seam opens",
+      "duration_seconds": 0.64998,
+      "sample_rate": 22050,
+      "channels": 1,
+      "source_peak": 0.23424,
+      "source_rms": 0.07871,
+      "sha256": "3a995e7175206d7f46f17b2f0996b06c45ca0ef43753e830702958a129883ea5"
     }
   ]
 }

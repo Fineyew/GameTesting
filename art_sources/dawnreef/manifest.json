@@ -76,9 +76,9 @@
     }
   ],
   "placeholders_remaining": [
-    "Two other Dawnreef houses, distant trees, coastline/vistas, dock, cistern, lurker and its motion",
-    "Other spell effects and all region/combat audio",
-    "Creator variety, complete locomotion/interaction/reaction rig, full HUD icons/safe-area and accessibility passes"
+    "Two other Dawnreef houses, distant trees, coastline/vistas, dock, cistern, lurker and its full motion",
+    "Full-region music/creature coverage beyond the original Dawnreef/Tidebeat sample",
+    "Additional creator/interaction options, full HUD icons/safe-area and accessibility passes"
   ],
   "motion_library": {
     "file": "godot_project/assets/dawnreef/wayfarer_motion.tres",
@@ -92,5 +92,6 @@
       "Recovery"
     ],
     "status": "original editable motion candidate; owner/device acceptance pending"
-  }
+  },
+  "spell_presentation_manifest": "art_sources/tidebeat/manifest.json"
 }

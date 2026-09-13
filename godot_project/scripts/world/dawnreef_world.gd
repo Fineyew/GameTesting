@@ -43,7 +43,8 @@ func _environment() -> void:
     sun.light_color = Color("fff0c9")
     sun.light_energy = .9
     sun.shadow_enabled = false
-    sun.directional_shadow_max_distance = 32
+    sun.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
+    sun.directional_shadow_max_distance = 16
     add_child(sun)
 
 func _landscape() -> void:
@@ -170,26 +171,14 @@ func _process(delta: float) -> void:
     elapsed += delta
     well_light.position.y = 1.5 + sin(elapsed*1.8)*.1
 
-func spell_impact(spell: String) -> void:
-    Soundscape.cue("mend" if spell == "tide_mend" else ("guard" if spell in ["reed_aegis","brace","root_snare"] else "impact"))
-    var heal = spell == "tide_mend" or spell == "reed_aegis"
-    var at = Vector3(0,1,-5) if heal else Vector3(12,1,-10)
-    var burst = ReefKit.sphere(self,.15,at,Color("85d7be") if heal else Color("f2c676"),true)
-    var tween = create_tween()
-    tween.tween_property(burst,"scale",Vector3.ONE*8,.28)
-    tween.tween_property(burst,"scale",Vector3.ZERO,.3)
-    tween.tween_callback(burst.queue_free)
-    if not heal:
-        var reaction = create_tween()
-        reaction.tween_property(enemy,"scale",Vector3(1.12,.8,1.12),.12)
-        reaction.tween_property(enemy,"scale",Vector3.ONE,.3)
-
-func glimmer_spark(from: Vector3, to: Vector3) -> void:
-    var presentation = GlimmerPresentation.new()
-    add_child(presentation)
-    presentation.begin(from,to)
-    presentation.impact.connect(func():
-        Soundscape.cue("impact")
-        var reaction = create_tween()
-        reaction.tween_property(enemy,"scale",Vector3(1.12,.8,1.12),.1)
-        reaction.tween_property(enemy,"scale",Vector3.ONE,.24))
+func show_intent(combat: Dictionary) -> void:
+    var indicator = enemy.get_node_or_null("TidebeatIntent") as Label3D
+    if indicator == null:
+        indicator = ReefKit.label(enemy,"",Vector3(0,2.5,0))
+        indicator.name = "TidebeatIntent"
+        indicator.font_size = 27
+        indicator.pixel_size = .007
+    indicator.visible = combat.get("state") == "active"
+    indicator.text = "NEXT · " + CombatReadout.intent(combat)
+    if int(combat.get("mark",0)) > 0:
+        indicator.text += "\n◇ Mark +%s on next strike" % int(combat.mark)

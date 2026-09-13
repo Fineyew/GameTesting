@@ -22,13 +22,17 @@ def run(args, timeout=180):
     return output
 
 
-def record(project, name, script="res://tests/benchmark_route.gd", marker="BENCHMARK_ROUTE_PASS"):
+def record(project, name, script="res://tests/benchmark_route.gd", marker="BENCHMARK_ROUTE_PASS", audio=False):
     movie = DESTINATION/(name+'.ogv')
     output = run([GODOT,'--path',str(project),'--resolution','1280x720','--write-movie',str(movie),
         '--fixed-fps','30','--script',script])
     assert marker in output and movie.stat().st_size > 100_000
-    run(['ffmpeg','-y','-i',str(movie),'-an','-c:v','libx264','-crf','22','-pix_fmt','yuv420p',
+    audio_flags = ['-c:a','aac','-b:a','128k'] if audio else ['-an']
+    run(['ffmpeg','-y','-i',str(movie),*audio_flags,'-c:v','libx264','-crf','22','-pix_fmt','yuv420p',
          '-movflags','+faststart',str(DESTINATION/(name+'.mp4'))])
+    if audio:
+        probe=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-of','json',str(DESTINATION/(name+'.mp4'))]))
+        assert {'audio','video'} <= {stream['codec_type'] for stream in probe['streams']}
     movie.unlink()
 
 
@@ -48,6 +52,7 @@ def main():
         record(old/'godot_project','before-m13')
     record(ROOT/'godot_project','after-m14')
     record(ROOT/'godot_project','wayfarer-motion','res://tests/motion_route.gd','MOTION_ROUTE_PASS')
+    record(ROOT/'godot_project','tidebeat-spells','res://tests/tidebeat_route.gd','TIDEBEAT_ROUTE_PASS',audio=True)
     source = os.environ.get('VT_SOURCE_COMMIT') or subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
     (DESTINATION/'walkthrough.json').write_text(json.dumps({'before':BASELINE,'after':source,
         'route':'godot_project/tests/benchmark_route.gd','viewport':[1280,720],'render_scale':.75,

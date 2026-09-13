@@ -4,7 +4,7 @@
   "asset_references": {
     "res://assets/audio/music/original_dawnreef_theme.ogg": {
       "status": "planned",
-      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+      "reason": "Legacy declared path. The current original Dawnreef audio implementation and shipped path are recorded in audio_sources/manifest.json."
     },
     "res://assets/creatures/fog_thorn_lurker.tscn": {
       "status": "planned",
@@ -84,15 +84,15 @@
     },
     "res://assets/vfx/glimmer_spark.tscn": {
       "status": "planned",
-      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+      "reason": "Legacy declared scene path. The current code-authored presentation candidate is tracked in art_sources/tidebeat/manifest.json; this path itself remains unproduced."
     },
     "res://assets/vfx/root_snare.tscn": {
       "status": "planned",
-      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+      "reason": "Legacy declared scene path. The current code-authored presentation candidate is tracked in art_sources/tidebeat/manifest.json; this path itself remains unproduced."
     },
     "res://assets/vfx/tide_mend.tscn": {
       "status": "planned",
-      "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+      "reason": "Legacy declared scene path. The current code-authored presentation candidate is tracked in art_sources/tidebeat/manifest.json; this path itself remains unproduced."
     },
     "res://scenes/dungeons/saltglass_cistern.tscn": {
       "status": "planned",

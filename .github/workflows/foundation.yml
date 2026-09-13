@@ -44,6 +44,7 @@ jobs:
         run: |
           python -m tools.build_catalog
           git diff --exit-code godot_project/data/catalog.json
+          python -m tools.build_spell_review --check
       - name: Validate benchmark art budgets and editable sources
         run: python -m tools.check_art
       - name: Validate content branches, runtime bindings and asset status
@@ -152,8 +153,8 @@ jobs:
           name: veilbound-tides-android-foundation
           retention-days: 90
           path: |
-            builds/veilbound-tides-0.2.11-android.apk
-            builds/veilbound-tides-0.2.11-android.apk.verification.txt
+            builds/veilbound-tides-0.2.12-android.apk
+            builds/veilbound-tides-0.2.12-android.apk.verification.txt
             builds/build-manifest.json
             builds/render-check/
             builds/audio-check/

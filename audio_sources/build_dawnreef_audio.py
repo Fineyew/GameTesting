@@ -106,7 +106,13 @@ def main():
     rustle=(RNG.normal(size=len(t))*.14+np.sin(2*np.pi*(75*t+17*t*t))*.4)*np.sin(np.pi*t/.65)**2*.32
     write('creature',rustle,bus='Creatures',caption='The fog-thorn lurker stirs')
     write('discovery',bell(74,1.6)*.14+bell(81,1.6)*.12+bell(86,1.6)*.06,bus='UI',caption='A clear discovery chime')
-    manifest={'revision':1,'status':'original audio sample candidate; owner and physical-device listening pending',
+    t=np.arange(round(RATE*.55))/RATE
+    pluck=sum(np.sin(2*np.pi*hz(note)*t)*np.exp(-t*(13+i*2)) for i,note in enumerate([45,52,57]))
+    write('root_cast',pluck*.11+RNG.normal(size=len(t))*.035*np.exp(-t*18),caption='Reed-roots tighten')
+    t=np.arange(round(RATE*.65))/RATE
+    sweep=np.sin(2*np.pi*(230*t+390*t*t))*np.sin(np.pi*t/.65)**2
+    write('tide_cast',sweep*.18+RNG.normal(size=len(t))*.018*np.sin(np.pi*t/.65)**2,caption='A tide seam opens')
+    manifest={'revision':2,'status':'original audio sample candidate; owner and physical-device listening pending',
         'source':'audio_sources/build_dawnreef_audio.py','provenance':'Original composition and mathematical synthesis for Veilbound Tides. No external recordings, voices, sample packs or generated-service assets.',
         'rights':'Project-authored source and assets; no third-party recording license required.',
         'assets':records}

@@ -4,6 +4,8 @@ signal caption_requested(words: String)
 const DEFAULTS = {"Master":.85,"Music":.65,"Ambience":.65,"Movement":.65,"Spells":.75,"Creatures":.65,"UI":.6}
 const LOOPS = ["res://audio/dawnreef_theme.ogg","res://audio/tidebeat_theme.ogg","res://audio/reef_wind.ogg"]
 const CUES = {
+    "root_cast":["res://audio/root_cast.wav","Spells","Reed-roots tighten"],
+    "tide_cast":["res://audio/tide_cast.wav","Spells","A tide seam opens"],
     "ui":["res://audio/ui.wav","UI","Soft button chime"],
     "footstep":["res://audio/footstep.wav","Movement","Footsteps"],
     "cast":["res://audio/cast.wav","Spells","A lens gathers light"],
@@ -208,10 +210,16 @@ func shutdown() -> void:
     for stream in loops+voices:
         stream.stream_paused = false
         stream.stop()
+        stream.stream = null
+        stream.queue_free()
+    loops.clear()
+    voices.clear()
+    cue_streams.clear()
     if not save_timer.is_stopped():
         save_settings()
         save_timer.stop()
-    # AudioServer retires playback objects on its mixer thread after stop().
+    # Release player ownership before allowing the mixer to retire stopped playback.
+    await get_tree().process_frame
     await get_tree().create_timer(.12,true,false,true).timeout
 
 func _exit_tree() -> void:
