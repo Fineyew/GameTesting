@@ -21,6 +21,23 @@ READY = f'''  mCurrentFocus={APP}
 '''
 
 class AndroidWindowTests(unittest.TestCase):
+    def test_hidden_keyboard_never_sends_back(self):
+        for state in ('mIsImeShowing=false', ''):
+            with patch.object(gate, 'adb', return_value=state) as adb:
+                gate.dismiss_keyboard()
+            adb.assert_called_once_with('shell', 'dumpsys', 'window')
+
+    def test_visible_keyboard_is_dismissed_once_and_waited_for(self):
+        states = iter(['mIsImeShowing=true', 'mIsImeShowing=true', 'mIsImeShowing=false'])
+        calls = []
+        def adb(*args):
+            calls.append(args)
+            return next(states) if args == ('shell', 'dumpsys', 'window') else ''
+        with patch.object(gate, 'adb', adb), patch.object(gate.time, 'sleep'):
+            gate.dismiss_keyboard()
+        self.assertEqual(calls.count(('shell', 'input', 'keyevent', 'KEYCODE_BACK')), 1)
+        self.assertEqual(calls[-1], ('shell', 'dumpsys', 'window'))
+
     def test_actual_api35_shape_without_legacy_transition_field(self):
         self.assertTrue(gate.input_window_ready(READY))
 

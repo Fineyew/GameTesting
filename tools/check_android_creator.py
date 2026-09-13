@@ -9,7 +9,7 @@ import sys
 import tempfile
 import httpx
 from PIL import Image, ImageChops
-from tools.check_android import ROOT, OUT, PACKAGE, adb, capture, wait_for, wait_for_world, wait_for_input_ready
+from tools.check_android import ROOT, OUT, PACKAGE, adb, capture, wait_for, wait_for_world, wait_for_input_ready, dismiss_keyboard
 
 
 def check_creator():
@@ -38,8 +38,11 @@ def check_creator():
 
     def fill(label, value):
         tap(label)
+        # Ordinary native keyboard editing also replaces the prefilled server URL.
+        adb('shell', 'input', 'keycombination', 'KEYCODE_CTRL_LEFT', 'KEYCODE_A')
+        adb('shell', 'input', 'keyevent', 'KEYCODE_DEL')
         adb('shell', 'input', 'text', value)
-        adb('shell', 'input', 'keyevent', 'KEYCODE_BACK')
+        dismiss_keyboard()
 
     def changed(left, right, region):
         with Image.open(left) as a, Image.open(right) as b:

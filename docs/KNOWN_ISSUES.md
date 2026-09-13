@@ -201,3 +201,13 @@ the existing scroll container owns scrolling and cancels the press on drag. A GU
 regression requires propagation and no accidental offline entry. Native QA additionally
 waits for a focused, stable window after its deliberate restart and captures failures
 before cleanup changes the screen. Existing thresholds are preserved. Fresh CI required.
+### Native creator text-entry harness correction (2026-09-13)
+
+Codef04a8e6/run34767828121 passes backend, Godot/API, render and walkthrough gates;
+the emulator confirms the scroll correction reaches Server connection. The new creator
+harness then sends Back while the hardware-keyboard emulator has no visible IME,
+returning to the launcher before login. This is a harness navigation failure, not a
+creator render failure. Native10321285952/render10320904717 retain that failed attempt;
+no ARM64 artifact was published. Text entry now selects/replaces prefilled values and
+sends Back only when API35 reports the IME visible. Nine local Android harness tests
+pass, including hidden/visible keyboard cases. Full native validation is still required.

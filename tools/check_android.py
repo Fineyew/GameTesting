@@ -95,6 +95,15 @@ def wait_for_input_ready():
         return time.monotonic()-ready_since>=3
     wait_for(ready,30)
 
+def dismiss_keyboard():
+    # With an emulator hardware keyboard, Back leaves the app instead of hiding
+    # an IME. Read API35's actual display state before injecting that key.
+    def shown():
+        return 'mIsImeShowing=true' in adb('shell','dumpsys','window')
+    if shown():
+        adb('shell','input','keyevent','KEYCODE_BACK')
+        wait_for(lambda:not shown())
+
 def wait_for_settled_world(name):
     # A resting thumb does not prove the last deceleration/camera frame was presented
     # on a slow software GPU. Keep the first frame and require two stable comparisons.
