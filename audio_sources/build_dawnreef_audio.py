@@ -49,7 +49,7 @@ def write(name, signal, loop=False, bus='Spells', caption=''):
         with wave.open(str(raw),'wb') as stream:
             stream.setnchannels(1);stream.setsampwidth(2);stream.setframerate(RATE);stream.writeframes(pcm.tobytes())
         if loop:
-            subprocess.run(['ffmpeg','-v','error','-y','-fflags','+bitexact','-i',str(raw),'-map_metadata','-1',
+            subprocess.run(['ffmpeg','-v','error','-y','-fflags','+bitexact','-i',str(raw),'-fflags','+bitexact','-map_metadata','-1',
                 '-c:a','libvorbis','-q:a','4','-flags:a','+bitexact',str(path)],check=True)
         else:
             path.write_bytes(raw.read_bytes())
@@ -112,7 +112,13 @@ def main():
     t=np.arange(round(RATE*.65))/RATE
     sweep=np.sin(2*np.pi*(230*t+390*t*t))*np.sin(np.pi*t/.65)**2
     write('tide_cast',sweep*.18+RNG.normal(size=len(t))*.018*np.sin(np.pi*t/.65)**2,caption='A tide seam opens')
-    manifest={'revision':2,'status':'original audio sample candidate; owner and physical-device listening pending',
+    t=np.arange(round(RATE*.35))/RATE
+    shell=(np.sin(2*np.pi*105*t)+.25*np.sin(2*np.pi*315*t))*np.exp(-t*17)*.25
+    write('creature_shell',shell,bus='Creatures',caption='Shell plates click together')
+    t=np.arange(round(RATE*.5))/RATE
+    ray=np.sin(2*np.pi*(210*t-95*t*t))*np.sin(np.pi*t/.5)**2*.24
+    write('creature_ray',ray,bus='Creatures',caption='The ray draws a quiet breath')
+    manifest={'revision':3,'status':'original audio sample candidate; owner and physical-device listening pending',
         'source':'audio_sources/build_dawnreef_audio.py','provenance':'Original composition and mathematical synthesis for Veilbound Tides. No external recordings, voices, sample packs or generated-service assets.',
         'rights':'Project-authored source and assets; no third-party recording license required.',
         'assets':records}

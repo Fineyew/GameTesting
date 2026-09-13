@@ -231,7 +231,7 @@ func run() -> void:
         session.cast(spell)
         await until(func(): return not session.busy)
     assert(session.character.encounter.state == "victory")
-    for action in TidebeatEffect.PROFILES:
+    for action in ["glimmer_spark","root_snare","tide_mend","beacon_trace","reed_aegis","seam_lance","brace","gather"]:
         assert(session.playback.presented.get(action,0) > 0,"Online route missed presentation: "+action)
     print("ONLINE_EIGHT_ACTIONS_PASS: earned/prepared actions, saved result before skip, duplicate receipt suppression")
     session.hud.close_panel()

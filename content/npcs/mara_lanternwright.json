@@ -2,7 +2,7 @@
   "type": "npcs",
   "key": "mara_lanternwright",
   "schema_version": 1,
-  "version": 3,
+  "version": 4,
   "display": {
     "name": "Mara Lanternwright",
     "summary": "Caretaker of Dawnreef's stabilizer wells.",
@@ -24,7 +24,10 @@
       "an_answer_in_the_reeds",
       "reading_the_afterlight",
       "what_the_reeds_hold",
-      "a_measured_release"
+      "a_measured_release",
+      "light_between_plates",
+      "a_kindly_weave",
+      "keep_the_quiet"
     ],
     "shop_key": "dawnreef_supply_cart"
   },

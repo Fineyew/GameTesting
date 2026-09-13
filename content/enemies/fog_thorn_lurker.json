@@ -2,7 +2,7 @@
   "type": "enemies",
   "key": "fog_thorn_lurker",
   "schema_version": 1,
-  "version": 2,
+  "version": 3,
   "display": {
     "name": "Fog-Thorn Lurker",
     "summary": "A thorny mist-dweller that nests near damp lantern stone.",
@@ -42,6 +42,17 @@
       {
         "name": "Gathering mist",
         "power": 0
+      }
+    ],
+    "rewards": [
+      {
+        "type": "grant_experience",
+        "amount": 25
+      },
+      {
+        "type": "grant_currency",
+        "currency_key": "shell_chits",
+        "amount": 2
       }
     ]
   },

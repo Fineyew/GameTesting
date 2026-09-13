@@ -1,0 +1,67 @@
+{
+  "type": "quests",
+  "key": "light_between_plates",
+  "schema_version": 1,
+  "version": 1,
+  "display": {
+    "name": "Light Between Plates",
+    "summary": "The sifter wears its shelter like a folded fan. Mark a seam, wait for its plates to open, then bring me the pattern. A narrow light can pass where a broad spark cannot."
+  },
+  "tags": [
+    "dawnreef"
+  ],
+  "assets": {},
+  "rules": {
+    "giver_npc_key": "mara_lanternwright",
+    "ordered": true,
+    "start_conditions": [
+      {
+        "type": "quest_completed",
+        "quest_key": "a_measured_release"
+      },
+      {
+        "type": "discipline_study",
+        "discipline": "lanterncraft"
+      }
+    ],
+    "objectives": [
+      {
+        "key": "trace_plates",
+        "label": "Mark the Shellfold Sifter with Beacon Trace",
+        "type": "cast_spell",
+        "spell_key": "beacon_trace",
+        "enemy_key": "shellfold_sifter",
+        "quantity": 1
+      },
+      {
+        "key": "open_shell",
+        "label": "Finish the Shellfold Sifter encounter",
+        "type": "defeat_enemy",
+        "enemy_key": "shellfold_sifter",
+        "quantity": 1
+      },
+      {
+        "key": "return_to_mara",
+        "label": "Return to Mara with the pattern",
+        "type": "talk_to_npc",
+        "npc_key": "mara_lanternwright",
+        "quantity": 1
+      }
+    ],
+    "rewards": [
+      {
+        "type": "learn_spell",
+        "spell_key": "prism_needle"
+      },
+      {
+        "type": "grant_experience",
+        "amount": 25
+      },
+      {
+        "type": "grant_item",
+        "item_key": "sunthread_bandage",
+        "quantity": 1
+      }
+    ]
+  }
+}

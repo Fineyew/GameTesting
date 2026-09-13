@@ -78,6 +78,19 @@ async def main():
                     assert peak[0]>=1.19, "second player never observed the terrace ascent"
                     print("SECOND_PLAYER_HEIGHT_PASS: authoritative elevation observed on independent socket")
                     assert godot.returncode == 0 and b'GODOT_ONLINE_PASS' in output and b'ERROR:' not in output and b'SCRIPT ERROR' not in output
+                    # A second bounded client continues the character earned above.
+                    # The same isolated server/store stays live; no fixture grants.
+                    godot = await asyncio.create_subprocess_exec(os.environ.get('GODOT_BIN','godot'),'--headless','--path',str(ROOT/'godot_project'),'--script','res://tests/progression_online.gd',env=env,stdout=asyncio.subprocess.PIPE,stderr=asyncio.subprocess.STDOUT)
+                    communication = asyncio.create_task(godot.communicate())
+                    try:
+                        output,_ = await asyncio.wait_for(asyncio.shield(communication),180)
+                    except TimeoutError:
+                        godot.kill()
+                        output,_ = await communication
+                        print(output.decode())
+                        raise
+                    print(output.decode())
+                    assert godot.returncode == 0 and b'GODOT_PROGRESSION_PASS' in output and b'ERROR:' not in output and b'SCRIPT ERROR' not in output
         finally:
             server.terminate()
             await server.wait()

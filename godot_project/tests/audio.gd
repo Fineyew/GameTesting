@@ -13,7 +13,7 @@ func run() -> void:
     sound.load_settings()
     for bus in sound.DEFAULTS:
         assert(AudioServer.get_bus_index(bus) >= 0)
-    assert(sound.loops.size() == 3 and sound.voices.size() == 8 and sound.cue_streams.size() == 10)
+    assert(sound.loops.size() == 3 and sound.voices.size() == 8 and sound.cue_streams.size() == 12)
     for stream in sound.loops:
         assert(stream.stream.loop and stream.stream.get_length() >= 15)
     sound.set_world(true)

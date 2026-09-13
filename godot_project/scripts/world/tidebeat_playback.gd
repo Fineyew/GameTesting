@@ -32,6 +32,10 @@ func play(action: String, before: Dictionary, after: Dictionary, receipt: String
     presented[action] = int(presented.get(action,0))+1
     session.hud.close_panel()
     session.hud.hide()
+    session.world.show_intent(before)
+    var intent_label = session.world.enemy.get_node_or_null("TidebeatIntent")
+    if intent_label:
+        intent_label.hide() # The receipt overlay owns the action readout during playback.
     enemy_scale = session.world.enemy.scale
     var from = session.player.global_position+Vector3.UP*1.1
     var to = session.world.enemy.global_position+Vector3.UP
@@ -109,9 +113,11 @@ func on_impact(action: String, before: Dictionary, after: Dictionary) -> void:
     var after_vigor = int(after.get("player_vigor",30))
     if after_vigor < before_vigor:
         session.player.avatar.play_hit(speed)
-        get_node("/root/Soundscape").cue("creature")
+        get_node("/root/Soundscape").cue(session.world.creature_cue())
     elif after_vigor > before_vigor:
         session.player.avatar.play_recovery(speed)
+    if after_vigor >= before_vigor and int(after.get("last_focus_loss",0)) > 0:
+        get_node("/root/Soundscape").cue(session.world.creature_cue())
 
 func stop() -> void:
     if not active:
@@ -143,6 +149,9 @@ func stop() -> void:
         sound.caption_requested.disconnect(show_caption)
     if is_instance_valid(session.hud):
         session.hud.show()
+    var intent_label = session.world.enemy.get_node_or_null("TidebeatIntent")
+    if intent_label and session.character.get("encounter",{}).get("state") == "active":
+        intent_label.show()
     finished.emit()
 
 func _exit_tree() -> void:

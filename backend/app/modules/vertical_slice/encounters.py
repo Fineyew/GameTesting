@@ -34,8 +34,12 @@ class EncounterService:
         def apply(character):
             if character.encounter.get("state") == "active":
                 return
-            if enemy_key != "fog_thorn_lurker":
+            zone = self.catalog.get_definition("zones", character.current_zone_key)
+            if enemy_key not in zone.rules.get("encounters", []):
                 raise ValueError("encounter not available")
+            conditions = self.catalog.get_definition("enemies", enemy_key).rules.get("unlock_conditions", [])
+            if conditions and (not self.players.quest_rules or not self.players.quest_rules.conditions_met(character, conditions)):
+                raise ValueError("reach level 2 and help the Lantern Well before this encounter")
             if any(s not in character.known_spells for s in character.folio):
                 raise ValueError("folio contains an unowned spell")
             guard = self.equipment_rules.guard(character) if self.equipment_rules else 0
@@ -65,14 +69,26 @@ class EncounterService:
 
     def _reward(self, character, enemy_key):
         character.defeated_enemies[enemy_key] = character.defeated_enemies.get(enemy_key, 0) + 1
-        character.experience += 25
-        character.wallet["shell_chits"] = character.wallet.get("shell_chits", 0) + 2
+        rewards = self.catalog.get_definition("enemies", enemy_key).rules.get("rewards", [
+            {"type":"grant_experience", "amount":25},
+            {"type":"grant_currency", "currency_key":"shell_chits", "amount":2}])
+        for reward in rewards:
+            if reward["type"] == "grant_experience":
+                character.experience += reward["amount"]
+            elif reward["type"] == "grant_currency":
+                currency = reward["currency_key"]
+                character.wallet[currency] = character.wallet.get(currency, 0) + reward["amount"]
+            else:
+                raise ValueError("unsupported encounter reward")
         if self.players.quest_rules:
             self.players.quest_rules.advance(character, "defeat_enemy", enemy_key)
         else:
             self._legacy_quest_rewards(character, enemy_key)
-        while character.experience >= 100 * character.level:
-            character.level += 1
+        if self.players.progression:
+            self.players.progression.settle(character)
+        else:
+            while character.experience >= 100 * character.level:
+                character.level += 1
 
     def _legacy_quest_rewards(self, character, enemy_key):
         """Compatibility for standalone legacy service callers without injected rules."""

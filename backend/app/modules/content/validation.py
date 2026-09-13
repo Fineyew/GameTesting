@@ -19,6 +19,7 @@ REQUIRED_CONTENT_CATEGORIES = {
     "mounts",
     "npcs",
     "quests",
+    "progression",
     "shops",
     "spells",
     "zones",
@@ -35,10 +36,12 @@ KNOWN_EFFECT_TYPES = {
     "learn_spell",
     "offer_quest",
     "restore_vigor",
+    "ward_focus",
 }
 
 KNOWN_CONDITION_TYPES = {
     "character_level_at_least",
+    "discipline_study",
     "quest_completed",
     "quest_state",
 }
@@ -163,6 +166,10 @@ def _validate_handlers(path: Path, rules: dict[str, Any], report: ContentValidat
                 report.errors.append(f"{path}: unknown condition type '{condition_type}'")
             elif condition_type == "character_level_at_least" and not _bounded_integer(condition.get("value"), 1, 1000):
                 report.errors.append(f"{path}: invalid minimum level")
+            elif condition_type == "discipline_study":
+                if set(condition) != {"type", "discipline"} or condition.get("discipline") not in {"lanterncraft", "rootbinding", "tideseaming"}:
+                    report.errors.append(f"{path}: invalid study discipline")
+                _require_reference(path, "progression", "wayfarer", report)
             elif condition_type == "quest_state" and condition.get("state") not in {"not_started", "accepted", "completed"}:
                 report.errors.append(f"{path}: invalid quest state condition")
             if condition_type in {"quest_completed", "quest_state"} and not isinstance(condition.get("quest_key"), str):
@@ -212,6 +219,8 @@ def _validate_type_specific_references(
     rules: dict[str, Any],
     report: ContentValidationReport,
 ) -> None:
+    if content_type == "progression":
+        _validate_progression(path, rules, report)
     if content_type == "quests":
         _validate_quest(path, rules, report)
     if content_type == "dialogue":
@@ -246,14 +255,30 @@ def _validate_type_specific_references(
             if cost.get("resource") != "focus" or type(cost.get("amount")) is not int or not 0 <= cost["amount"] <= 6:
                 report.errors.append(f"{path}: invalid Focus cost")
         for effect in rules.get("effects", []):
-            if effect.get("type") not in {"deal_damage", "restore_vigor", "bind", "mark", "guard"}:
+            if effect.get("type") not in {"deal_damage", "restore_vigor", "bind", "mark", "guard", "ward_focus"}:
                 report.errors.append(f"{path}: unsupported combat effect")
             amount = effect.get("amount", effect.get("power"))
             if type(amount) is not int or not 0 <= amount <= 10000:
                 report.errors.append(f"{path}: invalid effect amount")
+            if "piercing" in effect and (effect.get("type") != "deal_damage" or type(effect["piercing"]) is not bool):
+                report.errors.append(f"{path}: piercing must be a damage boolean")
+            if effect.get("type") == "ward_focus" and not _bounded_integer(amount, 0, 6):
+                report.errors.append(f"{path}: Focus ward must be 0–6")
     if content_type == "enemies":
+        if "rewards" in rules:
+            rewards = rules["rewards"]
+            if not 1 <= len(rewards) <= 4 or any(
+                r.get("type") not in {"grant_experience", "grant_currency"} or
+                not _bounded_integer(r.get("amount"), 1, 10000) or
+                (r.get("type") == "grant_currency" and r.get("currency_key") != "shell_chits")
+                for r in rewards
+            ):
+                report.errors.append(f"{path}: invalid encounter rewards")
         intents = rules.get("intents", [])
-        if not 1 <= len(intents) <= 12 or any(type(i.get("power")) is not int or not 0 <= i["power"] <= 30 for i in intents):
+        if not isinstance(intents, list) or not 1 <= len(intents) <= 12 or any(
+            not isinstance(i, dict) or not isinstance(i.get("name"), str) or not i["name"].strip() or
+            not _bounded_integer(i.get("power"), 0, 30) or not _bounded_integer(i.get("guard",0), 0, 12) or
+            not _bounded_integer(i.get("focus_drain",0), 0, 6) for i in intents):
             report.errors.append(f"{path}: invalid enemy intents")
     if content_type == "zones":
         for key, discovery in rules.get("discoveries", {}).items():
@@ -441,3 +466,18 @@ def _walk_values_by_key(value: Any, key: str) -> list[Any]:
         for item in value:
             found.extend(_walk_values_by_key(item, key))
     return found
+
+
+def _validate_progression(path, rules, report):
+    levels = rules.get("level_thresholds")
+    if not isinstance(levels, list) or not 2 <= len(levels) <= 100 or any(
+        not _bounded_integer(value, 0, 1_000_000_000) for value in levels
+    ) or levels[0] != 0 or any(a >= b for a, b in zip(levels, levels[1:])):
+        report.errors.append(f"{path}: XP thresholds must start at zero and strictly increase")
+    if not _bounded_integer(rules.get("continued_level_step"), 1, 1_000_000):
+        report.errors.append(f"{path}: continued XP step must be positive")
+    study = rules.get("study_levels")
+    if not isinstance(study, dict) or set(study) != {"affinity", "cross_training"} or any(
+        not _bounded_integer(value, 1, 1000) for value in study.values()
+    ) or study["affinity"] > study["cross_training"]:
+        report.errors.append(f"{path}: invalid affinity/cross-training study levels")

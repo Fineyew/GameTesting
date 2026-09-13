@@ -118,7 +118,7 @@ func _process(delta: float) -> void:
         if candidate < distance:
             nearest = key
             distance = candidate
-    hud.interaction.text = {"mara_lanternwright":"Talk to Mara","fog_thorn_lurker":"Encounter","sunthread_reeds":"Inspect reeds","saltglass_cistern":"Inspect gate"}.get(nearest,"Explore")
+    hud.interaction.text = {"mara_lanternwright":"Talk to Mara","fog_thorn_lurker":"Encounter","shellfold_sifter":"Shellfold Sifter","hushfin_ray":"Hushfin Ray","sunthread_reeds":"Inspect reeds","saltglass_cistern":"Inspect gate"}.get(nearest,"Explore")
     for remote in remotes.values():
         var before = remote.avatar.position
         remote.avatar.position = before.lerp(remote.target,minf(1,delta*10))
@@ -171,11 +171,11 @@ func interact() -> void:
                 panel.add_child(TideUI.button("Browse supplies",show_vendor))
             else:
                 open_dialogue()
-        "fog_thorn_lurker":
+        "fog_thorn_lurker", "shellfold_sifter", "hushfin_ray":
             if preview:
                 hud.open_panel("A creature in the mist").add_child(TideUI.paragraph("Combat and rewards require an online character. Return to sign in when your server is available."))
             else:
-                start_encounter()
+                start_encounter(nearest)
         "sunthread_reeds", "saltglass_cistern":
             if preview:
                 var discovery = GameData.definition("zones","dawnreef_atoll").rules.discoveries[nearest]
@@ -256,17 +256,20 @@ func accept_quest() -> void:
 func command_id() -> String:
     return Crypto.new().generate_random_bytes(16).hex_encode()
 
-func start_encounter() -> void:
+func start_encounter(enemy_key := "fog_thorn_lurker") -> void:
     busy = true
     hud.open_panel("Entering encounter…").add_child(TideUI.paragraph("Listening for the creature's first intent."))
-    var result = await ApiClient.post_json("/world/characters/%s/encounters" % character.id,{"enemy_key":"fog_thorn_lurker"},command_id())
+    var result = await ApiClient.post_json("/world/characters/%s/encounters" % character.id,{"enemy_key":enemy_key},command_id())
     busy = false
     if not result.is_empty():
         character = result.character
-        Soundscape.cue("creature")
         show_combat()
+        Soundscape.cue(world.creature_cue())
     else:
-        hud.open_panel("Encounter unavailable").add_child(TideUI.paragraph("Check the connection, move close to the lurker, then try again."))
+        var reason = "Check the connection and move close to %s." % GameData.display_name("enemies",enemy_key)
+        if enemy_key != "fog_thorn_lurker":
+            reason += " Help the Lantern Well and reach level 2 to enter this encounter."
+        hud.open_panel("Encounter unavailable").add_child(TideUI.paragraph(reason))
 
 func show_combat() -> void:
     Soundscape.set_combat(character.get("encounter",{}).get("state") == "active")

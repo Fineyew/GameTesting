@@ -1,0 +1,60 @@
+{
+  "type": "enemies",
+  "key": "shellfold_sifter",
+  "schema_version": 1,
+  "version": 1,
+  "display": {
+    "name": "Shellfold Sifter",
+    "summary": "A shell-backed reef scavenger opens its plates before a heavy sweep."
+  },
+  "tags": [
+    "dawnreef"
+  ],
+  "assets": {
+    "model": "res://scenes/creatures/shellfold_sifter.tscn"
+  },
+  "rules": {
+    "level": 2,
+    "stats": {
+      "vigor": 36
+    },
+    "intents": [
+      {
+        "name": "Closed mantle",
+        "power": 4,
+        "guard": 6
+      },
+      {
+        "name": "Unfurling sweep",
+        "power": 9,
+        "guard": 0
+      },
+      {
+        "name": "Sifting pause",
+        "power": 0,
+        "guard": 0
+      }
+    ],
+    "unlock_conditions": [
+      {
+        "type": "character_level_at_least",
+        "value": 2
+      },
+      {
+        "type": "quest_completed",
+        "quest_key": "lantern_well_first_light"
+      }
+    ],
+    "rewards": [
+      {
+        "type": "grant_experience",
+        "amount": 35
+      },
+      {
+        "type": "grant_currency",
+        "currency_key": "shell_chits",
+        "amount": 3
+      }
+    ]
+  }
+}

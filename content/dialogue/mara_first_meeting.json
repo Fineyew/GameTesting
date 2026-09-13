@@ -2,7 +2,7 @@
   "type": "dialogue",
   "key": "mara_first_meeting",
   "schema_version": 1,
-  "version": 3,
+  "version": 4,
   "display": {
     "name": "Mara First Meeting",
     "summary": "Introductory conversation at Dawnreef.",
@@ -152,11 +152,129 @@
         "options": []
       },
       "lance_learned": {
-        "text": "You found the opening, held the weight, and chose when to let it go. Seam Lance is yours: 4 Focus for 15 damage. Gather helps you build that Focus, and Beacon Trace strengthens the strike. Try your own folio. I will keep searching the plans before we open the cistern.",
+        "text": "You found the opening, held the weight, and chose when to let it go. Seam Lance is yours: 4 Focus for 15 damage. Gather helps you build that Focus, and Beacon Trace strengthens the strike. Try your own folio. I will keep searching the plans before we open the cistern. Beyond the well, a Shellfold Sifter closes its plates and a Hushfin Ray draws loose Focus. Your affinity opens its advanced lesson at level 2; other disciplines open at level 3. Return here between practices, and use your wraps when injured.",
+        "options": [
+          {
+            "key": "study_light_between_plates",
+            "text": "Study Light Between Plates \u00b7 Lanterncraft",
+            "conditions": [
+              {
+                "type": "quest_completed",
+                "quest_key": "a_measured_release"
+              },
+              {
+                "type": "discipline_study",
+                "discipline": "lanterncraft"
+              },
+              {
+                "type": "quest_state",
+                "quest_key": "light_between_plates",
+                "state": "not_started"
+              }
+            ],
+            "effects": [
+              {
+                "type": "offer_quest",
+                "quest_key": "light_between_plates"
+              }
+            ]
+          },
+          {
+            "key": "study_a_kindly_weave",
+            "text": "Study A Kindly Weave \u00b7 Rootbinding",
+            "conditions": [
+              {
+                "type": "quest_completed",
+                "quest_key": "a_measured_release"
+              },
+              {
+                "type": "discipline_study",
+                "discipline": "rootbinding"
+              },
+              {
+                "type": "quest_state",
+                "quest_key": "a_kindly_weave",
+                "state": "not_started"
+              }
+            ],
+            "effects": [
+              {
+                "type": "offer_quest",
+                "quest_key": "a_kindly_weave"
+              }
+            ]
+          },
+          {
+            "key": "study_keep_the_quiet",
+            "text": "Study Keep the Quiet \u00b7 Tideseaming",
+            "conditions": [
+              {
+                "type": "quest_completed",
+                "quest_key": "a_measured_release"
+              },
+              {
+                "type": "discipline_study",
+                "discipline": "tideseaming"
+              },
+              {
+                "type": "quest_state",
+                "quest_key": "keep_the_quiet",
+                "state": "not_started"
+              }
+            ],
+            "effects": [
+              {
+                "type": "offer_quest",
+                "quest_key": "keep_the_quiet"
+              }
+            ]
+          }
+        ]
+      },
+      "practicing_light_between_plates": {
+        "text": "The sifter wears its shelter like a folded fan. Mark a seam, wait for its plates to open, then bring me the pattern. A narrow light can pass where a broad spark cannot.",
+        "options": []
+      },
+      "practicing_a_kindly_weave": {
+        "text": "Meet the sifter\u2019s open sweep with Reed Aegis, then mend with the next quiet beat. Bring the two shapes together for me. A kindly weave cushions and closes at once.",
+        "options": []
+      },
+      "practicing_keep_the_quiet": {
+        "text": "The ray drinks loose thought before its stronger strike. Gather during its quiet beat, and mend before the next rush. Settle one and return; I will show you how to knot your Focus in place.",
         "options": []
       }
     },
     "entry_nodes": [
+      {
+        "node": "practicing_keep_the_quiet",
+        "conditions": [
+          {
+            "type": "quest_state",
+            "quest_key": "keep_the_quiet",
+            "state": "accepted"
+          }
+        ]
+      },
+      {
+        "node": "practicing_a_kindly_weave",
+        "conditions": [
+          {
+            "type": "quest_state",
+            "quest_key": "a_kindly_weave",
+            "state": "accepted"
+          }
+        ]
+      },
+      {
+        "node": "practicing_light_between_plates",
+        "conditions": [
+          {
+            "type": "quest_state",
+            "quest_key": "light_between_plates",
+            "state": "accepted"
+          }
+        ]
+      },
       {
         "node": "lance_learned",
         "conditions": [

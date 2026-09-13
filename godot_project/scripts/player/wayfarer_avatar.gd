@@ -30,10 +30,15 @@ var step_half := -1
 
 func set_travel_velocity(motion: Vector3) -> void:
     # Animation follows horizontal travel, not stair height or pixels per frame.
+    var previous_speed = travel_speed
     travel_speed = Vector2(motion.x,motion.z).length()
     # Separate enter/exit thresholds keep small snapshot tails from toggling clips.
     walking = travel_speed > (.08 if walking else .18)
     running = walking and travel_speed > (2.4 if running else 2.8)
+    # Physics can see an entire short gesture between two rendered frames. Its
+    # first planted step must not depend on sampling the next animation half-cycle.
+    if previous_speed <= .6 and travel_speed > .6 and cast_remaining <= 0 and reaction_remaining <= 0:
+        footstep.emit()
 
 func face_travel(heading: float, delta: float, response := 12.0) -> void:
     turn_error = angle_difference(rotation.y,heading)

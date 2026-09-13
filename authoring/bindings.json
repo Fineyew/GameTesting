@@ -101,6 +101,21 @@
     "res://scenes/zones/dawnreef_atoll.tscn": {
       "status": "planned",
       "reason": "Declared design reference; not a produced asset. Existing Dawnreef benchmark is tracked separately."
+    },
+    "res://scenes/creatures/shellfold_sifter.tscn": {
+      "status": "candidate",
+      "editable_source": "godot_project/scripts/world/reef_creature.gd",
+      "license": "Original project-authored geometry and motion; no external asset pack."
+    },
+    "res://scenes/creatures/hushfin_ray.tscn": {
+      "status": "candidate",
+      "editable_source": "godot_project/scripts/world/reef_creature.gd",
+      "license": "Original project-authored geometry and motion; no external asset pack."
+    },
+    "res://scripts/world/tidebeat_effect.gd": {
+      "status": "candidate",
+      "editable_source": "godot_project/scripts/world/tidebeat_effect.gd",
+      "license": "Original project-authored geometry and motion; no external asset pack."
     }
   },
   "interactions": {
@@ -126,6 +141,20 @@
     },
     "saltglass_cistern": {
       "handler": "inspect",
+      "scene": "res://scenes/world/dawnreef.tscn",
+      "binding_source": "godot_project/scripts/world/dawnreef_world.gd",
+      "handler_source": "godot_project/scripts/app/play_session.gd"
+    },
+    "shellfold_sifter": {
+      "handler": "encounter",
+      "category": "enemies",
+      "scene": "res://scenes/world/dawnreef.tscn",
+      "binding_source": "godot_project/scripts/world/dawnreef_world.gd",
+      "handler_source": "godot_project/scripts/app/play_session.gd"
+    },
+    "hushfin_ray": {
+      "handler": "encounter",
+      "category": "enemies",
       "scene": "res://scenes/world/dawnreef.tscn",
       "binding_source": "godot_project/scripts/world/dawnreef_world.gd",
       "handler_source": "godot_project/scripts/app/play_session.gd"

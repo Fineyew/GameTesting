@@ -6,7 +6,7 @@ Revised 2026-09-10 after inspecting the repository at
 and successful M0–M1.3 CI jobs. Roadmap checkpoint edec97b changed planning only.
 The owner subsequently authorized implementation; current evidence lives in PROJECT_STATE.
 
-**M1.7 recovery passes at3f2d81c/handoffcf8bc0c. M1.8's first locomotion-transition increment passes all automated gates at5972031. Creator and expanded motion/terrain-foot/LOD/online-entry gates pass at93a22c9/run34772233514 with verified0.2.10/code12. M1.9 audio passes full CI/native at928054e/run34773533442 with verified0.2.11/code13. M1.10 presentation is the current local candidate. The full milestone and physical/owner acceptance remain open. PROJECT_STATE owns evidence.**
+**M1.7 recovery passes at3f2d81c/handoffcf8bc0c. M1.8's first locomotion-transition increment passes all automated gates at5972031. Creator and expanded motion/terrain-foot/LOD/online-entry gates pass at93a22c9/run34772233514 with verified0.2.10/code12. M1.9 audio passes full CI/native at928054e/run34773533442 with verified0.2.11/code13. M1.10 passed backend/Godot/render but native footstep evidence failed; the M1.11 candidate includes its regression fix. The full milestone and physical/owner acceptance remain open. PROJECT_STATE owns evidence.**
 On 2026-09-11 the owner requested full continuation after the device-gate handoff.
 Proceed with engineering checkpoints while recording M1.4/M1.5 physical acceptance as
 outstanding. This changes development ordering only; Device E/R/L evidence and final
@@ -434,8 +434,8 @@ Owner listening, physical speaker/headphone output and Device E remain open.
 Eight distinct action silhouettes, original family cues, target/effect/intent text,
 short/static playback and GUI skip/receipt/lifecycle restoration are implemented.
 Real-engine fixtures and low/high render/movie checks pass locally. High shadows use
-one 16m cascade to retain the 150k budget. The extended eight-action API route passes; 0.2.12/code 14 full F/native
-is pending; owner visual acceptance and Device R remain open.
+one 16m cascade to retain the 150k budget. The extended eight-action API route passes; 0.2.12/code 14 native touch lacked a footstep cue; the corrected M1.11 build
+awaits full F/native; owner visual acceptance and Device R remain open.
 
 - **Kind / purpose:** Visual production, polish. Make the six earned spells feel distinct.
 - **Adds:** Authored anticipation/impact/reaction for all six spells and Brace/Gather,
@@ -451,6 +451,12 @@ is pending; owner visual acceptance and Device R remain open.
   S local settings only; Device R required.
 
 ### M1.11 — First combat and progression expansion
+
+**Local candidate 2026-09-13; full F/native pending.** Two new encounters, three earned
+lessons/spells, affinity/cross-training and content-driven progression/rewards retain old
+numerical rules and six slots. Original creature motion/audio and eleven effect shapes
+are integrated. Backend and local engine/render pass; earned online continuation, final
+CI/artifact retention and physical Device E remain required. PROJECT_STATE owns evidence.
 
 - **Kind / purpose:** Gameplay systems, authored content. Prove strategic variety before bulk spells.
 - **Adds:** Catalog-driven progression thresholds/reward sources, at most two additional
@@ -1068,10 +1074,10 @@ If too much placeholder debt remains, return to bounded production batches befor
 | Entire-game art | M4.1 → M4.2 → M4.3 → M4.4 | Every launch environment, character/collectible, effect/audio and UI surface complete |
 | Release | M5.1 → M5.2 → M5.3 → M5.4 → M5.5 | Whole-game cohesion, phone certification, recovery/security, beta and approved launch |
 
-**Current engineering: validate/checkpoint M1.10 presentation.**
+**Current engineering: validate/checkpoint M1.11 and the M1.10 native footstep follow-up.**
 M1.9 full F/native passes with source-verified 0.2.11/code 13. Spell presentation passes
-local render/headless and eight-action online checks; 0.2.12 full F/native is pending.
-Next is M1.11's bounded combat/progression expansion. Keep physical/owner art, motion,
+local render/headless and eight-action online checks; 0.2.12 native footstep evidence failed.
+M1.11 is implemented locally with that follow-up; complete its full F/native before M1.12. Keep physical/owner art, motion,
 listening and sustained mobile acceptance gates open.
 
 Postpone bulk quest/spell generation until the authoring/art benchmark exists; additional

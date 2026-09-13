@@ -23,10 +23,12 @@ class StoryService:
             return {"dialogue": self.rules.start_dialogue(character, npc_key)}
         return self._run(account_id, character_id, apply)
 
-    @staticmethod
-    def _settle_level(character):
-        while character.experience >= LEVEL_XP_REQUIREMENT * character.level:
-            character.level += 1
+    def _settle_level(self, character):
+        if self.players.progression:
+            self.players.progression.settle(character)
+        else:  # Legacy standalone port callers keep their original thresholds.
+            while character.experience >= LEVEL_XP_REQUIREMENT * character.level:
+                character.level += 1
 
     def choose(self, account_id, character_id, npc_key, conversation_id, option_key):
         return self._run(account_id, character_id, lambda c: {

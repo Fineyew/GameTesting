@@ -17,6 +17,14 @@ func tick(avatar: WayfarerAvatar, delta: float) -> void:
 
 func run() -> void:
     var avatar = actor()
+    var contacts = {"count":0}
+    avatar.footstep.connect(func(): contacts.count += 1)
+    # Reproduce a short physics gesture entirely between rendered frames.
+    avatar.set_travel_velocity(Vector3(0,0,-1.4))
+    avatar.set_travel_velocity(Vector3.ZERO)
+    assert(contacts.count == 1,"A real movement onset must survive a slow render frame")
+    avatar.set_travel_velocity(Vector3(0,3,0))
+    assert(contacts.count == 1,"Vertical correction and idle must stay silent")
     avatar.set_travel_velocity(Vector3(0,3,0))
     tick(avatar,1.0/60)
     assert(not avatar.walking and avatar.travel_speed == 0,

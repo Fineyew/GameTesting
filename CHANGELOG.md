@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-09-13 — M1.11 combat/progression candidate
+
+- Add catalog progression/rewards with preserved thresholds, levels and Fog-thorn numbers.
+- Add Shellfold Sifter armor/openings and Hushfin Ray Focus drain, with original moving
+  creature geometry, cues and authored intent text.
+- Add three Mara lessons and 2-Focus spells: piercing Prism Needle, healing/protective
+  Reed Stitch and Stillwater Knot's beat-local Focus ward. Affinity opens at level 2,
+  cross-training at 3. Preserve six prepared slots and existing completed quests/saves.
+- Add deterministic ordering/caps/old-save/affinity/retry/rollback checks, a PostgreSQL
+  level/reward race, eleven real-engine fixtures and earned Godot online continuation.
+- Follow up M1.10's native missed-footstep failure with a physics-onset contact cue;
+  retain movement/audio assertions. Remove redundant flat-ground shadow geometry while
+  preserving raised terrain shadows and the fixed 150k render budget.
+- Candidate 0.2.13/code 15 awaits final local/CI/native validation and retained APK.
+
 ## 2026-09-13 — M1.10 spell presentation candidate
 
 - Add eight bounded, distinct action silhouettes and original root/tide cues.

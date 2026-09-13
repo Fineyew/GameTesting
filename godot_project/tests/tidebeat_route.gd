@@ -20,7 +20,11 @@ func run() -> void:
     before.enemy_name = "Fog-thorn Lurker · effect review"
     await create_timer(.5).timeout
     for key in TidebeatEffect.PROFILES:
-        await session.playback.play(key,before,TidebeatChecks.outcome(key),"movie-"+key)
+        var authored = TidebeatChecks.fixture(key)
+        session.world.show_intent(authored)
+        session.player.position = session.world.enemy.position+Vector3(-2,0,2)
+        session.camera.follow(session.player)
+        await session.playback.play(key,authored,TidebeatChecks.outcome(key),"movie-"+key)
         await create_timer(.15).timeout
     session.reduced_motion = true
     await session.playback.play("reed_aegis",before,TidebeatChecks.outcome("reed_aegis"),"movie-reduced")

@@ -12,10 +12,14 @@ def build():
     catalog = ContentCatalog.build(ROOT/'content')
     spells = ['glimmer_spark','beacon_trace','root_snare','reed_aegis','tide_mend','seam_lance']
     engine = CombatEngine(catalog)
-    before = engine.begin('fog_thorn_lurker',24,spells)
-    before.update(id='presentation-fixture',focus=6,mark=6)
-    return {'mode':'isolated engine review; no account, rewards or persistence','before':before,
-            'outcomes':{key:engine.resolve(before,key) for key in spells+['brace','gather']}}
+    frames = {}
+    for key in spells+['brace','gather','prism_needle','reed_stitch','stillwater_knot']:
+        prepared = spells if key in spells+['brace','gather'] else [key,*spells[:5]]
+        enemy = 'shellfold_sifter' if key in ['prism_needle','reed_stitch'] else ('hushfin_ray' if key=='stillwater_knot' else 'fog_thorn_lurker')
+        before = engine.begin(enemy,24,prepared)
+        before.update(id='presentation-fixture-'+key,focus=6,mark=6)
+        frames[key] = {'before':before,'after':engine.resolve(before,key)}
+    return {'mode':'isolated engine review; no account, rewards or persistence','frames':frames}
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
@@ -27,4 +31,4 @@ if __name__ == '__main__':
     else:
         PATH.parent.mkdir(parents=True,exist_ok=True)
         PATH.write_text(text)
-    print('SPELL_REVIEW_FIXTURES_PASS: eight outcomes from the real engine, no player store')
+    print('SPELL_REVIEW_FIXTURES_PASS: eleven outcomes from the real engine, six prepared slots each, no player store')

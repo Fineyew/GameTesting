@@ -12,6 +12,7 @@ from backend.app.modules.content.service import ContentCatalog
 from backend.app.modules.combat.engine import CombatEngine
 from backend.app.modules.quests.rules import QuestRules
 from backend.app.modules.vertical_slice.story import StoryService
+from backend.app.modules.characters.progression import CharacterProgression
 
 pytestmark = pytest.mark.skipif(not os.environ.get('VT_TEST_DATABASE_URL'), reason='requires isolated PostgreSQL database')
 
@@ -19,7 +20,7 @@ pytestmark = pytest.mark.skipif(not os.environ.get('VT_TEST_DATABASE_URL'), reas
 def game():
     store = PostgresPlayerStore(os.environ['VT_TEST_DATABASE_URL'])
     catalog = ContentCatalog.build(Path(__file__).resolve().parents[2]/'content')
-    service = VerticalSliceService(store, QuestRules(catalog))
+    service = VerticalSliceService(store, QuestRules(catalog), CharacterProgression(catalog))
     key = uuid4().hex[:12]
     account = service.register(key+'@example.test', 'Tester '+key, 'test-only-password').account
     character = service.create_character(account.id, 'Reef '+key)
@@ -314,5 +315,43 @@ def test_postgres_safe_terrain_entry_preserves_aggregate_and_rolls_back(game, mo
         with pytest.raises(OSError): resumed.enter_world(account,character)
         assert service.store.get_character(character).position == {'x':-1000,'z':0}
         assert service.store.get_character(character).wallet['shell_chits']==17
+    finally:
+        other.engine.dispose()
+
+
+def test_postgres_advanced_lesson_level_boundary_and_duplicate_victory(game):
+    from backend.tests.test_combat_expansion import BASE
+    service,encounters,account,character=game
+    # M1.2-shaped persisted character; the added lesson/rewards remain real commands.
+    with service.store.transaction(character):
+        record=service.enter_world(account,character)
+        record.level=2; record.experience=165
+        record.known_spells=BASE.copy(); record.folio=BASE.copy()
+        for key in ['lantern_well_first_light','an_answer_in_the_reeds','reading_the_afterlight','what_the_reeds_hold','a_measured_release']:
+            record.quest_state[key]={'completed':True,'state':'completed','rewards_claimed':True}
+        service.store.save_character(record)
+    story=StoryService(service,service.quest_rules)
+    npc='mara_lanternwright'
+    opened=story.start(account,character,npc)['dialogue']
+    story.choose(account,character,npc,opened['id'],'study_light_between_plates')
+    response=encounters.start(account,character,'shellfold_sifter','pg-shell-start')
+    for index,action in enumerate(['beacon_trace','glimmer_spark','tide_mend','glimmer_spark','glimmer_spark','tide_mend','beacon_trace'],1):
+        response=encounters.act(account,character,response['encounter']['id'],action,index,f'pg-shell-{index}')
+    original=response['character']
+    with ThreadPoolExecutor(4) as pool:
+        results=list(pool.map(lambda _:encounters.act(account,character,response['encounter']['id'],'glimmer_spark',8,'pg-shell-victory'),range(4)))
+    assert all(result==results[0] for result in results)
+    assert results[0]['character']['experience']==200 and results[0]['character']['level']==3
+    with ThreadPoolExecutor(4) as pool:
+        list(pool.map(lambda _:story.start(account,character,npc),range(4)))
+    other=PostgresPlayerStore(os.environ['VT_TEST_DATABASE_URL'])
+    try:
+        saved=other.get_character(character)
+        assert saved.experience==225 and saved.level==3 and saved.known_spells.count('prism_needle')==1
+        assert saved.folio==BASE and saved.appearance==original['appearance']
+        assert saved.wallet['shell_chits']==original['wallet']['shell_chits']+3
+        assert saved.quest_state['light_between_plates']['rewards_claimed']
+        resumed=VerticalSliceService(other,service.quest_rules,service.progression)
+        assert EncounterService(resumed,encounters.engine,encounters.catalog).act(account,character,response['encounter']['id'],'glimmer_spark',8,'pg-shell-victory')==results[0]
     finally:
         other.engine.dispose()

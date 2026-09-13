@@ -4,6 +4,7 @@ var geometry: Dictionary
 var sun: DirectionalLight3D
 var well_light: MeshInstance3D
 var enemy: Node3D
+var enemies: Dictionary = {}
 var elapsed := 0.0
 var terrain: TerrainSurface
 
@@ -55,6 +56,23 @@ func _landscape() -> void:
         return
     var ground = MeshInstance3D.new()
     ground.mesh = terrain.mesh()
+    # Flat floor receives shadows but cannot occlude anything above it. Retain
+    # only raised terrain in the shadow pass, with the same authored triangles.
+    ground.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+    var raised_surface = SurfaceTool.new()
+    raised_surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+    var raised_vertices := 0
+    for face in terrain.triangles():
+        if face.any(func(point): return not is_zero_approx(point[1])):
+            for point in face:
+                raised_surface.add_vertex(Vector3(point[0],point[1],point[2]))
+                raised_vertices += 1
+    if raised_vertices > 0:
+        raised_surface.generate_normals()
+        var caster = MeshInstance3D.new()
+        caster.mesh = raised_surface.commit()
+        caster.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY
+        add_child(caster)
     ground.material_override = ReefKit.ground(Color("709881"))
     if not terrain._cells.is_empty():
         var low = Vector2(INF,INF)
@@ -159,6 +177,13 @@ func _landmarks() -> void:
     for x in [-.23,.23]:
         ReefKit.sphere(enemy,.1,Vector3(x,.85,.57),Color("e3bf6e"),true)
     ReefKit.label(enemy,"Fog-Thorn Lurker",Vector3(0,2.1,0))
+    enemies["fog_thorn_lurker"] = enemy
+    for key in ["shellfold_sifter","hushfin_ray"]:
+        var actor = load("res://scenes/creatures/"+key+".tscn").instantiate()
+        var at = geometry.interactions[key]
+        add_child(actor)
+        actor.position = Vector3(at[0],terrain.sample(at[0],at[1]).height,at[1])
+        enemies[key] = actor
     for x in [16.4,19.6]:
         ReefKit.box(self,Vector3(.8,4,.8),Vector3(x,2,-18),Color("8d9d92"))
     ReefKit.box(self,Vector3(4,1,1),Vector3(18,4.2,-18),Color("8d9d92"))
@@ -171,7 +196,19 @@ func _process(delta: float) -> void:
     elapsed += delta
     well_light.position.y = 1.5 + sin(elapsed*1.8)*.1
 
+func creature_cue() -> String:
+    if enemy is ReefCreature:
+        return "creature_shell" if enemy.creature_key == "shellfold_sifter" else "creature_ray"
+    return "creature"
+
 func show_intent(combat: Dictionary) -> void:
+    for actor in enemies.values():
+        var old = actor.get_node_or_null("TidebeatIntent")
+        if old:
+            old.hide()
+    enemy = enemies.get(combat.get("enemy_key","fog_thorn_lurker"),enemies.fog_thorn_lurker)
+    if enemy is ReefCreature:
+        enemy.set_intent(combat.get("intent",{}))
     var indicator = enemy.get_node_or_null("TidebeatIntent") as Label3D
     if indicator == null:
         indicator = ReefKit.label(enemy,"",Vector3(0,2.5,0))

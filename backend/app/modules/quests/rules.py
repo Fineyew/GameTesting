@@ -25,6 +25,10 @@ class QuestRules:
             kind = condition["type"]
             if kind == "character_level_at_least":
                 passed = character.level >= condition["value"]
+            elif kind == "discipline_study":
+                study = self.definition("progression", "wayfarer").rules["study_levels"]
+                required = study["affinity"] if character.affinity == condition["discipline"] else study["cross_training"]
+                passed = character.level >= required
             elif kind == "quest_completed":
                 passed = character.quest_state.get(condition["quest_key"], {}).get("completed", False)
             elif kind == "quest_state":

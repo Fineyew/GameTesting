@@ -4,6 +4,9 @@ extends Node3D
 signal impact
 signal finished
 const PROFILES = {
+    "prism_needle":["Lanterncraft","enemy",1.05,"cast","impact"],
+    "reed_stitch":["Rootbinding","self",1.10,"root_cast","mend"],
+    "stillwater_knot":["Tideseaming","enemy",1.15,"tide_cast","guard"],
     "glimmer_spark":["Lanterncraft","enemy",1.15,"cast","impact"],
     "beacon_trace":["Lanterncraft","enemy",.95,"cast","discovery"],
     "root_snare":["Rootbinding","enemy",1.10,"root_cast","guard"],
@@ -42,6 +45,25 @@ func configure(key: String, from: Vector3, to: Vector3, less_motion := false, sp
     emitter = ring(self,origin,.24,color)
     emitter.rotation.x = PI/2
     match key:
+        "prism_needle":
+            stem(self,origin,target,.022,color)
+            for i in 3:
+                var ray = box(core,Vector3(.05,.52,.05),Vector3((i-1)*.2,0,0),color)
+                ray.rotation.z = (i-1)*.5
+        "reed_stitch":
+            for i in 4:
+                var stitch = box(core,Vector3(.07,.72,.07),Vector3((i-1.5)*.18,0,0),color)
+                stitch.rotation.z = .45 if i%2 else -.45
+            ring(core,Vector3(0,-.6,0),.55,color)
+            box(core,Vector3(.08,.34,.08),Vector3(0,.62,0),color)
+            box(core,Vector3(.3,.08,.08),Vector3(0,.62,0),color)
+        "stillwater_knot":
+            for i in [-1,1]:
+                var knot = ring(core,Vector3(i*.2,0,0),.3,color)
+                knot.rotation.x = PI/2
+                knot.rotation.z = i*.4
+            ring(self,origin-Vector3.UP*.7,.45,color)
+            stem(self,origin,target,.018,color)
         "glimmer_spark":
             projectile = shape(self,SphereMesh.new(),origin,color)
             projectile.mesh.radius = .10
@@ -149,6 +171,10 @@ func update_pose(progress: float) -> void:
     if projectile:
         projectile.position = origin.lerp(target,travel)+Vector3.UP*sin(travel*PI)*.35
         projectile.scale = Vector3.ONE*(1-release)
+    if action == "prism_needle":
+        pieces[1].visible = progress >= .28
+    if action == "stillwater_knot":
+        pieces[4].visible = progress >= .28
     if action == "seam_lance":
         for i in [1,2]:
             pieces[i].visible = progress >= .28 and progress < .72

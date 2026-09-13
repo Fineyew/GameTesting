@@ -21,7 +21,8 @@ class CombatEngine:
         state = deepcopy(original)
         if state["state"] != "active":
             raise ValueError("encounter already finished")
-        guard = binding = 0
+        guard = binding = focus_ward = 0
+        state["last_focus_loss"] = 0
         if action == "brace":
             guard = 6
             state["log"].append("You brace: absorb 6 damage this beat.")
@@ -41,7 +42,9 @@ class CombatEngine:
                 kind = effect["type"]
                 amount = effect.get("amount", effect.get("power", 0))
                 if kind == "deal_damage":
-                    state["enemy_vigor"] = max(0, state["enemy_vigor"] - amount - state["mark"])
+                    armor = 0 if effect.get("piercing", False) else state["intent"].get("guard", 0)
+                    damage = max(0, amount + state["mark"] - armor)
+                    state["enemy_vigor"] = max(0, state["enemy_vigor"] - damage)
                     state["mark"] = 0
                 elif kind == "restore_vigor":
                     state["player_vigor"] = min(state["player_max_vigor"], state["player_vigor"] + amount)
@@ -49,17 +52,24 @@ class CombatEngine:
                     binding += amount
                 elif kind == "guard":
                     guard += amount
+                elif kind == "ward_focus":
+                    focus_ward = min(6, focus_ward + amount)
                 elif kind == "mark":
                     state["mark"] = min(12, state["mark"] + amount)
                 else:
                     raise ValueError("unsupported combat effect")
         if state["enemy_vigor"] == 0:
             state["state"] = "victory"
-            state["log"].append("The lurker retreats. Rewards saved.")
+            state["log"].append("The creature retreats. Rewards saved.")
         else:
             incoming = max(0, state["intent"]["power"] - guard - binding - state.get("equipment_guard", 0))
             state["player_vigor"] = max(0, state["player_vigor"] - incoming)
             state["log"].append(f"{state['intent']['name']}: {incoming} damage.")
+            drain = state["intent"].get("focus_drain", 0)
+            if drain:
+                state["last_focus_loss"] = min(state["focus"], max(0, drain-focus_ward))
+                state["focus"] -= state["last_focus_loss"]
+                state["log"].append(f"Focus drawn: {state['last_focus_loss']} (ward {focus_ward}).")
             if state["player_vigor"] == 0 or state["round"] >= 50:
                 state["state"] = "defeat"
                 state["log"].append("The Lantern Well calls you home. Vigor restored.")

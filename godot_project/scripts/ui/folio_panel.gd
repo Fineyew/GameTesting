@@ -69,12 +69,13 @@ static func focus_cost(rules: Dictionary) -> int:
 static func effect_text(rules: Dictionary) -> String:
     var words: Array[String] = []
     for effect in rules.get("effects",[]):
-        var amount = effect.get("amount",effect.get("power",0))
+        var amount = int(effect.get("amount",effect.get("power",0)))
         match effect.type:
-            "deal_damage": words.append("Deal %s damage" % amount)
+            "deal_damage": words.append("Deal %s damage%s" % [amount," through armor" if effect.get("piercing",false) else ""])
             "restore_vigor": words.append("Restore %s Vigor" % amount)
             "bind": words.append("Reduce this intent by %s" % amount)
             "guard": words.append("Absorb %s damage this beat" % amount)
+            "ward_focus": words.append("Protect %s Focus from drains this beat" % amount)
             "mark": words.append("Next damaging spell gains %s damage; marks stack to 12" % amount)
     return ". ".join(words) + "."
 
@@ -84,5 +85,10 @@ static func source_text(spell_key: String) -> String:
             continue
         for reward in quest.rules.get("rewards",[]):
             if reward.type == "learn_spell" and reward.spell_key == spell_key:
-                return "Mara's lesson: " + quest.display.name
+                var source = "Mara's lesson: " + quest.display.name
+                for condition in quest.rules.get("start_conditions",[]):
+                    if condition.type == "discipline_study":
+                        var levels = GameData.definition("progression","wayfarer").rules.study_levels
+                        source += " · Affinity level %s / cross-training level %s" % [int(levels.affinity),int(levels.cross_training)]
+                return source
     return "Learned when your journey begins."

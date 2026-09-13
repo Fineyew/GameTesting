@@ -335,10 +335,10 @@ existing32-rig dense budget remains250 draws/150k primitives. Do not raise it to
 
 `python audio_sources/build_dawnreef_audio.py` uses NumPy/FFmpeg for authoring only.
 It creates the original eight-bar80-BPM Dawnreef motif, related Tidebeat pulse, periodic
-filtered wind and ten mathematically synthesized cues; no recordings/voices/packs.
+filtered wind and twelve mathematically synthesized cues; no recordings/voices/packs.
 The source/rights/status and exact hashes live in audio_sources/manifest.json. Runtime
 loops are Ogg Vorbis and short cues are mono16-bit WAV at22,050Hz; current source total
-525,467 bytes. Run `python -m tools.check_audio` after authoring; do not normalize away
+563,018 bytes. Run `python -m tools.check_audio` after authoring; do not normalize away
 failed headroom/seam checks. Runtime enables looping explicitly and real-engine tests
 seek across EOF. See [Godot audio streams](https://docs.godotengine.org/en/4.5/classes/class_audiostreamplayer.html)
 and [bus capture](https://docs.godotengine.org/en/4.5/classes/class_audioeffectcapture.html).
@@ -365,3 +365,30 @@ route earns/prepares the spells and verifies real saved combat results separatel
 `tools.record_benchmark` retains tidebeat-spells.mp4 with the actual engine audio stream,
 in addition to the preserved before/after and motion routes. It uses [Godot Movie Maker](https://docs.godotengine.org/en/4.5/tutorials/animation/creating_movies.html);
 its fixed recording rate is not real-time FPS or physical-device evidence.
+
+## M1.11 tactical lessons and progression
+
+`content/progression/wayfarer.json` defines strictly increasing cumulative thresholds (starting
+at zero), a positive continuation step and affinity/cross-training study levels. Enemy `rewards`
+accept bounded XP and shell-chit entries. Existing reward amounts remain stable unless a separate
+balance review records a change. `discipline_study` conditions gate the three new Mara lessons.
+
+| Content | Tactical purpose | Earned source |
+| --- | --- | --- |
+| Prism Needle | 2 Focus, 9 damage through intent armor | Light Between Plates: mark and defeat the sifter |
+| Reed Stitch | 2 Focus, heal 3 and guard 6 this beat | A Kindly Weave: Aegis on the heavy sweep, then Tide Mend |
+| Stillwater Knot | 2 Focus, 5 damage and ward 2 Focus this beat | Keep the Quiet: Tide Mend and defeat the ray |
+
+All lessons finish by returning to Mara and give 25 XP / one Sunthread Bandage. Own-discipline
+study opens at level 2; cross-training at level 3, after A Measured Release. Spells consume normal
+six-slot folio capacity. New regular enemies require level 2 plus the first Lantern Well quest.
+Sifter rewards 35 XP / 3 chits; ray rewards the same. Intent armor does not activate the old unused
+Fog-thorn stats.guard value. Do not silently rebalance existing spells/enemies when adding mechanics.
+
+Editable creature shapes/intent motion live in `scripts/world/reef_creature.gd`; the manifest in
+`art_sources/reef_creatures` records original provenance and budgets. Each new spell has a separate
+shape and its family cue. `tools.build_spell_review` generates eleven independent legal six-slot
+fixtures from CombatEngine. Godot checks materials/meshes/poses, and low/high action captures must
+stay within the existing render budget. `tools.check_online` first earns the old content, then runs
+`progression_online.gd` against that same saved character to earn, prepare, use and reconnect all
+three additions. CI must also pass the PostgreSQL boundary/reward race and unchanged native gestures.

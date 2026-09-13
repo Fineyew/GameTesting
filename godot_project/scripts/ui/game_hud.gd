@@ -10,6 +10,7 @@ signal recenter_requested
 signal panel_closed
 var stick: TouchStick
 var profile: Label
+var progression_label: Label
 var connection_label: Label
 var quest_label: Label
 var interaction: Button
@@ -43,6 +44,8 @@ func _ready() -> void:
     labels.add_child(TideUI.label("DAWNREEF ATOLL",16,TideUI.GOLD))
     profile = TideUI.label("Wayfarer",24)
     labels.add_child(profile)
+    progression_label = TideUI.label("",15,TideUI.MUTED)
+    labels.add_child(progression_label)
     connection_label = TideUI.label("Connecting…",16,TideUI.MUTED)
     labels.add_child(connection_label)
     var spacer = Control.new()
@@ -141,6 +144,11 @@ func close_panel() -> void:
 
 func set_character(character: Dictionary, preview: bool) -> void:
     profile.text = "%s · Level %s" % [character.get("name","Wayfarer"),int(character.get("level",1))]
+    var level = int(character.get("level",1))
+    var progression = GameData.definition("progression","wayfarer").get("rules",{})
+    var thresholds = progression.get("level_thresholds",[0,100])
+    var next_xp = int(thresholds[level]) if level < thresholds.size() else int(thresholds[-1])+(level-thresholds.size()+1)*int(progression.get("continued_level_step",100))
+    progression_label.text = "XP %s / %s · %s affinity" % [int(character.get("experience",0)),next_xp,character.get("affinity","lanterncraft").capitalize()]
     if preview:
         connection_label.text = "OFFLINE PREVIEW · progress is not saved"
         quest_label.text = "Explore Dawnreef. Sign in for quests and combat."

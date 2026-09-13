@@ -69,9 +69,10 @@ def atomic(fn):
 
 
 class VerticalSliceService:
-    def __init__(self, store: VerticalSliceStore, quest_rules=None) -> None:
+    def __init__(self, store: VerticalSliceStore, quest_rules=None, progression=None) -> None:
         self.store = store
         self.quest_rules = quest_rules
+        self.progression = progression
         self.position_validator = None
 
     @atomic
@@ -235,9 +236,13 @@ class VerticalSliceService:
 
         if experience_gained:
             character.experience += experience_gained
-            while character.experience >= LEVEL_XP_REQUIREMENT * character.level:
-                character.level += 1
-                level_gained = True
+            previous_level = character.level
+            if self.progression:
+                self.progression.settle(character)
+            else:  # Compatibility for standalone callers without catalog ports.
+                while character.experience >= LEVEL_XP_REQUIREMENT * character.level:
+                    character.level += 1
+            level_gained = character.level > previous_level
 
         self.store.save_character(character)
         return FightResult(

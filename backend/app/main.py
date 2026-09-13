@@ -15,6 +15,7 @@ from backend.app.modules.vertical_slice.service import VerticalSliceService
 from backend.app.modules.vertical_slice.store import JsonVerticalSliceStore
 from backend.app.modules.vertical_slice.encounters import EncounterService
 from backend.app.modules.combat.engine import CombatEngine
+from backend.app.modules.characters.progression import CharacterProgression
 from backend.app.modules.quests.rules import QuestRules
 from backend.app.modules.vertical_slice.story import StoryService
 from backend.app.modules.vertical_slice.folio import FolioService
@@ -43,7 +44,7 @@ def create_app() -> FastAPI:
         app.state.database_provider = database_provider
         store = PostgresPlayerStore(settings.database_url) if settings.player_store == "postgres" else JsonVerticalSliceStore(settings.vertical_slice_save_path)
         quest_rules = QuestRules(app.state.content_catalog)
-        players = VerticalSliceService(store, quest_rules)
+        players = VerticalSliceService(store, quest_rules, CharacterProgression(app.state.content_catalog))
         app.state.vertical_slice_service = players
         app.state.story = StoryService(players, quest_rules)
         app.state.folio = FolioService(players, app.state.content_catalog)

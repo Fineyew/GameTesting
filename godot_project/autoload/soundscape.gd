@@ -4,6 +4,8 @@ signal caption_requested(words: String)
 const DEFAULTS = {"Master":.85,"Music":.65,"Ambience":.65,"Movement":.65,"Spells":.75,"Creatures":.65,"UI":.6}
 const LOOPS = ["res://audio/dawnreef_theme.ogg","res://audio/tidebeat_theme.ogg","res://audio/reef_wind.ogg"]
 const CUES = {
+    "creature_shell":["res://audio/creature_shell.wav","Creatures","Shell plates click together"],
+    "creature_ray":["res://audio/creature_ray.wav","Creatures","The ray draws a quiet breath"],
     "root_cast":["res://audio/root_cast.wav","Spells","Reed-roots tighten"],
     "tide_cast":["res://audio/tide_cast.wav","Spells","A tide seam opens"],
     "ui":["res://audio/ui.wav","UI","Soft button chime"],
@@ -151,7 +153,7 @@ func cue(key: String) -> bool:
     if backgrounded or not CUES.has(key) or (not world_active and CUES[key][1] != "UI"):
         return false
     var now = Time.get_ticks_msec()
-    var interval = 140 if key == "footstep" else (600 if key == "creature" else 45)
+    var interval = 140 if key == "footstep" else (600 if key.begins_with("creature") else 45)
     if now-int(cooldowns.get(key,-1000)) < interval:
         return false
     var available: AudioStreamPlayer

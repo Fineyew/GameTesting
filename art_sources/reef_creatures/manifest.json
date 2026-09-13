@@ -1,0 +1,16 @@
+{
+  "revision": 1,
+  "status": "engineering candidate; owner and physical-device acceptance open",
+  "source": "godot_project/scripts/world/reef_creature.gd",
+  "provenance": "Original code-authored geometry and intent motion; no external models or recordings.",
+  "max_meshes": 16,
+  "max_triangles": 600,
+  "transparency": false,
+  "actors": [
+    "shellfold_sifter",
+    "hushfin_ray"
+  ],
+  "motion": "Sifter plates close with armor and open on sweep; ray fins accelerate when drawing Focus.",
+  "audio_manifest": "audio_sources/manifest.json",
+  "validation": "Godot TidebeatChecks counts real geometry/materials and exercises intent poses; low/high action captures include both actors."
+}

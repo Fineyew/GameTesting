@@ -1,11 +1,11 @@
 class_name TidebeatChecks
 extends RefCounted
 ## Presentation fixtures never grant a live character spells, rewards or combat state.
-static func fixture() -> Dictionary:
-    return JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/tidebeat.json")).before
+static func fixture(action := "glimmer_spark") -> Dictionary:
+    return JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/tidebeat.json")).frames[action].before
 
 static func outcome(action: String) -> Dictionary:
-    return JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/tidebeat.json")).outcomes[action]
+    return JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/tidebeat.json")).frames[action].after
 
 static func check(app: Node, tree: SceneTree, render := false) -> void:
     var session = app.session
@@ -13,6 +13,29 @@ static func check(app: Node, tree: SceneTree, render := false) -> void:
     session.player.position = Vector3(10,0,-8)
     session.busy = true
     var original = session.character.duplicate(true)
+    for key in ["shellfold_sifter","hushfin_ray"]:
+        var creature = app.world.enemies[key] as ReefCreature
+        assert(creature != null)
+        var triangles := 0
+        var meshes = creature.find_children("*","MeshInstance3D",true,false)
+        assert(meshes.size() <= 16)
+        for mesh_node in meshes:
+            assert(mesh_node.material_override.transparency == BaseMaterial3D.TRANSPARENCY_DISABLED)
+            for surface in mesh_node.mesh.get_surface_count():
+                var arrays = mesh_node.mesh.surface_get_arrays(surface)
+                triangles += (arrays[Mesh.ARRAY_INDEX].size() if arrays[Mesh.ARRAY_INDEX] != null else arrays[Mesh.ARRAY_VERTEX].size())/3
+        assert(triangles <= 600,"Each new creature must remain a small mobile silhouette")
+        creature.set_process(false)
+        creature.set_intent({"guard":6,"focus_drain":2})
+        creature._process(1)
+        assert(creature.guarded and creature.drawing_focus)
+        var nodes = creature.plates if key == "shellfold_sifter" else creature.fins
+        var pose = nodes[0].transform
+        creature.set_intent({})
+        creature._process(1)
+        assert(nodes[0].transform != pose,"Authored intent motion must change the silhouette")
+        creature.set_process(true)
+        print("REEF_CREATURE=",key,":",triangles," triangles; ",meshes.size()," meshes")
     var before = fixture()
     var after = before.duplicate(true)
     after.enemy_vigor = 24
@@ -53,7 +76,12 @@ static func check(app: Node, tree: SceneTree, render := false) -> void:
         for key in TidebeatEffect.PROFILES:
             session.short_spell_effects = false
             session.reduced_motion = false
-            session.playback.play(key,before,outcome(key),"fixture-"+quality+key)
+            var authored = fixture(key)
+            assert(authored.spells.size() <= 6)
+            app.world.show_intent(authored)
+            session.player.position = app.world.enemy.position+Vector3(-2,0,2)
+            session.camera.follow(session.player)
+            session.playback.play(key,authored,outcome(key),"fixture-"+quality+key)
             assert(session.playback.active and not session.hud.visible)
             # Freeze one authored impact silhouette; runtime completion is checked below.
             session.playback.effect.set_process(false)
@@ -139,4 +167,4 @@ static func check(app: Node, tree: SceneTree, render := false) -> void:
     session.player.position = at
     session.busy = false
     assert(session.character == original)
-    print("TIDEBEAT_PRESENTATION_PASS: eight distinct bounded silhouettes, GUI skip, receipt deduplication, static reduced mode, camera restoration, pause/resume and no character writes")
+    print("TIDEBEAT_PRESENTATION_PASS: eleven distinct bounded silhouettes, GUI skip, receipt deduplication, static reduced mode, camera restoration, pause/resume and no character writes")

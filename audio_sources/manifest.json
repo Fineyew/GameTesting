@@ -1,5 +1,5 @@
 {
-  "revision": 2,
+  "revision": 3,
   "status": "original audio sample candidate; owner and physical-device listening pending",
   "source": "audio_sources/build_dawnreef_audio.py",
   "provenance": "Original composition and mathematical synthesis for Veilbound Tides. No external recordings, voices, sample packs or generated-service assets.",
@@ -16,7 +16,7 @@
       "channels": 1,
       "source_peak": 0.20911,
       "source_rms": 0.05044,
-      "sha256": "a315e788f85d75a10a0abc0a3d976848f3ff7a3f8cf432ebca2231d776e363f1"
+      "sha256": "e30f294cd81023ef833943fd202a0d73a71aa0fd7f85d9867d003e9b4cb827dd"
     },
     {
       "key": "tidebeat_theme",
@@ -29,7 +29,7 @@
       "channels": 1,
       "source_peak": 0.18583,
       "source_rms": 0.03792,
-      "sha256": "a8cb4dcb92463bd62d2ac3fc1e15c89ca2228a5ee1d856a89c63c9905577974f"
+      "sha256": "e7c908910568a9f2245a458a7bcf159b0a6727554a187bf080df1304bf1b0f96"
     },
     {
       "key": "reef_wind",
@@ -42,7 +42,7 @@
       "channels": 1,
       "source_peak": 0.1044,
       "source_rms": 0.01883,
-      "sha256": "b7071de02ec6a79bcaba544dda6585781f55147093ad709e66602f54634c3283"
+      "sha256": "c22e42c9c4a2af8913ff53164f7876aeb23ad7067c875848bea130cf17c3d0fb"
     },
     {
       "key": "ui",
@@ -173,6 +173,32 @@
       "source_peak": 0.23424,
       "source_rms": 0.07871,
       "sha256": "3a995e7175206d7f46f17b2f0996b06c45ca0ef43753e830702958a129883ea5"
+    },
+    {
+      "key": "creature_shell",
+      "file": "godot_project/audio/creature_shell.wav",
+      "loop": false,
+      "bus": "Creatures",
+      "caption": "Shell plates click together",
+      "duration_seconds": 0.34998,
+      "sample_rate": 22050,
+      "channels": 1,
+      "source_peak": 0.19492,
+      "source_rms": 0.04838,
+      "sha256": "3ca921a0a6fa9650501d58d1a48047ca0f2702d7714db0feb48c8d5b6a0b880a"
+    },
+    {
+      "key": "creature_ray",
+      "file": "godot_project/audio/creature_ray.wav",
+      "loop": false,
+      "bus": "Creatures",
+      "caption": "The ray draws a quiet breath",
+      "duration_seconds": 0.5,
+      "sample_rate": 22050,
+      "channels": 1,
+      "source_peak": 0.23999,
+      "source_rms": 0.10392,
+      "sha256": "beaaa50caebdf92aa72d0c642bade8d8a14c1b08764288e84ea5ff4c063808db"
     }
   ]
 }

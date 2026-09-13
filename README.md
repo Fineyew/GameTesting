@@ -4,14 +4,13 @@ An original Android-first online fantasy RPG built with Godot 4.5.1, FastAPI,
 PostgreSQL, Docker and Nginx. Continue this repository; do not recreate working systems.
 The active work is `feature/android-foundation`, [draft PR #4](https://github.com/Fineyew/GameTesting/pull/4).
 
-Current continuation: **M1.10 spell presentation candidate**. Eight distinct action
-silhouettes, target/cost/effect readouts, reduced motion, accelerated rigs/effects and
-safe skip/background cleanup pass local engine/render checks. The extended online
-route passes all eight actions; 0.2.12/code 14 full CI/native is pending. The current verified
-handoff is [ARM64 0.2.11/code 13](https://github.com/Fineyew/GameTesting/actions/runs/34773533442/artifacts/10322324452):
-original music/ambience/cues, saved sound controls/captions, native touch footsteps and
-pause/resume, grounded character motion and settled online entry. PROJECT_STATE owns
-exact evidence and outstanding owner/physical-device acceptance.
+Current continuation: **M1.11 combat/progression candidate**. Two tactical reef enemies,
+three earned spells/lessons, affinity and cross-training, catalog XP/rewards and eleven
+bounded action effects are implemented. The six-slot folio and old save/rule values remain.
+Local backend/engine/render checks pass; 0.2.13/code 15 full CI/native is pending. M1.10's
+Android movement passed visually but missed a footstep; a physics-onset fix preserves the
+native gate. Current verified Android download remains **0.2.11/code 13**; see PROJECT_STATE
+for exact source/build evidence and open physical/owner acceptance.
 
 Run `python -m tools.check_movement_network` after Godot import to reproduce36 impairment
 scenarios. This does not simulate every mobile transport condition or replace phone testing.
@@ -74,7 +73,7 @@ see other connected players and use preset chat; follow Mara's branching dialogu
 fight the Fog-Thorn Lurker in server-owned Tidebeat turns and retain XP, currency and
 inventory rewards. Then trace a note through the reeds and sealed cistern entrance and
 return to Mara for a once-only reward. Continue three short lessons to earn Beacon Trace,
-Reed Aegis and Seam Lance; choose 1–6 learned spells in the Folio before combat. Buy the Lanternkeeper Vest from Mara’s supply cart for 12 earned shell chits, compare
+Reed Aegis and Seam Lance; choose 1–6 learned spells in the Folio before combat. After A Measured Release, Mara offers three advanced lessons: own affinity at level 2, cross-training at level 3. Read the Shellfold Sifter’s armor/opening and the Hushfin Ray’s Focus drain to earn Prism Needle, Reed Stitch and Stillwater Knot. Buy the Lanternkeeper Vest from Mara’s supply cart for 12 earned shell chits, compare
 its +1 Guard and equip/unequip it through the Bag. It reduces each incoming Tidebeat hit
 by one while leaving robe appearance unchanged. Shopping requires proximity to Mara;
 equipment changes require no active encounter. Bandages cost five shell chits; use one from the Bag outside combat to restore up to12
@@ -134,7 +133,7 @@ isolated database migrated to head. CI runs both migrations and the PostgreSQL t
 ## Android build and runtime checks
 
 Use the checked-in **Android** export preset: ARM64, INTERNET permission, app ID
-`work.surveyroute.veilboundtides`, version 0.2.12/code 14. Use Godot 4.5.1 export templates,
+`work.surveyroute.veilboundtides`, version 0.2.13/code 15. Use Godot 4.5.1 export templates,
 JDK17, Android SDK platform35 and build-tools35.0.0. See the
 [official engine export instructions](https://docs.godotengine.org/en/4.5/tutorials/export/exporting_for_android.html).
 The exported engine minimum is API24, target API35; minimum OS is not a device-performance guarantee.

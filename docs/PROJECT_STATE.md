@@ -5,7 +5,37 @@ Read README → PROJECT_STATE → ARCHITECTURE → relevant source. Main remains
 
 ## Current milestone
 
-**M1.10 six-spell, Brace and Gather presentation is implemented; Android CI pending.**
+**M1.11 combat/progression expansion is implemented locally; full CI/native pending.**
+The owner requested continued work through completion on 2026-09-13. Continue stable
+remote checkpoints without routine confirmations. No final-game/physical-device or
+owner art/listening acceptance is implied by automated engineering checks.
+
+- Catalog-owned cumulative XP thresholds retain the existing 100 XP steps and old levels.
+  Encounter reward sources now come from content; Fog-thorn retains 25 XP / 2 chits.
+- Shellfold Sifter alternates 6 armor, a 9-damage opening and a quiet beat. Hushfin Ray
+  alternates a 2-Focus drain, a heavy attack and a pause. Both require level 2 and helping
+  the Lantern Well, and award 35 XP / 3 chits. Existing enemy/spell numbers are unchanged.
+- Mara teaches Prism Needle (9 piercing damage), Reed Stitch (3 heal / 6 guard) and
+  Stillwater Knot (5 damage / 2 Focus ward), each costing 2 Focus. Three earned lessons
+  open at affinity level 2 or cross-training level 3 after A Measured Release. Six folio
+  slots remain; learning cannot auto-prepare. Each lesson grants 25 XP and one bandage.
+- Original low-poly creature scenes, plate/fin intent motion, two creature cues and three
+  additional bounded spell effects accompany the mechanics. Folio/intent/XP text explains
+  armor, Focus protection, lesson levels and next threshold. Sound set: 15 assets / 563,018 bytes.
+- The client requires additive `tidebeat_protocol: 2`. Existing aggregate fields and active
+  encounters read optional armor/drain values as zero; no database migration or save reset.
+- Local backend passes 231 tests / 39 subtests; 11 PostgreSQL checks await CI. Local engine
+  smoke/audio/motion and 22 low/high spell views pass. High preset peaks at 128 calls /
+  147,488 primitives after retaining only raised terrain in the floor shadow pass; flat
+  terrain still receives shadows, raised triangles/collision are unchanged. Budgets stay fixed.
+- A second bounded Godot client continues the character genuinely earned by the existing
+  online route against the same isolated API. New progression route and final regression
+  are being validated. Candidate 0.2.13/code 15 awaits full CI/native and artifact verification.
+
+Next: complete/checkpoint M1.11 and retain its APK; then M1.12's bounded chapter, followed
+by M2.1 staging. Physical Device E/R/L, owner review, public service and launch remain open.
+
+### M1.10 presentation checkpoint and Android follow-up
 M1.9 audio is fully engineering-validated below. The owner requested continued work
 through completion on 2026-09-13; continue checkpoints without routine confirmations.
 Owner art/listening and physical Device E/R/L acceptance remain separate open gates.
@@ -36,9 +66,13 @@ folio/rewards/reconnect, supplies and two-player terrain. Its first fixture sequ
 left too little Vigor for a later fight; using the already-earned Tide Mend restores
 the route without changing combat rules or weakening assertions.
 
-Candidate **0.2.12/code 14** is not yet a verified APK. The current verified download is
-0.2.11 below. Next is full F/native validation, artifact retention and M1.11's bounded
-combat/progression expansion. Public service, release signing and launch remain unverified.
+Source `75abc97ae7790979e2aab6838c52386d8332ac09`, run 34774538796, passes backend
+and Godot; Android export, audio, render and movies pass, but the native gesture moved
+without emitting VT_AUDIO_FOOTSTEP. No 0.2.12 deliverable was retained. Native artifact
+10323320910 and render artifact 10323555336 preserve the failure evidence. The current
+source adds a physics movement-onset cue and a between-render-frames regression; the
+same native movement/audio assertions remain required. Verified download remains 0.2.11.
+Public service, release signing and launch remain unverified.
 
 ### Validated M1.9 audio foundation
 
