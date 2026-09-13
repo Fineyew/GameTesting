@@ -120,7 +120,9 @@ def check_creator():
                     capture('creator-native-saved')
                     saved = client.get(base + '/characters', headers=headers)
                     saved.raise_for_status()
-                    character = saved.json()['data'][0]
+                    # The HTTP route returns a list; only Godot's ApiClient wraps
+                    # list responses in its internal {data: ...} convenience shape.
+                    character = saved.json()[0]
                     assert character['appearance'] == {'robe': 'coral', 'skin': 'deep'}
                     tap('Enter Dawnreef')
                     wait_for_world('creator-native-world')

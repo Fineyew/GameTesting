@@ -326,3 +326,14 @@ now sends two Down presses before Enter. A real-engine regression opens the actu
 OptionButton, confirms focus=-1, delivers those keys through the root window and
 requires the second item and visible appearance callback. Corrected local smoke and
 nine Android harness tests pass. Full native validation is still required.
+### Native creator HTTP-response correction (2026-09-13)
+
+Codeeed92ed/run34769314494 passes backend, Godot/API, render and walkthrough gates.
+Native creator color changes, touch rotation, Front reset, name entry, creation and
+saved-character preview now succeed; inspected colors/saved frames are readable. The
+last Python persistence check incorrectly expects Godot ApiClient's internal data
+wrapper from the direct HTTP response, whose documented route returns a raw list.
+Native10322040539/render10321960606 retain the failed attempt; no APK was published.
+The harness now indexes the actual list. A local isolated real-API check confirms
+creation, raw-list reload, coral/deep persistence and world entry; nine harness tests
+also pass. Final complete native validation remains required.
