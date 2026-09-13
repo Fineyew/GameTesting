@@ -4,7 +4,9 @@ from pathlib import Path
 import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 godot = os.environ.get('GODOT_BIN','godot')
-for args, marker in [(['--editor','--quit'],None),(['--script','res://tests/smoke.gd'],'GODOT_SMOKE_PASS')]:
+for args, marker in [(['--editor','--quit'],None),
+                     (['--script','res://tests/avatar_motion.gd'],'AVATAR_MOTION_PASS'),
+                     (['--script','res://tests/smoke.gd'],'GODOT_SMOKE_PASS')]:
     result = subprocess.run([godot,'--headless','--path',str(ROOT/'godot_project'),*args],capture_output=True,text=True,timeout=60)
     output = result.stdout + result.stderr
     print(output)

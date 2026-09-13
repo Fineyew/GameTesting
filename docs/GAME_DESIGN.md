@@ -161,3 +161,10 @@ Resting Wayfarers now converge to the server’s terrain position instead of ret
 .55m discrepancy. Moving prediction keeps its delay tolerance; this is a feel correction,
 not a new movement ability or progression change. Mooring Rise’s label moves off the terrace
 center so it does not obscure the standing avatar in the inspection view.
+
+## M1.8 motion-transition increment
+
+The same Wayfarer rig now eases walking cadence and keeps stable idle/walk transitions
+for nearby players across frame rates. Climbing a step does not make the remote stride
+speed up from vertical travel. This is a presentation correction using the current three
+clips; dedicated run/turn/hit/recovery animation and final foot contact remain planned.

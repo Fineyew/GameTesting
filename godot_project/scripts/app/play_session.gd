@@ -105,8 +105,7 @@ func _process(delta: float) -> void:
         var before = remote.avatar.position
         remote.avatar.position = before.lerp(remote.target,minf(1,delta*10))
         var motion = remote.avatar.position-before
-        remote.avatar.travel_speed = motion.length()/maxf(delta,.001)
-        remote.avatar.walking = motion.length() > .003
+        remote.avatar.set_travel_velocity(motion/maxf(delta,.001))
         if remote.avatar.walking:
             remote.avatar.rotation.y = lerp_angle(remote.avatar.rotation.y,atan2(-motion.x,-motion.z),delta*10)
     if not preview:

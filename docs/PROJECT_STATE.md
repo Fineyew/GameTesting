@@ -5,11 +5,25 @@ Read README → PROJECT_STATE → ARCHITECTURE → relevant source. Main remains
 
 ## Current milestone
 
+**M1.8 first motion-transition increment implemented; full CI pending.**
+Local/remote avatars share horizontal-speed sampling and walk/idle hysteresis in the
+existing WayfarerAvatar. Remote stair interpolation no longer speeds the gait or starts
+walking from vertical correction; the old per-frame movement threshold is removed.
+Cadence eases with elapsed time; existing Idle/Walk/Cast assets and cast timing remain.
+Local real-engine regressions pass at30/60/120 FPS, including the actual remote caller,
+jitter, stopping and cast return; Godot import/smoke also pass. Target APK0.2.8/code10 is
+not yet a verified deliverable. No protocol/schema/content/appearance-ID or authority change.
+M1.8 remains partial: new run/turn/hit/recovery clips, foot contact, creator matching,
+crowded-rig profiling and owner/physical motion acceptance are not completed.
+
+### Validated M1.7 recovery handoff
+
 **M1.7 recovery engineering validated; physical/feel acceptance remains open.**
 The previous handoff7bc4e00 passes run34669910393. The paused tree was recovered intact
 after workspace maintenance and pushed as code `3f2d81cf68c96a3ae3c50fefc7f2d5f1bcbb3cca`.
 All three jobs in [run34763944468](https://github.com/Fineyew/GameTesting/actions/runs/34763944468)
-pass. A new deterministic network schedule
+pass. Documentation handoff `cf8bc0c38d044ce278d240279e260bfaa08a57d8` is pushed.
+A new deterministic network schedule
 exercises the actual Godot controller against Python20Hz authority:36 combinations of
 ramp/stairs/wall/terrace edge,50/150/300ms one-way delay, one-second packet silence or
 rejoin. Baseline exposed15 scenarios left permanently outside3cm agreement; the .55m
@@ -236,7 +250,7 @@ trading, gathering/crafting, mounts/housing/pets or broad social content were ad
 Recovery/moderation, load tests, JSON→PG import/restore, staging/production, signing and
 updater remain future work. One process owns the room;32-player cap is unbenchmarked.
 
-**Next engineering: M1.8 existing-rig locomotion transitions**, scoped in ROADMAP.
+**Current engineering: validate/checkpoint M1.8 existing-rig locomotion transitions**, scoped in ROADMAP.
 The deterministic M1.7 delay/silence/rejoin gate now passes. Preserve its correction/settling
 assertions and obtain Device R evidence before calling finished movement accepted. Physical
 edge/corner/stair feel, variable-rate/jitter/long-outage behavior and the full-route visual

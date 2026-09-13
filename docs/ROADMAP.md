@@ -6,7 +6,7 @@ Revised 2026-09-10 after inspecting the repository at
 and successful M0–M1.3 CI jobs. Roadmap checkpoint edec97b changed planning only.
 The owner subsequently authorized implementation; current evidence lives in PROJECT_STATE.
 
-**M1.7 terrain/recovery engineering passes at3f2d81c; physical/feel acceptance remains open. The next narrow engineering task is M1.8 existing-rig locomotion transitions. PROJECT_STATE owns validation evidence.**
+**M1.7 terrain/recovery engineering passes at3f2d81c/handoffcf8bc0c; physical/feel acceptance remains open. M1.8's first locomotion-transition increment is implemented with local tests; full CI is pending. PROJECT_STATE owns validation evidence.**
 On 2026-09-11 the owner requested full continuation after the device-gate handoff.
 Proceed with engineering checkpoints while recording M1.4/M1.5 physical acceptance as
 outstanding. This changes development ordering only; Device E/R/L evidence and final
@@ -376,6 +376,8 @@ smooth cadence through the current Idle/Walk/Cast interface. Validate equal elap
 at 30/60/120 FPS, vertical-only remote correction, stopping and cast return. Preserve all
 assets, appearance IDs, authority and collision. This starts M1.8; it does not finish new
 run/turn/hit/recovery clips, foot contact, creator matching, crowded-rig profiling or Device E.
+Implemented locally2026-09-13 with real-rig/remote-caller tests at30/60/120 FPS and smoke
+passing. Full gates and APK0.2.8/code10 remain pending; do not mark the whole milestone complete.
 
 - **Kind / purpose:** Visual production, polish. Make the character feel expressive and substantial.
 - **Adds:** Finish the reusable player/NPC rig and bounded current creator options; idle,

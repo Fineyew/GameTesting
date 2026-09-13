@@ -478,3 +478,14 @@ release, cap ordinary correction at.101m/frame, and stay within2.5m peak diverge
 seeding is explicit and separate from ordinary correction. This is not a real-socket impairment
 proxy; the existing full Godot/API test separately validates actual transport/reconnect.
 Physical networks, jitter/long outages, frame-rate variation and subjective feel remain open.
+
+## M1.8 existing-rig locomotion transitions
+
+WayfarerAvatar owns presentation-only horizontal velocity sampling. Both the local
+controller and remote interpolation pass velocity into `set_travel_velocity`; vertical
+terrain following cannot affect stride cadence. Walk enters above0.18m/s and exits at
+0.08m/s, preserving state between thresholds. The old remote0.003m-per-frame cutoff is
+removed. Cadence eases exponentially by elapsed time while existing clip blends and cast
+timing remain. This does not add root motion, alter collision/authority or send new packets.
+Assets, saved appearance choices and server state are unchanged. `tests/avatar_motion.gd`
+uses the imported rig and real remote caller; `tools.check_godot` runs it before smoke.

@@ -73,8 +73,7 @@ func _physics_process(delta: float) -> void:
                 position.x = lerpf(position.x,authoritative_position.x,delta*4)
                 position.z = lerpf(position.z,authoritative_position.z,delta*4)
     if avatar:
-        avatar.travel_speed = Vector2(velocity.x,velocity.z).length()
-        avatar.walking = Vector2(velocity.x, velocity.z).length() > .1
+        avatar.set_travel_velocity(velocity)
         if avatar.walking:
             avatar.rotation.y = lerp_angle(avatar.rotation.y, atan2(-velocity.x, -velocity.z), delta*12)
 

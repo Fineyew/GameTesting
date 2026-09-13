@@ -166,3 +166,11 @@ are inspected/retained. Frame schedule is60Hz and uses fixed
 one-way delays; real transport jitter, variable frame rates and physical-phone feel remain
 unverified. The >2m emergency reset still snaps during large divergence; long outages need
 additional acceptance work. See PROJECT_STATE for exact evidence and physical limitations.
+
+## M1.8 first animation increment
+
+Horizontal-only remote cadence and frame-rate-independent walk/idle sampling are corrected
+locally with real-engine tests. Full CI/APK0.2.8 validation is pending. The same three clips
+remain; fast travel still speeds the Walk clip rather than playing a newly authored Run.
+Foot planting/IK, turn/hit/recovery clips, creator matching, crowded-rig profiling and
+owner/phone motion acceptance remain unfinished. No cosmetic family or rig was replaced.

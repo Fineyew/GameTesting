@@ -10,8 +10,9 @@ now converges under delayed/lost snapshots. All three jobs in
 `3f2d81cf68c96a3ae3c50fefc7f2d5f1bcbb3cca`. Retained
 [ARM64 APK0.2.7/code9](https://github.com/Fineyew/GameTesting/actions/runs/34763944468/artifacts/10320225025)
 has verified download/provenance; PROJECT_STATE records hashes, tests and inspected renders.
-Physical-phone and owner movement/art acceptance remain open. The next narrow engineering
-step is M1.8's existing-rig locomotion transitions. Earlier checkpoint evidence below is history.
+Physical-phone and owner movement/art acceptance remain open. M1.8's first existing-rig
+transition increment is now implemented locally; full CI/APK0.2.8 validation is pending.
+It corrects remote stair cadence and smooths shared walk/idle behavior. Earlier checkpoint evidence below is history.
 
 Run `python -m tools.check_movement_network` after Godot import to reproduce36 impairment
 scenarios. This does not simulate every mobile transport condition or replace phone testing.
@@ -134,7 +135,7 @@ isolated database migrated to head. CI runs both migrations and the PostgreSQL t
 ## Android build and runtime checks
 
 Use the checked-in **Android** export preset: ARM64, INTERNET permission, app ID
-`work.surveyroute.veilboundtides`, version 0.2.7/code 9 (automated gates passed; physical validation open). Use Godot 4.5.1 export templates,
+`work.surveyroute.veilboundtides`, target version 0.2.8/code 10 (CI pending; last verified APK is 0.2.7 above). Use Godot 4.5.1 export templates,
 JDK17, Android SDK platform35 and build-tools35.0.0. See the
 [official engine export instructions](https://docs.godotengine.org/en/4.5/tutorials/export/exporting_for_android.html).
 The exported engine minimum is API24, target API35; minimum OS is not a device-performance guarantee.

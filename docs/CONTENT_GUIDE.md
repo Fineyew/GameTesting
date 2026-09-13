@@ -295,3 +295,14 @@ Terrain authoring regression gate: run `python -m tools.check_movement_network` 
 terrain parity when changing landing/approach geometry. Its four authored-route probes validate
 resting correction under deterministic delay/silence/rejoin. Keep landmarks out of avatar
 silhouettes in the retained terrain frame; visual evidence remains separate from movement tests.
+
+## Existing-rig locomotion contract (M1.8 first increment)
+
+Keep the imported Idle/Walk/Cast names and existing robe/skin tint material bindings.
+`WayfarerAvatar.set_travel_velocity` accepts velocity in metres/second and uses x/z only;
+do not feed per-frame displacement into the animation interface. The avatar owns walk/idle
+hysteresis and cadence smoothing, while controller/remote interpolation own travel.
+No root-motion track may move the authoritative body. Run `python -m tools.check_godot`
+for the actual rig,30/60/120 FPS, cast-return and remote-caller regressions before changing
+animation bindings. Additional clips and appearance families need their own reviewed asset
+increment; the current source files and IDs are preserved.

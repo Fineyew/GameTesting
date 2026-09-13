@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-09-13 — M1.8 existing-rig motion transitions (candidate)
+
+- Continue from clean M1.7 recovery handoffcf8bc0c. Sample horizontal velocity in the
+  existing avatar for both local and remote movement; stop vertical correction from
+  triggering remote walking or inflating cadence. Replace the per-frame remote cutoff
+  with shared enter/exit thresholds and ease cadence by elapsed time.
+- Preserve Idle/Walk/Cast, appearance IDs, assets, collision/authority, protocol and saves.
+- Local real-engine30/60/120 FPS, jitter/stopping/cast-return/remote-caller regressions and
+  Godot smoke pass. Add the regression to existing import/smoke CI. Full gates are pending;
+  target APK0.2.8/code10 is not yet verified. M1.8 rig/clip/creator/device work remains partial.
+
 ## 2026-09-13 — M1.7 recovery validated and Notion handoff
 
 - Recover the paused tree without rebuilding systems; code `3f2d81cf68c96a3ae3c50fefc7f2d5f1bcbb3cca`

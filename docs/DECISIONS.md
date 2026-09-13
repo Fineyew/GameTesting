@@ -86,3 +86,11 @@ checkpoints authoritative. Update the hub manually at session handoffs with a da
 source SHA; no automatic sync or background agent is implied. Do not duplicate gameplay
 definitions or put secrets/player records there. No additional paid service is needed.
 The repository remains fully maintainable without access to Notion.
+
+## 2026-09-13 — Advance M1.8 with one measured presentation correction
+
+After the clean validated M1.7 recovery handoff, fix remote vertical-distance cadence and
+frame-dependent walk detection through the existing avatar interface. Share horizontal
+speed/hysteresis and elapsed-time easing between local/remote callers; preserve the three
+current clips and all gameplay rules. This narrow checkpoint starts animation work without
+replacing a rig or pretending that final animation/physical-device acceptance is complete.

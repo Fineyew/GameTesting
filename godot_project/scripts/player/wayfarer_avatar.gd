@@ -5,9 +5,16 @@ const WAYFARER = preload("res://assets/dawnreef/wayfarer.glb")
 const MARA = preload("res://assets/dawnreef/mara.glb")
 static var appearance_materials: Dictionary = {}
 var walking := false
-var travel_speed := 2.0
+var travel_speed := 0.0
 var animation: AnimationPlayer
 var cast_remaining := 0.0
+var gait_rate := 1.0
+
+func set_travel_velocity(motion: Vector3) -> void:
+    # Animation follows horizontal travel, not stair height or pixels per frame.
+    travel_speed = Vector2(motion.x,motion.z).length()
+    # Separate enter/exit thresholds keep small snapshot tails from toggling clips.
+    walking = travel_speed > (.08 if walking else .18)
 
 func build(appearance: Dictionary, is_mara := false) -> void:
     var model = (MARA if is_mara else WAYFARER).instantiate()
@@ -43,10 +50,12 @@ func play_cast() -> void:
 func _process(delta: float) -> void:
     if animation == null:
         return
+    var target_rate = clampf(travel_speed/2.0,.4,2.7) if walking else 1.0
+    gait_rate = lerpf(gait_rate,target_rate,1.0-exp(-12.0*delta))
     if cast_remaining > 0:
         cast_remaining -= delta
         return
     var wanted = "Walk" if walking else "Idle"
     if animation.current_animation != wanted:
         animation.play(wanted,.16)
-    animation.speed_scale = clampf(travel_speed/2.0,.4,2.7) if walking else 1.0
+    animation.speed_scale = gait_rate if walking else 1.0
