@@ -5,7 +5,7 @@ Read README → PROJECT_STATE → ARCHITECTURE → relevant source. Main remains
 
 ## Current milestone
 
-**M1.11 combat/progression expansion is implemented locally; full CI/native pending.**
+**M1.11 combat/progression expansion is implemented; Android relaunch gate recovery in progress.**
 The owner requested continued work through completion on 2026-09-13. Continue stable
 remote checkpoints without routine confirmations. No final-game/physical-device or
 owner art/listening acceptance is implied by automated engineering checks.
@@ -31,6 +31,17 @@ owner art/listening acceptance is implied by automated engineering checks.
 - A second bounded Godot client continues the character genuinely earned by the existing
   online route against the same isolated API. New progression route and final regression
   are being validated. Candidate 0.2.13/code 15 awaits full CI/native and artifact verification.
+
+Recovery on 2026-09-13: source `36aa66ebcc62cbcc544425219ba1cbf712fdf842`
+was clean and pushed. Run34775850505 passes backend, Godot/API, render/export and native
+footstep/background/resume checks, then times out at creator relaunch readiness. Retained
+native artifact10323951508 was downloaded, checksum-checked and inspected: no game
+exception or ANR; landscape1280x720 gateway, focused/visible/shown app, no rotation,
+but its **requested** size remains720x1280. The parser mistook that request for the
+actual frame. The correction reads the focused window's laid-out `Frames: ... frame=`
+from `dumpsys window -a`, with `mHaveFrame=true`, the same surface/focus/rotation
+requirements and three-second stabilization. Twelve harness regressions pass locally;
+full CI/native and the0.2.13 artifact remain pending. No movement/image/audio gate is relaxed.
 
 Next: complete/checkpoint M1.11 and retain its APK; then M1.12's bounded chapter, followed
 by M2.1 staging. Physical Device E/R/L, owner review, public service and launch remain open.

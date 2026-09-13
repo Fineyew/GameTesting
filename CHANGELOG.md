@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-13 — M1.11 Android relaunch recovery
+
+- Recover clean/pushed36aa66e; diagnose run34775850505 from retained native10323951508.
+- Native footsteps/movement/resume passed; creator readiness mistook a stale portrait
+  request for the actual landscape window. Use the focused laid-out frame from the
+  verbose Android window dump; retain all surface/focus/rotation and movement/audio gates.
+- Twelve harness regressions pass locally. Full CI/native and the retained APK remain pending.
+
 ## 2026-09-13 — M1.11 combat/progression candidate
 
 - Add catalog progression/rewards with preserved thresholds, levels and Fog-thorn numbers.

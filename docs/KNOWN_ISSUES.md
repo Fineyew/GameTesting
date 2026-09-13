@@ -46,6 +46,12 @@ Updated 2026-09-13. See PROJECT_STATE for current CI/artifact status.
 
 ## Engineering
 
+- M1.11 source36aa66e/run34775850505 passes backend/Godot/render/export and native
+  footsteps/resume, then times out at creator relaunch readiness. Inspected native
+  artifact10323951508 shows a landscape gateway with a stale portrait `Requested w/h`.
+  The harness now requests verbose window data and checks the exact focused window's
+  actual layout frame;12 local regressions pass. Full CI/native remains pending.
+
 - M1.6 handoff a0b495c/run34552851591 attempt1 failed the visible gateway gate. Retained
   native10181631699 was downloaded and inspected: Pixel Launcher ANR modal covers the
   rendered game; Godot has its ready marker and no engine error. Backend/PG, Godot/API,

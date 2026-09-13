@@ -64,15 +64,20 @@ def changed_world(left_path,right_path):
         return sum(histogram[13:])/sum(histogram)
 
 def input_window_ready(windows):
-    # API35 dumps the actual surface/rotation state, not legacy AppTransition state.
+    # Requested w/h is in the application's pre-rotation coordinate space and can
+    # remain portrait after a landscape relaunch. Use the laid-out window frame
+    # from `dumpsys window -a`, scoped to the exact focused window's surface.
     focused=re.search(r'mCurrentFocus=(Window\{[^\n]*\})',windows)
     if not focused or PACKAGE+'/' not in focused[1] or 'no ScreenRotationAnimation' not in windows:
         return False
     for block in re.split(r'\n  Window #\d+ ',windows)[1:]:
         if not block.startswith(focused[1]+':'):
             continue
-        size=re.search(r'Requested w=(\d+) h=(\d+)',block)
-        return bool(size and int(size[1])>int(size[2]) and
+        frame=re.search(r'^\s*Frames: [^\n]*\bframe=\[(-?\d+),(-?\d+)\]\[(-?\d+),(-?\d+)\]',block,re.MULTILINE)
+        if not frame:
+            return False
+        left,top,right,bottom=map(int,frame.groups())
+        return bool(right-left>bottom-top>0 and 'mHaveFrame=true' in block and
                     'mHasSurface=true isReadyForDisplay()=true' in block and
                     'Surface: shown=true' in block and '\n    isVisible=true' in block)
     return False
@@ -85,7 +90,7 @@ def wait_for_input_ready():
     ready_since=None
     def ready():
         nonlocal ready_since
-        windows=adb('shell','dumpsys','window')
+        windows=adb('shell','dumpsys','window','-a')
         (OUT/'resume-window-state.txt').write_text(windows)
         if not input_window_ready(windows):
             ready_since=None

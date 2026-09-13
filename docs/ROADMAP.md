@@ -456,7 +456,7 @@ awaits full F/native; owner visual acceptance and Device R remain open.
 lessons/spells, affinity/cross-training and content-driven progression/rewards retain old
 numerical rules and six slots. Original creature motion/audio and eleven effect shapes
 are integrated. Backend and local engine/render pass; earned online continuation, final
-CI/artifact retention and physical Device E remain required. PROJECT_STATE owns evidence.
+CI/artifact retention and physical Device E remain required. Run34775850505 passed native audio/movement but exposed a stale requested-size assumption at creator relaunch; focused actual-frame recovery is under validation. PROJECT_STATE owns evidence.
 
 - **Kind / purpose:** Gameplay systems, authored content. Prove strategic variety before bulk spells.
 - **Adds:** Catalog-driven progression thresholds/reward sources, at most two additional

@@ -608,3 +608,15 @@ hides redundant world intent text during the receipt overlay. Floor rendering re
 only the same raised terrain faces cast them, avoiding an unnecessary flat-floor second pass.
 Physics movement onset emits the initial footstep even when a short gesture fits between render
 frames; later gait contacts retain their cadence and the sound pool's duplicate suppression.
+
+
+## Android relaunch readiness correction
+
+The focused app can retain portrait `Requested w/h` after a completed landscape
+relaunch. This is an application request, not the composed window size. Native QA
+reads `dumpsys window -a` and requires the exact focused window's `Frames: ... frame=`,
+positive landscape extents, `mHaveFrame=true`, a visible/shown/ready surface and no
+rotation animation for three seconds. It fails closed on missing/malformed layout or
+another window's frame. Movement, image, audio and creator input assertions are unchanged.
+AOSP documents these fields in [WindowState](https://android.googlesource.com/platform/frameworks/base/+/master/services/core/java/com/android/server/wm/WindowState.java)
+and [WindowFrames](https://android.googlesource.com/platform/frameworks/base/+/master/services/core/java/com/android/server/wm/WindowFrames.java).
