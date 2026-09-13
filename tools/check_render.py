@@ -11,7 +11,7 @@ print(output)
 destination=ROOT/'builds/render-check'
 destination.mkdir(parents=True,exist_ok=True)
 source=Path.home()/'.local/share/godot/app_userdata/Veilbound Tides'
-names=['gateway.png','dawnreef.png','folio.png','vendor.png','equipment.png','item-use.png','benchmark.png','mara.png','wayfarer.png','glimmer.png','terrain.png']
+names=['audio-settings.png','gateway.png','dawnreef.png','folio.png','vendor.png','equipment.png','item-use.png','benchmark.png','mara.png','wayfarer.png','glimmer.png','terrain.png']
 names += ['creator-'+name+'.png' for name in ['teal','coral','indigo','rotated','tablet','wide','selection']]
 names += ['motion-'+name+'.png' for name in ['crowd','walk','run','turnleft','turnright','hit','recovery']]
 # Keep available evidence before rejecting a failed render. This never publishes an APK.

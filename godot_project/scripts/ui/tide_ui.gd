@@ -53,6 +53,7 @@ static func button(words: String, callback: Callable, primary := false) -> Butto
     var node = Button.new()
     node.text = words
     node.custom_minimum_size.y = 56
+    node.pressed.connect(play_ui_sound)
     node.pressed.connect(callback)
     if primary:
         node.add_theme_stylebox_override("normal",style(GOLD))
@@ -72,4 +73,13 @@ static func option(items: Array) -> OptionButton:
     node.custom_minimum_size.y = 54
     for item in items:
         node.add_item(item)
+    node.item_selected.connect(func(_index): play_ui_sound())
     return node
+
+static func play_ui_sound() -> void:
+    # Shared UI can compile before autoload registration in SceneTree test tools.
+    var tree = Engine.get_main_loop() as SceneTree
+    if tree:
+        var audio = tree.root.get_node_or_null("Soundscape")
+        if audio:
+            audio.cue("ui")

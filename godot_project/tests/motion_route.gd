@@ -59,5 +59,10 @@ func _process(_delta: float) -> bool:
         elif frame == 310:
             app.queue_free()
             print("MOTION_ROUTE_PASS")
-            quit()
+            actor = null
+            finish()
     return false
+
+func finish() -> void:
+    await root.get_node("Soundscape").shutdown()
+    quit.call_deferred()

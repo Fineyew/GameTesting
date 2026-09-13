@@ -6,7 +6,7 @@ Revised 2026-09-10 after inspecting the repository at
 and successful M0–M1.3 CI jobs. Roadmap checkpoint edec97b changed planning only.
 The owner subsequently authorized implementation; current evidence lives in PROJECT_STATE.
 
-**M1.7 recovery passes at3f2d81c/handoffcf8bc0c. M1.8's first locomotion-transition increment passes all automated gates at5972031. Creator/world avatar parity passes full CI/render/native gates at74070f3/run34769922414, with verified0.2.9/code11 retained. The full milestone and physical/owner acceptance remain open. PROJECT_STATE owns evidence.**
+**M1.7 recovery passes at3f2d81c/handoffcf8bc0c. M1.8's first locomotion-transition increment passes all automated gates at5972031. Creator and expanded motion/terrain-foot/LOD/online-entry gates pass at93a22c9/run34772233514 with verified0.2.10/code12. M1.9 audio is locally implemented;0.2.11 full CI/native is pending. The full milestone and physical/owner acceptance remain open. PROJECT_STATE owns evidence.**
 On 2026-09-11 the owner requested full continuation after the device-gate handoff.
 Proceed with engineering checkpoints while recording M1.4/M1.5 physical acceptance as
 outstanding. This changes development ordering only; Device E/R/L evidence and final
@@ -391,12 +391,11 @@ Device E acceptance remains open. Next bounded engineering work is a Run clip an
 Walk/Run transition through the existing rig; later turn/hit/recovery, foot contact and
 crowded-rig review remain required. This does not complete the full milestone.
 
-Motion/crowd continuation2026-09-13 is implemented with local engine/API/render validation;
-full F/native evidence is pending. It adds Run/turn/hit/recovery, phase-preserving blends,
+Motion/crowd continuation2026-09-13 passes full F/native at93a22c9/run34772233514. It adds Run/turn/hit/recovery, phase-preserving blends,
 .3m terrain foot fitting and derived distant meshes. Actual32-rig render fell from410,324
 to118,988 primitives after fixing the exposed budget failure;200 calls. No budget increase.
-0.2.10/code12 is a candidate until F passes. Physical/owner motion acceptance stays open.
-After its verified handoff, continue M1.9 engineering under the owner's continuation request.
+Verified0.2.10/code12 artifact10323005593 is retained. Physical/owner motion acceptance
+stays open. M1.9 engineering continues under the owner's continuation request.
 
 - **Kind / purpose:** Visual production, polish. Make the character feel expressive and substantial.
 - **Adds:** Finish the reusable player/NPC rig and bounded current creator options; idle,
@@ -412,6 +411,12 @@ After its verified handoff, continue M1.9 engineering under the owner's continua
   S none expected, retain appearance IDs; Device E required.
 
 ### M1.9 — Audio framework and Dawnreef sound sample
+
+Audio engineering is implemented locally:11 original assets, seven buses/controls,
+zone/combat/panel fades, bounded cues, limiter, captions and persisted pause/resume.
+Fresh import, real mixer loop/mute/overlap, GUI/persistence, complete engine/API/render
+and actual engine recording pass.0.2.11/code13 full F/native is pending. Owner listening,
+exported physical-device/headphone/speaker output and Device E remain open.
 
 - **Kind / purpose:** Polish, content systems. Establish sound as part of the world early.
 - **Adds:** Music/ambience/spell/creature/UI buses, persistent volume controls, pause/ducking,
@@ -1058,9 +1063,9 @@ If too much placeholder debt remains, return to bounded production batches befor
 | Entire-game art | M4.1 → M4.2 → M4.3 → M4.4 | Every launch environment, character/collectible, effect/audio and UI surface complete |
 | Release | M5.1 → M5.2 → M5.3 → M5.4 → M5.5 | Whole-game cohesion, phone certification, recovery/security, beta and approved launch |
 
-**Current engineering: validate/checkpoint M1.8 motion/crowd and native online entry.**
-Local rig/ground contact/LOD/API/render checks pass; full F and retained0.2.10/code12 are
-pending. Then continue the bounded M1.9 audio foundation. Keep all physical/owner art,
+**Current engineering: validate/checkpoint M1.9 audio.**
+M1.8 full F/native passes with source-verified0.2.10/code12. Audio passes locally;
+0.2.11/code13 full F/native is pending. Next is M1.10 six-action-family presentation. Keep all physical/owner art,
 motion and sustained mobile acceptance gates open; engineering evidence does not waive them.
 
 Postpone bulk quest/spell generation until the authoring/art benchmark exists; additional

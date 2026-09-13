@@ -133,6 +133,7 @@ def main():
     adb('shell','monkey','-p',PACKAGE,'-c','android.intent.category.LAUNCHER','1')
     def log():return adb('logcat','-d','-s','godot:V','AndroidRuntime:E','libc:F')
     wait_for(lambda:'VT_GATEWAY_READY' in log())
+    assert 'VT_AUDIO_READY' in log(), 'Audio resources/buses did not initialize'
     gateway=wait_for_world('gateway')
     assert 'ERROR:' not in log(), 'Godot engine/render error; inspect android-check/logcat.txt'
     with Image.open(gateway) as image:width,height=image.size
@@ -165,6 +166,9 @@ def main():
     after=wait_for_settled_world('dawnreef-after')
     changed=changed_world(before,after)
     assert changed>.025,f'touch movement did not visibly change world: {changed}'
+    assert 'VT_AUDIO_FOOTSTEP' in log(), 'Actual touch movement never reached a footstep cue'
+    audio_pause_count=log().count('VT_AUDIO_PAUSED')
+    audio_resume_count=log().count('VT_AUDIO_RESUMED')
     adb('shell','input','keyevent','KEYCODE_HOME')
     time.sleep(1)
     adb('shell','monkey','-p',PACKAGE,'-c','android.intent.category.LAUNCHER','1')
@@ -176,6 +180,7 @@ def main():
     time.sleep(.5)
     resumed_move=wait_for_world('resumed-moved')
     assert changed_world(resumed,resumed_move)>.025,'touch locomotion failed after resume'
+    assert log().count('VT_AUDIO_PAUSED')>audio_pause_count and log().count('VT_AUDIO_RESUMED')>audio_resume_count, 'Native audio lifecycle was not exercised'
     logs=log()
     (OUT/'logcat.txt').write_text(logs)
     assert not re.search(r'ERROR:|SCRIPT ERROR|FATAL EXCEPTION|Fatal signal|ANR in '+re.escape(PACKAGE),logs),logs[-6000:]

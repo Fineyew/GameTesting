@@ -17,6 +17,8 @@ var popup: PanelContainer
 var panel_title: Label
 var panel_content: VBoxContainer
 var modal := false
+var sound_caption: Label
+var caption_remaining := 0.0
 
 func _ready() -> void:
     set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -81,6 +83,20 @@ func _ready() -> void:
     actions.add_child(TideUI.button("Bag",inventory_requested.emit))
     actions.add_child(TideUI.button("Recenter",recenter_requested.emit))
     actions.add_child(TideUI.button("Say hello",chat_requested.emit))
+    sound_caption = TideUI.label("",19,TideUI.PAPER)
+    sound_caption.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
+    sound_caption.offset_left = -260
+    sound_caption.offset_right = 260
+    sound_caption.offset_top = 124
+    sound_caption.offset_bottom = 152
+    sound_caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    sound_caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    sound_caption.add_theme_color_override("font_shadow_color",TideUI.INK)
+    sound_caption.add_theme_constant_override("shadow_offset_x",2)
+    sound_caption.add_theme_constant_override("shadow_offset_y",2)
+    add_child(sound_caption)
+    sound_caption.hide()
+    Soundscape.caption_requested.connect(show_sound_caption)
     popup = PanelContainer.new()
     popup.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
     popup.offset_left = -330
@@ -123,7 +139,7 @@ func close_panel() -> void:
     panel_closed.emit()
 
 func set_character(character: Dictionary, preview: bool) -> void:
-    profile.text = "%s · Level %s" % [character.get("name","Wayfarer"),character.get("level",1)]
+    profile.text = "%s · Level %s" % [character.get("name","Wayfarer"),int(character.get("level",1))]
     if preview:
         connection_label.text = "OFFLINE PREVIEW · progress is not saved"
         quest_label.text = "Explore Dawnreef. Sign in for quests and combat."
@@ -137,3 +153,14 @@ func set_character(character: Dictionary, preview: bool) -> void:
                 if progress.get("objectives",{}).get(objective.key,0) < objective.quantity:
                     quest_label.text = objective.get("label",GameData.display_name("quests",key))
                     return
+
+func show_sound_caption(words: String) -> void:
+    sound_caption.text = words
+    sound_caption.visible = not words.is_empty()
+    caption_remaining = 2.0
+
+func _process(delta: float) -> void:
+    if caption_remaining > 0:
+        caption_remaining -= delta
+        if caption_remaining <= 0:
+            sound_caption.hide()

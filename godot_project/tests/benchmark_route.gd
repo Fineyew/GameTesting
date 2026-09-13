@@ -54,4 +54,7 @@ func run() -> void:
     app.queue_free()
     await process_frame
     print("BENCHMARK_ROUTE_PASS: preview only; identical camera, controls and .75/no-shadow preset")
-    quit()
+    var audio = root.get_node_or_null("Soundscape")
+    if audio:
+        await audio.shutdown()
+    quit.call_deferred()

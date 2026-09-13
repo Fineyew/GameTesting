@@ -36,7 +36,7 @@ Updated 2026-09-13. See PROJECT_STATE for current CI/artifact status.
   365993ce/run34483308643; actual captures and matching route frames were inspected.
   Owner art acceptance and physical-phone Device E remain open. Do not call it final.
   Two houses, distant foliage/coast/vistas, dock, cistern, lurker and most spell effects
-  remain placeholders. No full audio framework/soundtrack or complete animation library.
+  remain placeholders. The expanded motion library is engineering-validated; M1.9 audio framework is a locally tested candidate. Full soundtrack, owner acceptance and device listening remain open.
   The sample has three clips and limited appearance tinting; it is not the full creator.
 - Historical planar checkpoint: capsule/gravity/floor snap existed, but stairs, slopes and vertical
   authority were not tested there; current activation has automated parity/API coverage. Full UI scaling, safe areas, left-handed controls and menu controller

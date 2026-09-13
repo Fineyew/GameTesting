@@ -330,3 +330,21 @@ geometry before skinning and validates/removes duplicate faces after collapse. I
 then pass clean mesh validation. Preserve13 named bones, bind poses, material order and
 robe/skin slots; actual-engine regressions compare them to the detailed source. The
 existing32-rig dense budget remains250 draws/150k primitives. Do not raise it to pass.
+
+## Original audio sample workflow
+
+`python audio_sources/build_dawnreef_audio.py` uses NumPy/FFmpeg for authoring only.
+It creates the original eight-bar80-BPM Dawnreef motif, related Tidebeat pulse, periodic
+filtered wind and eight mathematically synthesized cues; no recordings/voices/packs.
+The source/rights/status and exact hashes live in audio_sources/manifest.json. Runtime
+loops are Ogg Vorbis and short cues are mono16-bit WAV at22,050Hz; current source total
+472,459 bytes. Run `python -m tools.check_audio` after authoring; do not normalize away
+failed headroom/seam checks. Runtime enables looping explicitly and real-engine tests
+seek across EOF. See [Godot audio streams](https://docs.godotengine.org/en/4.5/classes/class_audiostreamplayer.html)
+and [bus capture](https://docs.godotengine.org/en/4.5/classes/class_audioeffectcapture.html).
+
+After Godot import, `python -m tools.record_audio` captures actual music/duck/combat/cue/
+pause/resume playback under builds/audio-check for review. Listen on the exported phone
+with speaker/headphones before acceptance; the recording is software-engine evidence.
+Every later spell/creature cue must keep a text/visual equivalent and the bounded pool.
+The older Fal candidates remain outside runtime and are not used by this source-authored sample.

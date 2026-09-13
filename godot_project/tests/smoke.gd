@@ -122,9 +122,15 @@ func run() -> void:
     await MotionVisuals.check(app,self)
     app.session.show_settings()
     assert(app.session.hud.modal)
+    app.session.show_audio_settings()
+    await VisualBenchmark.capture(self,"audio-settings")
+    assert(app.session.hud.modal)
     app.return_to_gateway()
     assert(app.gateway.visible)
     app.queue_free()
     await process_frame
     print("GODOT_SMOKE_PASS")
-    quit()
+    var audio = root.get_node_or_null("Soundscape")
+    if audio:
+        await audio.shutdown()
+    quit.call_deferred()

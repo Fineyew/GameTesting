@@ -4,11 +4,12 @@ An original Android-first online fantasy RPG built with Godot 4.5.1, FastAPI,
 PostgreSQL, Docker and Nginx. Continue this repository; do not recreate working systems.
 The active work is `feature/android-foundation`, [draft PR #4](https://github.com/Fineyew/GameTesting/pull/4).
 
-Current continuation: **M1.8 motion/crowd and online-entry candidate**. Grounded Walk/Run,
-turn/hit/recovery, terrain foot fitting and distant rigs pass local engine/API/render
-checks, including32 visible characters at118,988 primitives/200 calls.0.2.10/code12 awaits
-full CI/native validation. The last verified development handoff remains
-[ARM640.2.9/code11](https://github.com/Fineyew/GameTesting/actions/runs/34769922414/artifacts/10321917205).
+Current continuation: **M1.9 audio candidate**. Original Dawnreef/Tidebeat music, wind,
+footsteps/combat/UI cues, saved volume controls, captions and pause/resume pass local
+engine/mixer/API/render checks.0.2.11/code13 awaits full CI/native. The current verified
+handoff is [ARM640.2.10/code12](https://github.com/Fineyew/GameTesting/actions/runs/34772233514/artifacts/10323005593):
+grounded Walk/Run/turn/reactions, terrain feet and a budgeted32-rig scene, with actual
+native connected entry and online touch movement.
 PROJECT_STATE owns exact evidence and outstanding owner/physical-device acceptance.
 
 Run `python -m tools.check_movement_network` after Godot import to reproduce36 impairment
@@ -132,7 +133,7 @@ isolated database migrated to head. CI runs both migrations and the PostgreSQL t
 ## Android build and runtime checks
 
 Use the checked-in **Android** export preset: ARM64, INTERNET permission, app ID
-`work.surveyroute.veilboundtides`, version 0.2.10/code 12. Use Godot 4.5.1 export templates,
+`work.surveyroute.veilboundtides`, version 0.2.11/code 13. Use Godot 4.5.1 export templates,
 JDK17, Android SDK platform35 and build-tools35.0.0. See the
 [official engine export instructions](https://docs.godotengine.org/en/4.5/tutorials/export/exporting_for_android.html).
 The exported engine minimum is API24, target API35; minimum OS is not a device-performance guarantee.
@@ -174,7 +175,7 @@ With Android platform-tools and USB debugging enabled:
 
 ```bash
 adb devices
-adb install -r veilbound-tides-0.2.9-android.apk
+adb install -r veilbound-tides-0.2.10-android.apk
 adb reverse tcp:8000 tcp:8000
 ```
 

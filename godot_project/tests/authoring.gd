@@ -41,4 +41,7 @@ func run() -> void:
     app.queue_free()
     await process_frame
     print("GODOT_AUTHORING_PASS: generated catalog, branching offer, observed landmark/talk objectives, once-only reward and saved state")
-    quit()
+    var audio = root.get_node_or_null("Soundscape")
+    if audio:
+        await audio.shutdown()
+    quit.call_deferred()

@@ -122,6 +122,10 @@ jobs:
           sudo apt-get install -y xvfb ffmpeg
       - name: Export and verify ARM64 and emulator APKs
         run: python -m tools.export_android --emulator
+      - name: Decode audio assets and retain actual engine mix
+        run: |
+          python -m tools.check_audio
+          python -m tools.record_audio
       - name: Render and draw-call gate
         run: xvfb-run -a python -m tools.check_render
       - name: Matching before and after benchmark routes
@@ -148,10 +152,11 @@ jobs:
           name: veilbound-tides-android-foundation
           retention-days: 90
           path: |
-            builds/veilbound-tides-0.2.10-android.apk
-            builds/veilbound-tides-0.2.10-android.apk.verification.txt
+            builds/veilbound-tides-0.2.11-android.apk
+            builds/veilbound-tides-0.2.11-android.apk.verification.txt
             builds/build-manifest.json
             builds/render-check/
+            builds/audio-check/
       - name: Retain Android runtime evidence
         if: always()
         uses: actions/upload-artifact@v4

@@ -272,4 +272,7 @@ func run() -> void:
     app.queue_free()
     await process_frame
     print("GODOT_ONLINE_PASS: account, creation, two-player presence, movement, branching dialogue, quest, combat, rewards, reconnect, ordered Mara investigation, once-only rewards, three earned spells, folio selection, persistence, rejected unprepared cast, earned Seam Lance combat; vendor UI purchase with earned currency, comparison, equip/unequip/reconnect, Guard effect and preserved appearance/folio")
-    quit()
+    var audio = root.get_node_or_null("Soundscape")
+    if audio:
+        await audio.shutdown()
+    quit.call_deferred()

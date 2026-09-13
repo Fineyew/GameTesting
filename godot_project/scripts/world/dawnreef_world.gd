@@ -171,6 +171,7 @@ func _process(delta: float) -> void:
     well_light.position.y = 1.5 + sin(elapsed*1.8)*.1
 
 func spell_impact(spell: String) -> void:
+    Soundscape.cue("mend" if spell == "tide_mend" else ("guard" if spell in ["reed_aegis","brace","root_snare"] else "impact"))
     var heal = spell == "tide_mend" or spell == "reed_aegis"
     var at = Vector3(0,1,-5) if heal else Vector3(12,1,-10)
     var burst = ReefKit.sphere(self,.15,at,Color("85d7be") if heal else Color("f2c676"),true)
@@ -188,6 +189,7 @@ func glimmer_spark(from: Vector3, to: Vector3) -> void:
     add_child(presentation)
     presentation.begin(from,to)
     presentation.impact.connect(func():
+        Soundscape.cue("impact")
         var reaction = create_tween()
         reaction.tween_property(enemy,"scale",Vector3(1.12,.8,1.12),.1)
         reaction.tween_property(enemy,"scale",Vector3.ONE,.24))

@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-09-13 — M1.9 audio candidate
+
+- Compose/export11 original loop/cue assets with editable synthesis/provenance records.
+- Add seven persisted bus controls, zone/combat/panel fades, a bounded voice pool,
+  limiter, optional softer cues/captions and background/resume/clean shutdown behavior.
+- Connect actual gait contacts, UI and confirmed combat presentation to sound.
+- Validate fresh import, real mixer/mute/overlap/loop wrap, persisted GUI controls,
+  caption/lifecycle behavior, complete local engine/API/render gates and recorded mix.
+- Candidate0.2.11/code13 awaits full CI/native; phone listening/owner acceptance is open.
+
+## 2026-09-13 — M1.8 motion validated
+
+- Code93a22c9/run34772233514 passes all F/native gates; ARM640.2.10/code12
+  artifact10323005593 is downloaded/verified, with native10322641467/render10323005595.
+- Inspect the settled connected creator/world and moved frames; previous transient
+  camera evidence is superseded. Full32-rig view stays200 calls/118,988 primitives.
+- Record exact source/merge/APK hash and retained signed-build provenance in PROJECT_STATE.
+- Preserve owner art/motion and physical-device gates separately from engineering.
+
 ## 2026-09-13 — M1.8 motion and crowded-rig candidate
 
 - Add editable Walk/Run/turn/hit/recovery clips, phase/cadence/facing transitions and

@@ -541,3 +541,25 @@ PlaySession.online_ready requires a real socket welcome, authoritative self snap
 and current settled camera. Debug VT_ONLINE_READY contains no identity/credential data.
 Native creator QA waits for this state and stable rendered frames before its online
 touch movement assertion. The real Godot/API gate uses the same readiness predicate.
+
+## M1.9 audio presentation
+
+Soundscape is a local autoload, independent of API/authority. Editor startup skips
+runtime loading until fresh imports exist; packaged resource paths are fixed and validated.
+It owns seven buses, three looping players and eight reusable cue players with per-key
+cooldowns. A-1dB Master hard limiter bounds overlapping cues. Music/combat use a smooth
+constant-power transition; panels duck background sound. Cue timing comes from gait
+contact halves and confirmed presentation, never from damage/reward resolution.
+
+Settings → Sound offers large sliders and optional softer effects/captions. A single
+250ms timer debounces audio settings writes and preserves unrelated config sections;
+pause/close flush pending preferences. Background pauses loops, drops one-shots and
+rejects new cues; resume retains loop position. Window close and test tools stop/drain
+the asynchronous mixer before deferred quit. Ordinary return-to-gateway fades music out.
+Shared UI resolves audio at runtime so standalone SceneTree scripts can compile before
+autoload registration. Captions supplement existing written quest/combat information.
+
+`tests/audio.gd` exercises real bus samples and silence, limiter overlap, loop wrap,
+voice caps, GUI controls, config preservation and lifecycle. `tools.check_audio` decodes
+all11 files and checks hashes/durations/headroom/edges. `tools.record_audio` retains an
+actual engine mix; this and emulator cue/lifecycle logging do not certify phone output.

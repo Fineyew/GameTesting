@@ -115,7 +115,7 @@ baseline;128 MB initial texture budget; base download under150 MB. Room cap 32 a
 per-player network target require measurements, not assumptions. Test 20-minute thermal
 sessions and background/network transitions on actual phones. Settings currently expose
 FPS, shadows and render scale; LOD, view distance, effects and UI/accessibility scaling
-remain future work. Audio buses/music/ambience/SFX/subtitles remain planned.
+remain future work. M1.9 now has an original music/ambience/cue sample, saved bus controls and optional sound captions as an engineering candidate; full CI/physical listening and complete-region audio remain open.
 
 ## Authored slice specification and expansion
 

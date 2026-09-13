@@ -1,5 +1,6 @@
 class_name WayfarerAvatar
 extends Node3D
+signal footstep
 ## Existing controller/presence interface; art and motion live in imported scenes.
 const WAYFARER = preload("res://assets/dawnreef/wayfarer.glb")
 const MARA = preload("res://assets/dawnreef/mara.glb")
@@ -24,6 +25,8 @@ var far_mesh: Mesh
 var far_skin: Skin
 var distant := false
 var current_appearance: Dictionary = {}
+var step_clip := ""
+var step_half := -1
 
 func set_travel_velocity(motion: Vector3) -> void:
     # Animation follows horizontal travel, not stair height or pixels per frame.
@@ -125,6 +128,16 @@ func _process(delta: float) -> void:
     var viewer = get_viewport().get_camera_3d()
     if viewer:
         update_detail(viewer.global_position.distance_to(global_position))
+    var current = animation.current_animation
+    if current in ["Walk","Run"] and walking and travel_speed > .6:
+        var half = int(floor(animation.current_animation_position/animation.current_animation_length*2))%2
+        if step_clip == current and step_half != half:
+            footstep.emit()
+        step_clip = current
+        step_half = half
+    else:
+        step_clip = ""
+        step_half = -1
     var target_rate = clampf(travel_speed/(4.0 if running else 1.8),.4,2.0) if walking else 1.0
     gait_rate = lerpf(gait_rate,target_rate,1.0-exp(-12.0*delta))
     if cast_remaining > 0:

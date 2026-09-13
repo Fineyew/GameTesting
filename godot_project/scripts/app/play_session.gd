@@ -52,6 +52,8 @@ func begin(zone: DawnreefWorld, profile: Dictionary, offline: bool) -> void:
     var at = character.get("position",{"x":0,"z":4})
     player.position = Vector3(at.x,world.terrain.sample(at.x,at.z).height,at.z)
     player.networked = not preview
+    Soundscape.set_world(true)
+    player.avatar.footstep.connect(func(): Soundscape.cue("footstep"))
     camera = OrbitRig.new()
     world.add_child(camera)
     camera.follow(player)
@@ -94,6 +96,7 @@ func _process(delta: float) -> void:
             axis += joy
     axis = axis.limit_length().rotated(-camera.yaw)
     var fighting = character.get("encounter",{}).get("state") == "active"
+    Soundscape.ducked = hud.modal
     player.enabled = application_active and not busy and not hud.modal and not fighting and (preview or connection.connected)
     player.input_axis = axis
     camera.enabled = application_active and not busy and not hud.modal
@@ -252,11 +255,13 @@ func start_encounter() -> void:
     busy = false
     if not result.is_empty():
         character = result.character
+        Soundscape.cue("creature")
         show_combat()
     else:
         hud.open_panel("Encounter unavailable").add_child(TideUI.paragraph("Check the connection, move close to the lurker, then try again."))
 
 func show_combat() -> void:
+    Soundscape.set_combat(character.get("encounter",{}).get("state") == "active")
     var combat = character.get("encounter",{})
     if combat.is_empty():
         return
@@ -315,6 +320,7 @@ func retry_action() -> void:
         # Acknowledged state drives reactions; animation never resolves a beat.
         if int(character.encounter.player_vigor) < vigor_before:
             player.avatar.play_hit()
+            Soundscape.cue("creature")
         elif int(character.encounter.player_vigor) > vigor_before:
             player.avatar.play_recovery()
     busy = false
@@ -330,6 +336,7 @@ func present_glimmer() -> void:
     if flat.length() > .02:
         player.avatar.look_at(Vector3(target.x,player.avatar.global_position.y,target.z))
     player.avatar.play_cast()
+    Soundscape.cue("cast")
     var frame = Camera3D.new()
     world.add_child(frame)
     var middle = origin.lerp(target,.5)
@@ -568,8 +575,14 @@ func show_settings() -> void:
     scale_option.select(1 if get_viewport().scaling_3d_scale > .9 else 0)
     scale_option.item_selected.connect(func(index): get_viewport().scaling_3d_scale = 1.0 if index else .75; save_settings())
     panel.add_child(scale_option)
-    panel.add_child(TideUI.paragraph("Frame targets still require testing on physical Android devices. Camera recenter is always available beside the movement controls.",17))
+    panel.add_child(TideUI.button("Sound",show_audio_settings))
+    panel.add_child(TideUI.paragraph("Battery targets30 FPS; Smooth targets60. If play feels slow, lower the render resolution or turn off shadows.",17))
     panel.add_child(TideUI.button("Return to sign in",return_requested.emit))
+
+func show_audio_settings() -> void:
+    var panel = AudioPanel.new()
+    hud.open_panel("Sound").add_child(panel)
+    panel.build()
 
 func save_settings() -> void:
     var config = ConfigFile.new()
@@ -599,6 +612,7 @@ func _refresh_auth() -> void:
         connection.start(character.id)
 
 func _exit_tree() -> void:
+    Soundscape.set_world(false)
     if connection:
         connection.stop()
     for remote in remotes.values():

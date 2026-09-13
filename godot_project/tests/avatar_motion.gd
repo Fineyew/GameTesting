@@ -200,4 +200,7 @@ func run() -> void:
     app.queue_free()
     await process_frame
     print("AVATAR_MOTION_PASS: horizontal travel, Walk/Run hysteresis, 30/60/120 FPS cadence/turns, cast/hit/recovery, planted soles, remote caller")
-    quit()
+    var audio = root.get_node_or_null("Soundscape")
+    if audio:
+        await audio.shutdown()
+    quit.call_deferred()

@@ -5,36 +5,82 @@ Read README → PROJECT_STATE → ARCHITECTURE → relevant source. Main remains
 
 ## Current milestone
 
-**M1.8 motion and online-entry engineering candidate implemented; Android/full CI pending.**
-The owner requested continued engineering through the roadmap on2026-09-13. Continue
+**M1.9 audio foundation implemented; full CI/native validation pending.**
+Original source synthesis produces a 24-second Dawnreef motif, related Tidebeat loop,
+16-second wind bed and eight cues (11 assets/472,459 source bytes). Runtime has Master,
+Music, Ambience, Movement, Spells, Creatures and UI controls, smooth zone/combat/panel
+mixing, capped/cooldown-controlled voices, a -1 dB master limiter, optional softer effects
+and sound captions. Volume changes debounce saves while preserving graphics/network
+settings. Background pauses loops and drops one-shots; resume cannot replay old cues.
+Music closes cleanly through mixer drain/deferred shutdown. SceneTree test/UI compilation
+uses runtime lookup where autoload registration occurs later. No paid recordings or
+third-party assets; source and provenance are in audio_sources.
+
+Footsteps follow actual Walk/Run contact halves. Confirmed combat presentation triggers
+cast/impact/protection/healing/creature cues; all gameplay information remains visible
+as existing text. Settings → Sound exposes touch-sized controls. Level labels now show
+integers; graphics settings give player-facing quality guidance.
+
+Local gates: fresh uncached import and actual mixer loop wrap/mute/overlap; captured
+cue peak 0.24358 and overlap 0.89125; persisted controls and actual slider GUI dispatch;
+caption, bounded voice and pause/resume checks; full Godot/creator/motion/API, rendered
+Sound panel and unchanged 32-rig budgets pass. The real Godot music/duck/combat/cue/
+pause/resume mix is recorded for review. Initial cleanup checks exposed delayed mixer
+retirement; explicit stop/drain and deferred quit preserve the error gate. CI now retains
+decoded-asset statistics and the engine recording. Native QA additionally requires
+actual touch to emit a footstep and new audio lifecycle markers across Home/resume.
+These native additions are pending; 0.2.11/code 13 is a candidate, not a verified deliverable.
+The current verified download is 0.2.10 below. Device output/headphone/speaker listening,
+owner acceptance and sustained mobile measurements remain unverified.
+
+Next: full F/native audio build validation and source-verified retention, then M1.10
+six-spell/Brace/Gather presentation through existing authoritative outcomes.
+
+### Validated M1.8 motion and online entry
+
+**M1.8 motion and online-entry engineering validated at 93a22c9 / run 34772233514.**
+The owner requested continued engineering through the roadmap on 2026-09-13. Continue
 without routine confirmation; physical/owner acceptance still needs actual evidence.
-Current candidate is0.2.10/code12. The last verified downloadable build is0.2.9 below.
+Verified 0.2.10/code 12 is the current download; the earlier 0.2.9 evidence is preserved below.
 
 An editable Godot animation library adds grounded Walk, Run, TurnLeft/Right, Hit and
-Recovery to the existing13-bone Wayfarer/Mara rigs; original Idle/Cast and Blender sources
-remain. Walk/Run uses2.8/2.4m/s hysteresis, horizontal-speed cadence, phase-preserving
+Recovery to the existing 13-bone Wayfarer/Mara rigs; original Idle/Cast and Blender sources
+remain. Walk/Run uses 2.8/2.4 m/s hysteresis, horizontal-speed cadence, phase-preserving
 blends and elapsed-time facing. Confirmed Vigor changes trigger reactions. A bounded
 SkeletonModifier fits feet to the shared terrain and lowers the visual pelvis across
 .3m treads; it cannot change the controller root, collision or authority.
 
-The first32-rig render exposed410,324 primitives (200 calls), exceeding the150k geometry
-budget. Lowering imported LOD bias alone still produced306,700. Original distant meshes
-are now derived from the existing editable Blender sources:1,676 Wayfarer /1,654 Mara
-triangles, the same13 named binds/material slots and appearance fallback. Distance
-hysteresis switches meshes at8.5/7.5m, preserving the rig and animation. The final local
-full-room render passes at118,988 primitives/200 calls with all32 actors in frame; actual
+The first 32-rig render exposed 410,324 primitives (200 calls), exceeding the 150k geometry
+budget. Lowering imported LOD bias alone still produced 306,700. Original distant meshes
+are now derived from the existing editable Blender sources: 1,676 Wayfarer / 1,654 Mara
+triangles, the same 13 named binds/material slots and appearance fallback. Distance
+hysteresis switches meshes at 8.5/7.5 m, preserving the rig and animation. The final local
+full-room render passes at 118,988 primitives/200 calls with all32 actors in frame; actual
 near/appearance and crowd frames inspected. This is software-renderer evidence, not phone FPS.
 
-Local engine tests pass for30/60/120 FPS cadence/facing, Walk/Run thresholds, cast/hit/
+Local engine tests pass for 30/60/120 FPS cadence/facing, Walk/Run thresholds, cast/hit/
 recovery, sampled grounded soles/no skating, actual .3m stair fitting/root invariance,
 near/far binds/materials/hysteresis, real remote caller and creator regression. Full
 Godot/API progression/reconnect/terrain passes with actual online readiness. Camera entry
 now seeds the player view immediately; native QA requires socket welcome, first self
 snapshot and settled camera before capture, then real online touch movement. Native
-changes are not yet validated on the emulator; do not claim a new verified APK before F.
+checks pass on the emulator, including the actual welcome/self snapshot, settled camera
+and visible online touch movement. The retained connected/moved frames were inspected.
 
-Next: finish full F and native online-motion evidence, retain/source-verify0.2.10, then
-continue M1.9 audio foundation. M1.8 owner motion/art acceptance, physical Device E/R and
+All three jobs pass in [run 34772233514](https://github.com/Fineyew/GameTesting/actions/runs/34772233514):
+214 backend tests/30 subtests including 10 PostgreSQL tests and both migrations; terrain 32
+cases/740 motions, 36 impairment scenarios; Godot rig/creator/API/authoring; nine Android
+harness tests, render/motion movie and native movement/resume/online creator gates.
+Code `93a22c90f23d8feb057f1ed4a69acd0238622684`, tested merge
+`95746fbe445cfd5f787a7c62ed79c90b25b1ef53`. Verified ARM64 **0.2.10/code 12**,
+29,358,361 bytes, [artifact 10323005593](https://github.com/Fineyew/GameTesting/actions/runs/34772233514/artifacts/10323005593),
+native 10322641467 / render 10323005595, retained through 2026-12-12. Downloaded ZIP/APK CRC/
+SHA, architecture/version, compiled footing and retained v2/v3 signing report checked.
+APK SHA256 `16e0bc33da37c5258428b655539a32bb64449acf916c40d0c751f9fc9543e4d5`.
+Town 71 calls/79,014 primitives/15,325,211 texture bytes; creator 75, terrain 52; 32-rig
+crowd 200 calls/118,988 primitives. APK, motion movie and connected-world frame are saved.
+
+Engineering continues with M1.9 audio foundation. M1.8 owner motion/art acceptance, physical Device E/R and
 sustained mobile measurements remain open; no launch completion is claimed.
 
 ### Previous validated creator checkpoint
