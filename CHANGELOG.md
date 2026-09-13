@@ -1,15 +1,23 @@
 # Changelog
 
-## 2026-09-13 — M1.8 existing-rig motion transitions (candidate)
+## 2026-09-13 — M1.8 first motion-transition checkpoint validated
 
 - Continue from clean M1.7 recovery handoffcf8bc0c. Sample horizontal velocity in the
   existing avatar for both local and remote movement; stop vertical correction from
   triggering remote walking or inflating cadence. Replace the per-frame remote cutoff
   with shared enter/exit thresholds and ease cadence by elapsed time.
 - Preserve Idle/Walk/Cast, appearance IDs, assets, collision/authority, protocol and saves.
-- Local real-engine30/60/120 FPS, jitter/stopping/cast-return/remote-caller regressions and
-  Godot smoke pass. Add the regression to existing import/smoke CI. Full gates are pending;
-  target APK0.2.8/code10 is not yet verified. M1.8 rig/clip/creator/device work remains partial.
+- Local real-engine30/60/120 FPS, jitter/stopping/cast-return/remote-caller regressions,
+  smoke, full Godot/API and authoring diagnostics pass. Add the motion regression to
+  existing import/smoke CI. Code `5972031c6771f9a29da31d8e38b4318bcc5945ad`, run34764740003
+  passes all three jobs:214 backend tests/30 subtests including10 PG tests/both migrations,
+  terrain32 cases/740 motions,36 impairment cases, Godot/API/authoring,7 readiness tests,
+  render71 town/52 terrain calls, comparison walkthroughs and native touch/resume.
+- Verified ARM640.2.8/code10 artifact10320930156, native10320505876/render10320915177 retained
+  through2026-12-12; package hash/CRC, architecture, version, signing report and updated compiled
+  avatar checked. Town/native-resume frames inspected. PROJECT_STATE records source/merge/hash.
+- M1.8 rig/clip/creator/device work remains partial. Next is existing-choice creator/world
+  avatar parity. No new assets, server protocol/schema, deployment or paid generation.
 
 ## 2026-09-13 — M1.7 recovery validated and Notion handoff
 

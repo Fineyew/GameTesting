@@ -1,10 +1,12 @@
 # Known issues and limitations
 
-Updated 2026-09-11. See PROJECT_STATE for current CI/artifact status.
+Updated 2026-09-13. See PROJECT_STATE for current CI/artifact status.
 
 ## Release gates
 
-- Updated public server not deployed or verified. Clients0.2.3/0.2.4 need world1/story1/folio1/commerce1;0.2.5 additionally needs item_use1.
+- Updated public server not deployed or verified. Current terrain clients require world2,
+  matching geometry revision/digest and story1/folio1/commerce1/item_use1. Historical
+  clients0.2.3/0.2.4 used world1/story1/folio1/commerce1;0.2.5 also required item_use1.
 - Physical Android install/touch/safe-area, 20-minute thermal/memory/battery, packet-loss,
   cellular/Wi-Fi switching and background/resume certification remain outstanding.
   CI emulator and desktop rendering cannot substitute for these measurements. The emulator
@@ -170,7 +172,8 @@ additional acceptance work. See PROJECT_STATE for exact evidence and physical li
 ## M1.8 first animation increment
 
 Horizontal-only remote cadence and frame-rate-independent walk/idle sampling are corrected
-locally with real-engine tests. Full CI/APK0.2.8 validation is pending. The same three clips
+at5972031/run34764740003 with real-engine tests and all three CI jobs passing. Verified
+ARM640.2.8/code10 is retained (PROJECT_STATE). The same three clips
 remain; fast travel still speeds the Walk clip rather than playing a newly authored Run.
 Foot planting/IK, turn/hit/recovery clips, creator matching, crowded-rig profiling and
 owner/phone motion acceptance remain unfinished. No cosmetic family or rig was replaced.

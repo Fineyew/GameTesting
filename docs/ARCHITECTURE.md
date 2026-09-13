@@ -489,3 +489,9 @@ removed. Cadence eases exponentially by elapsed time while existing clip blends 
 timing remain. This does not add root motion, alter collision/authority or send new packets.
 Assets, saved appearance choices and server state are unchanged. `tests/avatar_motion.gd`
 uses the imported rig and real remote caller; `tools.check_godot` runs it before smoke.
+
+Code5972031/run34764740003 passes full backend/PostgreSQL, Godot/API, terrain/network,
+content/art, render and native Android gates; ARM640.2.8/code10 is retained. This validates
+the presentation interface, not final rig/foot contact, physical performance or owner motion
+acceptance. No backend rule or save/protocol migration is introduced by this client-only
+increment; the existing world2-compatible backend is still required for online play.

@@ -5,16 +5,34 @@ Read README → PROJECT_STATE → ARCHITECTURE → relevant source. Main remains
 
 ## Current milestone
 
-**M1.8 first motion-transition increment implemented; full CI pending.**
+**M1.8 first motion-transition increment implemented and validated; full M1.8 remains partial.**
 Local/remote avatars share horizontal-speed sampling and walk/idle hysteresis in the
 existing WayfarerAvatar. Remote stair interpolation no longer speeds the gait or starts
 walking from vertical correction; the old per-frame movement threshold is removed.
 Cadence eases with elapsed time; existing Idle/Walk/Cast assets and cast timing remain.
-Local real-engine regressions pass at30/60/120 FPS, including the actual remote caller,
-jitter, stopping and cast return; Godot import/smoke also pass. Target APK0.2.8/code10 is
-not yet a verified deliverable. No protocol/schema/content/appearance-ID or authority change.
+Code `5972031c6771f9a29da31d8e38b4318bcc5945ad` passes all three jobs in
+[run34764740003](https://github.com/Fineyew/GameTesting/actions/runs/34764740003).
+Real-engine30/60/120 FPS regressions include the actual remote caller, jitter, stopping
+and cast return.214 backend tests/30 subtests including10 PostgreSQL tests and both
+migrations;32 terrain cases/740 motions;36 impaired-controller cases; Godot import/smoke,
+full API progression/terrain/reconnect and isolated authoring;7 Android readiness tests,
+render/walkthroughs and actual emulator install/touch/locomotion/visible-resume all pass.
+Local Godot smoke/motion, full two-player API and authoring diagnostics also pass.
+No protocol/schema/content/appearance-ID or authority change.
+
+Verified ARM64 **0.2.8/code10**,29,156,650 bytes,
+[artifact10320930156](https://github.com/Fineyew/GameTesting/actions/runs/34764740003/artifacts/10320930156),
+native10320505876/render10320915177, retained through2026-12-12. Downloaded ZIP/APK CRC/SHA,
+ARM64 libraries, version/code and retained v2/v3 signing report checked; updated compiled
+avatar is packaged. APK SHA256 `d7991c6c4b0e9fa403bf0f125368d926b191784468f28dd1fb6ad4320140acda`;
+manifest source5972031, tested merge `c198a7e5945d42b9059865eec5d23cc93de38c08`.
+Inspected town/native-resume frames; town71 calls/87,774 primitives/15,182,467 texture bytes,
+terrain52 calls. No new art assets or increased draw-call count. Debug signing is ephemeral;
+native QA remains offline preview/navigation, not physical online/device certification.
+
 M1.8 remains partial: new run/turn/hit/recovery clips, foot contact, creator matching,
 crowded-rig profiling and owner/physical motion acceptance are not completed.
+Next bounded engineering task: live creator/world avatar parity using existing choices.
 
 ### Validated M1.7 recovery handoff
 
@@ -23,6 +41,8 @@ The previous handoff7bc4e00 passes run34669910393. The paused tree was recovered
 after workspace maintenance and pushed as code `3f2d81cf68c96a3ae3c50fefc7f2d5f1bcbb3cca`.
 All three jobs in [run34763944468](https://github.com/Fineyew/GameTesting/actions/runs/34763944468)
 pass. Documentation handoff `cf8bc0c38d044ce278d240279e260bfaa08a57d8` is pushed.
+Its documentation-only CI rerun34764560285 was superseded/cancelled by the M1.8 push;
+the full code-run evidence above remains valid, and M1.8's full run also passes.
 A new deterministic network schedule
 exercises the actual Godot controller against Python20Hz authority:36 combinations of
 ramp/stairs/wall/terrace edge,50/150/300ms one-way delay, one-second packet silence or
@@ -250,7 +270,9 @@ trading, gathering/crafting, mounts/housing/pets or broad social content were ad
 Recovery/moderation, load tests, JSON→PG import/restore, staging/production, signing and
 updater remain future work. One process owns the room;32-player cap is unbenchmarked.
 
-**Current engineering: validate/checkpoint M1.8 existing-rig locomotion transitions**, scoped in ROADMAP.
+**Next engineering: M1.8 live creator/world avatar parity**, scoped in ROADMAP.
+Reuse the existing three robe/three skin choices and Wayfarer scene; preserve saved IDs
+and current form/navigation. No new cosmetic families or gameplay systems in that checkpoint.
 The deterministic M1.7 delay/silence/rejoin gate now passes. Preserve its correction/settling
 assertions and obtain Device R evidence before calling finished movement accepted. Physical
 edge/corner/stair feel, variable-rate/jitter/long-outage behavior and the full-route visual
