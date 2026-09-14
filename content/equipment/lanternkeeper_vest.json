@@ -2,13 +2,17 @@
   "type": "equipment",
   "key": "lanternkeeper_vest",
   "schema_version": 1,
-  "version": 1,
+  "version": 2,
   "display": {
     "name": "Lanternkeeper Vest",
     "summary": "A simple padded vest with small lantern-stone clasps.",
     "description": "Issued to new Dawnreef helpers, this original starter garment offers modest protection without slowing movement."
   },
-  "tags": ["starter", "armor", "dawnreef"],
+  "tags": [
+    "starter",
+    "armor",
+    "dawnreef"
+  ],
   "assets": {
     "icon": "res://assets/icons/equipment/lanternkeeper_vest.png",
     "model": "res://assets/equipment/lanternkeeper_vest.tscn"
@@ -16,10 +20,24 @@
   "rules": {
     "slot": "chest",
     "required_level": 1,
-    "modifiers": [{"stat": "guard", "operation": "add", "value": 1}],
-    "sell_value": [{"currency_key": "shell_chits", "amount": 8}]
+    "modifiers": [
+      {
+        "stat": "guard",
+        "operation": "add",
+        "value": 1
+      }
+    ],
+    "sell_value": [
+      {
+        "currency_key": "shell_chits",
+        "amount": 8
+      }
+    ],
+    "stack_limit": 1
   },
   "localization": {
-    "en": {"name": "Lanternkeeper Vest"}
+    "en": {
+      "name": "Lanternkeeper Vest"
+    }
   }
 }

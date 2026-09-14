@@ -1,0 +1,32 @@
+{
+  "type": "spells",
+  "key": "prism_needle",
+  "schema_version": 1,
+  "version": 1,
+  "display": {
+    "name": "Prism Needle",
+    "summary": "A precise ray slips between armor plates."
+  },
+  "tags": [
+    "dawnreef"
+  ],
+  "assets": {
+    "vfx": "res://scripts/world/tidebeat_effect.gd"
+  },
+  "rules": {
+    "discipline": "lanterncraft",
+    "costs": [
+      {
+        "resource": "focus",
+        "amount": 2
+      }
+    ],
+    "effects": [
+      {
+        "type": "deal_damage",
+        "power": 9,
+        "piercing": true
+      }
+    ]
+  }
+}

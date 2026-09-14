@@ -36,14 +36,14 @@ MODULES: tuple[ModuleDescriptor, ...] = (
     ModuleDescriptor(
         key="inventory",
         owner="inventory",
-        status="scaffold",
+        status="implemented_narrow_slice",
         owns=("item_instances", "wallets", "equipment_slots"),
         allowed_dependencies=("content",),
     ),
     ModuleDescriptor(
         key="quests",
         owner="quests",
-        status="scaffold",
+        status="implemented_narrow_slice",
         owns=("quest_state", "objective_progress"),
         allowed_dependencies=("content", "inventory", "events"),
     ),

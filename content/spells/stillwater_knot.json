@@ -1,0 +1,35 @@
+{
+  "type": "spells",
+  "key": "stillwater_knot",
+  "schema_version": 1,
+  "version": 1,
+  "display": {
+    "name": "Stillwater Knot",
+    "summary": "Anchor your Focus while a small tide pulse strikes."
+  },
+  "tags": [
+    "dawnreef"
+  ],
+  "assets": {
+    "vfx": "res://scripts/world/tidebeat_effect.gd"
+  },
+  "rules": {
+    "discipline": "tideseaming",
+    "costs": [
+      {
+        "resource": "focus",
+        "amount": 2
+      }
+    ],
+    "effects": [
+      {
+        "type": "deal_damage",
+        "power": 5
+      },
+      {
+        "type": "ward_focus",
+        "amount": 2
+      }
+    ]
+  }
+}

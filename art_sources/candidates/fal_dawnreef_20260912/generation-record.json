@@ -1,0 +1,70 @@
+{
+  "purpose": "Veilbound Tides Fal evaluation; not integrated or production approved",
+  "estimated_usd": 0.246,
+  "jobs": [
+    {
+      "endpoint_id": "tripo3d/h3.1/text-to-3d",
+      "input": {
+        "auto_size": true,
+        "face_limit": 2500,
+        "geometry_quality": "standard",
+        "negative_prompt": "text, logo, watermark, character, scenery, photorealism, thin fragile details, glass transparency, elaborate ornament, multiple objects",
+        "pbr": true,
+        "prompt": "Single original stylized fantasy coastal settlement lantern prop for Veilbound Tides, Dawnreef. A squat freestanding lantern with sturdy carved driftwood frame, three curved ribs around an opaque sea-glass turquoise light core, warm aged brass collars, coral-orange rope binding and broad hexagonal stone foot. Charming handcrafted asymmetrical silhouette, large simple shapes, hand-painted color blocking, readable from third-person mobile game camera. Entire object intact, centered isolated object, no surroundings or pedestal beyond its own foot. Approximately 0.8 meters tall. Opaque materials, no transparent glass, no fine filigree. Game-ready low polygon triangular mesh.",
+        "quad": false,
+        "texture": true,
+        "texture_quality": "standard"
+      },
+      "key": "lantern",
+      "submission": {
+        "status": "submitted",
+        "request_id": "01a0934b-6836-7ae2-800d-648d5248267b",
+        "endpoint_id": "tripo3d/h3.1/text-to-3d",
+        "status_url": "https://queue.fal.run/tripo3d/h3.1/requests/01a0934b-6836-7ae2-800d-648d5248267b/status",
+        "response_url": "https://queue.fal.run/tripo3d/h3.1/requests/01a0934b-6836-7ae2-800d-648d5248267b",
+        "cancel_url": "https://queue.fal.run/tripo3d/h3.1/requests/01a0934b-6836-7ae2-800d-648d5248267b/cancel",
+        "hint": "Job submitted. Use check_job with status_url to check status, then get_job_result with response_url when it completes."
+      }
+    },
+    {
+      "endpoint_id": "fal-ai/elevenlabs/sound-effects/v2",
+      "input": {
+        "duration_seconds": 3,
+        "loop": false,
+        "output_format": "mp3_44100_128",
+        "prompt_influence": 0.4,
+        "text": "Original fantasy game spell sound, Glimmer Spark: a brief soft breath of rising glassy harmonics, a crisp bright magical snap on impact, then tiny warm shimmering droplets fading naturally into silence. One single cast with clear anticipation and impact, gentle rather than harsh, no speech, no music, no background noise, clean isolated sound effect."
+      },
+      "key": "spark",
+      "submission": {
+        "status": "submitted",
+        "request_id": "01a0934b-7f62-7a23-8137-3f2ae8a7e07c",
+        "endpoint_id": "fal-ai/elevenlabs/sound-effects/v2",
+        "status_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/01a0934b-7f62-7a23-8137-3f2ae8a7e07c/status",
+        "response_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/01a0934b-7f62-7a23-8137-3f2ae8a7e07c",
+        "cancel_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/01a0934b-7f62-7a23-8137-3f2ae8a7e07c/cancel",
+        "hint": "Job submitted. Use check_job with status_url to check status, then get_job_result with response_url when it completes."
+      }
+    },
+    {
+      "endpoint_id": "fal-ai/elevenlabs/sound-effects/v2",
+      "input": {
+        "duration_seconds": 20,
+        "loop": true,
+        "output_format": "mp3_44100_128",
+        "prompt_influence": 0.4,
+        "text": "Quiet magical coastal village ambience at dawn: soft small ocean waves lapping stone harbor steps, gentle sea breeze through dry reeds, sparse distant wooden mooring creaks, very subtle airy crystalline wind chimes. Peaceful inviting natural background for a fantasy exploration game. Consistent restrained volume, no voices, no music, no dramatic events, seamless continuous environmental loop."
+      },
+      "key": "ambience",
+      "submission": {
+        "status": "submitted",
+        "request_id": "01a0934b-8175-7d22-a48f-e41c97bae90a",
+        "endpoint_id": "fal-ai/elevenlabs/sound-effects/v2",
+        "status_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/01a0934b-8175-7d22-a48f-e41c97bae90a/status",
+        "response_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/01a0934b-8175-7d22-a48f-e41c97bae90a",
+        "cancel_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/01a0934b-8175-7d22-a48f-e41c97bae90a/cancel",
+        "hint": "Job submitted. Use check_job with status_url to check status, then get_job_result with response_url when it completes."
+      }
+    }
+  ]
+}

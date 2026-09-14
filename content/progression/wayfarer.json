@@ -1,0 +1,17 @@
+{
+  "type": "progression",
+  "key": "wayfarer",
+  "schema_version": 1,
+  "version": 1,
+  "display": {
+    "name": "Wayfarer study",
+    "summary": "Your affinity opens advanced lessons at level 2. Cross-training opens at level 3."
+  },
+  "tags": ["progression"],
+  "assets": {},
+  "rules": {
+    "level_thresholds": [0, 100, 200, 300, 400, 500],
+    "continued_level_step": 100,
+    "study_levels": {"affinity": 2, "cross_training": 3}
+  }
+}

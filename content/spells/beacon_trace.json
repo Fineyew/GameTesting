@@ -1,0 +1,28 @@
+{
+  "type": "spells",
+  "key": "beacon_trace",
+  "schema_version": 1,
+  "version": 1,
+  "display": {
+    "name": "Beacon Trace",
+    "summary": "The next strike consumes a visible mark for 6 additional damage."
+  },
+  "tags": [
+    "combat"
+  ],
+  "assets": {},
+  "rules": {
+    "costs": [
+      {
+        "resource": "focus",
+        "amount": 1
+      }
+    ],
+    "effects": [
+      {
+        "type": "mark",
+        "amount": 6
+      }
+    ]
+  }
+}

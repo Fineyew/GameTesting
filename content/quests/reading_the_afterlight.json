@@ -1,0 +1,48 @@
+{
+  "type": "quests",
+  "key": "reading_the_afterlight",
+  "schema_version": 1,
+  "version": 1,
+  "display": {
+    "name": "Reading the Afterlight",
+    "summary": "Trace the light that stays behind the cistern's answering note."
+  },
+  "tags": [
+    "dawnreef",
+    "spell_lesson"
+  ],
+  "assets": {},
+  "rules": {
+    "giver_npc_key": "mara_lanternwright",
+    "ordered": true,
+    "start_conditions": [
+      {
+        "type": "quest_completed",
+        "quest_key": "an_answer_in_the_reeds"
+      }
+    ],
+    "objectives": [
+      {
+        "key": "study_saltglass_cistern",
+        "label": "Trace the afterlight at the sealed cistern",
+        "type": "inspect_landmark",
+        "zone_key": "dawnreef_atoll",
+        "interaction_key": "saltglass_cistern",
+        "quantity": 1
+      },
+      {
+        "key": "return_to_mara",
+        "label": "Bring the pattern to Mara",
+        "type": "talk_to_npc",
+        "npc_key": "mara_lanternwright",
+        "quantity": 1
+      }
+    ],
+    "rewards": [
+      {
+        "type": "learn_spell",
+        "spell_key": "beacon_trace"
+      }
+    ]
+  }
+}

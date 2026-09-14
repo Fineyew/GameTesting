@@ -1,0 +1,28 @@
+{
+  "type": "spells",
+  "key": "reed_aegis",
+  "schema_version": 1,
+  "version": 1,
+  "display": {
+    "name": "Reed Aegis",
+    "summary": "Woven reeds absorb 10 damage this beat."
+  },
+  "tags": [
+    "combat"
+  ],
+  "assets": {},
+  "rules": {
+    "costs": [
+      {
+        "resource": "focus",
+        "amount": 2
+      }
+    ],
+    "effects": [
+      {
+        "type": "guard",
+        "amount": 10
+      }
+    ]
+  }
+}

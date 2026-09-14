@@ -1,0 +1,69 @@
+{
+  "type": "quests",
+  "key": "a_kindly_weave",
+  "schema_version": 1,
+  "version": 1,
+  "display": {
+    "name": "A Kindly Weave",
+    "summary": "Meet the sifter\u2019s open sweep with Reed Aegis, then mend with the next quiet beat. Bring the two shapes together for me. A kindly weave cushions and closes at once."
+  },
+  "tags": [
+    "dawnreef"
+  ],
+  "assets": {},
+  "rules": {
+    "giver_npc_key": "mara_lanternwright",
+    "ordered": true,
+    "start_conditions": [
+      {
+        "type": "quest_completed",
+        "quest_key": "a_measured_release"
+      },
+      {
+        "type": "discipline_study",
+        "discipline": "rootbinding"
+      }
+    ],
+    "objectives": [
+      {
+        "key": "guard_sweep",
+        "label": "Use Reed Aegis against the sifter\u2019s 9-damage sweep",
+        "type": "cast_spell",
+        "spell_key": "reed_aegis",
+        "enemy_key": "shellfold_sifter",
+        "intent_power_at_least": 9,
+        "quantity": 1
+      },
+      {
+        "key": "mend",
+        "label": "Use Tide Mend in the same practice area",
+        "type": "cast_spell",
+        "spell_key": "tide_mend",
+        "enemy_key": "shellfold_sifter",
+        "quantity": 1
+      },
+      {
+        "key": "return_to_mara",
+        "label": "Return to Mara with the pattern",
+        "type": "talk_to_npc",
+        "npc_key": "mara_lanternwright",
+        "quantity": 1
+      }
+    ],
+    "rewards": [
+      {
+        "type": "learn_spell",
+        "spell_key": "reed_stitch"
+      },
+      {
+        "type": "grant_experience",
+        "amount": 25
+      },
+      {
+        "type": "grant_item",
+        "item_key": "sunthread_bandage",
+        "quantity": 1
+      }
+    ]
+  }
+}

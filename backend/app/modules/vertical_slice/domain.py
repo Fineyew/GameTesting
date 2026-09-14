@@ -6,6 +6,7 @@ STARTING_ZONE_KEY = "dawnreef_atoll"
 STARTING_SPELL_KEYS = ("glimmer_spark", "root_snare", "tide_mend")
 LEVEL_XP_REQUIREMENT = 100
 STARTING_VIGOR = 30
+FOLIO_CAPACITY = 6
 
 
 @dataclass
@@ -14,6 +15,7 @@ class AccountRecord:
     email: str
     display_name: str
     password_hash: str
+    auth_version: int = 0
 
     @classmethod
     def create(cls, email: str, display_name: str, password_hash: str) -> "AccountRecord":
@@ -42,6 +44,22 @@ class CharacterRecord:
     quest_state: dict[str, dict[str, Any]] = field(default_factory=dict)
     defeated_enemies: dict[str, int] = field(default_factory=dict)
 
+    affinity: str = "lanterncraft"
+    appearance: dict[str, str] = field(default_factory=lambda: {"robe": "teal", "skin": "warm"})
+    position: dict[str, float] = field(default_factory=lambda: {"x": 0.0, "z": 4.0})
+    encounter: dict[str, Any] = field(default_factory=dict)
+    command_receipts: dict[str, Any] = field(default_factory=dict)
+    equipment: dict[str, str] = field(default_factory=dict)
+    dialogue_state: dict[str, Any] = field(default_factory=dict)
+    folio: list[str] | None = None
+    folio_revision: int = 0
+    commerce_revision: int = 0
+
+    def __post_init__(self) -> None:
+        # Additive schema-1 upgrade for both adapters. Never grant spell ownership.
+        if self.folio is None:
+            self.folio = list(dict.fromkeys(self.known_spells))[:FOLIO_CAPACITY]
+
     @classmethod
     def create(
         cls,
@@ -59,7 +77,17 @@ class CharacterRecord:
         )
 
     def public_state(self) -> dict[str, Any]:
-        return asdict(self)
+        state = asdict(self)
+        state.pop("command_receipts", None)
+        state.pop("account_id", None)
+        state.pop("dialogue_state", None)
+        state["folio_capacity"] = FOLIO_CAPACITY
+        state["max_vigor"] = self.max_vigor
+        return state
+
+    @property
+    def max_vigor(self) -> int:
+        return STARTING_VIGOR
 
 
 @dataclass(frozen=True)

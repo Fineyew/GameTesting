@@ -1,0 +1,14 @@
+{
+  "dawnreef-ambience.mp3": {
+    "decoded_seconds": 20.0,
+    "peak_float": 0.4387376010417938,
+    "samples_at_or_above_full_scale": 0,
+    "loop_boundary_jump": 0.01827351376414299
+  },
+  "glimmer-spark.mp3": {
+    "decoded_seconds": 3.0,
+    "peak_float": 1.0905050039291382,
+    "samples_at_or_above_full_scale": 7,
+    "loop_boundary_jump": 0.0006498377770185471
+  }
+}

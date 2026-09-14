@@ -1,0 +1,67 @@
+{
+  "type": "quests",
+  "key": "keep_the_quiet",
+  "schema_version": 1,
+  "version": 1,
+  "display": {
+    "name": "Keep the Quiet",
+    "summary": "The ray drinks loose thought before its stronger strike. Gather during its quiet beat, and mend before the next rush. Settle one and return; I will show you how to knot your Focus in place."
+  },
+  "tags": [
+    "dawnreef"
+  ],
+  "assets": {},
+  "rules": {
+    "giver_npc_key": "mara_lanternwright",
+    "ordered": true,
+    "start_conditions": [
+      {
+        "type": "quest_completed",
+        "quest_key": "a_measured_release"
+      },
+      {
+        "type": "discipline_study",
+        "discipline": "tideseaming"
+      }
+    ],
+    "objectives": [
+      {
+        "key": "hold_mist",
+        "label": "Use Tide Mend while facing the Hushfin Ray",
+        "type": "cast_spell",
+        "spell_key": "tide_mend",
+        "enemy_key": "hushfin_ray",
+        "quantity": 1
+      },
+      {
+        "key": "settle_ray",
+        "label": "Finish the Hushfin Ray encounter",
+        "type": "defeat_enemy",
+        "enemy_key": "hushfin_ray",
+        "quantity": 1
+      },
+      {
+        "key": "return_to_mara",
+        "label": "Return to Mara with the pattern",
+        "type": "talk_to_npc",
+        "npc_key": "mara_lanternwright",
+        "quantity": 1
+      }
+    ],
+    "rewards": [
+      {
+        "type": "learn_spell",
+        "spell_key": "stillwater_knot"
+      },
+      {
+        "type": "grant_experience",
+        "amount": 25
+      },
+      {
+        "type": "grant_item",
+        "item_key": "sunthread_bandage",
+        "quantity": 1
+      }
+    ]
+  }
+}

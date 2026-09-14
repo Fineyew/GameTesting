@@ -1,0 +1,58 @@
+{
+  "type": "enemies",
+  "key": "hushfin_ray",
+  "schema_version": 1,
+  "version": 1,
+  "display": {
+    "name": "Hushfin Ray",
+    "summary": "A quiet gliding ray draws loose Focus into its breathing fins."
+  },
+  "tags": [
+    "dawnreef"
+  ],
+  "assets": {
+    "model": "res://scenes/creatures/hushfin_ray.tscn"
+  },
+  "rules": {
+    "level": 2,
+    "stats": {
+      "vigor": 30
+    },
+    "intents": [
+      {
+        "name": "Draw the hush",
+        "power": 2,
+        "focus_drain": 2
+      },
+      {
+        "name": "Break the hush",
+        "power": 8
+      },
+      {
+        "name": "Skim the shallows",
+        "power": 0
+      }
+    ],
+    "unlock_conditions": [
+      {
+        "type": "character_level_at_least",
+        "value": 2
+      },
+      {
+        "type": "quest_completed",
+        "quest_key": "lantern_well_first_light"
+      }
+    ],
+    "rewards": [
+      {
+        "type": "grant_experience",
+        "amount": 35
+      },
+      {
+        "type": "grant_currency",
+        "currency_key": "shell_chits",
+        "amount": 3
+      }
+    ]
+  }
+}

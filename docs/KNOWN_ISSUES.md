@@ -1,0 +1,258 @@
+# Known issues and limitations
+
+Updated 2026-09-13. See PROJECT_STATE for current CI/artifact status.
+
+## Release gates
+
+- Updated public server not deployed or verified. Current terrain clients require world2,
+  matching geometry revision/digest and story1/folio1/commerce1/item_use1. Historical
+  clients0.2.3/0.2.4 used world1/story1/folio1/commerce1;0.2.5 also required item_use1.
+- Physical Android install/touch/safe-area, 20-minute thermal/memory/battery, packet-loss,
+  cellular/Wi-Fi switching and background/resume certification remain outstanding.
+  CI emulator and desktop rendering cannot substitute for these measurements. The emulator
+  gate exercises offline exploration, Folio and Bag/vendor touch; online progression is tested with Godot/API integration.
+- Recovery/email verification/opaque rotated refresh tokens/remembered secure credentials
+  and admin account workflows are unfinished. Access-token renewal needs a valid token.
+- Existing JSON accounts require backup and explicit preserved-ID import before changing
+  a live service to PostgreSQL. Migration 0002 does not import JSON. Restore drills remain.
+- Only preset chat is exposed. Free text, blocking/reporting and moderation are unfinished;
+  user-name moderation also needs a release design.
+- Debug keys are ephemeral, so later test APKs can need uninstall/reinstall. Release signing,
+  AAB/store rollout and a permanent updater identity are not configured.
+
+## Gameplay/art
+
+- Three enemies, eight quests and nine obtainable spells now pass M1.11 runtime CI.
+  Affinity lessons open at level2 and cross-training at3; the folio stays six slots.
+  This remains a small prototype; cooperative combat and the full chapter are planned.
+- Catalog-driven Mara dialogue and one investigation now exist. Collect-item/repeatable
+  quests, broader objective types and visual authoring tools remain planned. M1.1 integration
+  and Android gates pass at 4efd3a6; additional NPC visual/interaction bindings need scene work.
+- One vest vendor/equipment loop passes all M1.3 gates atde9d7a3/run34440512749. Selling,
+  trading, wearable vest mesh, additional gear slots, gathering/crafting, mounts,
+  housing, pets, dungeon/boss and most social features are not implemented.
+  M1.5 Sunthread Bandage engineering/automated gates pass at023db75/run34550163642.
+  Engineering continuation was authorized; physical acceptance is still outstanding.
+- M1.4's small original art/rig/VFX candidate passes full CI/render/native validation at
+  365993ce/run34483308643; actual captures and matching route frames were inspected.
+  Owner art acceptance and physical-phone Device E remain open. Do not call it final.
+  Two houses, distant foliage/coast/vistas, dock, cistern and the lurker remain placeholders.
+  The expanded motion library and M1.9 audio pass full engineering gates. M1.10
+  six-spell/Brace/Gather effects pass local engine/render/API; Android CI is pending.
+  Full soundtrack, owner visual acceptance and device listening remain open.
+  Current creator choices are robe/skin tinting, not full body/customization variety.
+- Historical planar checkpoint: capsule/gravity/floor snap existed, but stairs, slopes and vertical
+  authority were not tested there; current activation has automated parity/API coverage. Full UI scaling, safe areas, left-handed controls and menu controller
+  support remain accessibility work.
+
+## Engineering
+
+- Installer verification of green run34786789784 found no APK in artifact10327565358:
+  exporter used a stale0.2.12 filename while CI uploaded0.2.13. Runtime/native evidence
+  remains valid, but that archive is not a phone deliverable. Filename/version now derive
+  from the preset, and a mandatory staging gate validates presence/hash/ABI/report before
+  upload.17 local tests pass; corrected artifact remains pending. Verified download0.2.11.
+
+- M1.11 source36aa66e/run34775850505 passes backend/Godot/render/export and native
+  footsteps/resume, then times out at creator relaunch readiness. Inspected native
+  artifact10323951508 shows a landscape gateway with a stale portrait `Requested w/h`.
+  The harness now requests verbose window data and checks the exact focused window's
+  actual layout frame;12 local regressions and full CI/native pass at a9f31ae/run34786789784.
+
+- M1.6 handoff a0b495c/run34552851591 attempt1 failed the visible gateway gate. Retained
+  native10181631699 was downloaded and inspected: Pixel Launcher ANR modal covers the
+  rendered game; Godot has its ready marker and no engine error. Backend/PG, Godot/API,
+  authoring and render passed. The failed attempt withheld ARM64 publication. The unchanged Android rerun passes in attempt2 (native10273982286,
+  build10273533063), including touch/resume. Do not treat this as a launcher ANR fix.
+- M1.7 groundworkfe4551c/run34625951261 passes all full gates (148 tests/30 subtests,
+  including9 PostgreSQL tests, Godot/API/render/native). It adds planar validation only.
+  Shared height sampling, slope/stair scene, protocol2 and vertical reconciliation
+  have since been activated; physical/latency/feel acceptance remains open.
+
+- M1.6 tools pass full CI atd1f0929/run34552020416. Structural dialogue
+  reachability does not prove conditional story reachability. Existing runtime bindings
+  are checked, not generated; additional NPC placements/handlers need real scene integration.
+  Artifact acceptance metadata verifies references/hashes, not the truth of human review.
+  Interactive desktop authoring UI and physical phones have not been manually tested here.
+
+- Resolved M1.5 native harness issues: f761714/run34547305384 failed post-resume
+  movement during an OS transition (native10179708379);0edc990/run34548765608 timed out
+  on an absent legacy AppTransition field (native10180224033). Both withheld APKs.
+  The API35 focused/visible/shown landscape surface parser, stable focus wait and seven
+  regressions pass at023db75/run34550163642 with unchanged movement/resume thresholds.
+  Exact source/retained ARM64 and inspected frame evidence are in PROJECT_STATE.
+- M0 Android emulator checks pass at 69457a4, including visible resume and repeat touch
+  locomotion. The earlier black transition screenshot is resolved by waiting for presented
+  frames; this was a test timing gap. Physical-device gates above remain open.
+
+- One process/room. No multi-worker routing, instanced party ownership, interest management
+  or load test. Slow sends may stretch fixed ticks; cellular TCP behavior needs profiling.
+- Receipt retention is 128 responses per character. Expected rounds/encounter IDs protect old
+  action replay, but large JSONB payloads need normalization before substantial growth.
+- JSON store is single-process development only. Disk-full/backup recovery needs operational tests.
+- Legacy one-shot combat remains a capped compatibility path; retire/gate it before a public economy.
+- Content checksums/bundled catalog exist; downloadable packs, signature verification, repair,
+  resumable downloads and patch UI are planned. Several initial asset references are unbuilt.
+- Structured telemetry/correlation/audit trails and full operational monitoring are incomplete.
+- Docker runtime/public deployment are unverified here; CI proves the application and database
+  behavior in its isolated test environment, not the production topology.
+
+- M1.2 full gates pass at d0c6048/run 34437004626. The d138214 docs-only rerun failed on a
+  portrait launcher-transition screenshot; waiting for landscape presentation resolved it
+  without relaxing the view-match threshold. This is not physical-device certification.
+
+- Documentation checkpoint 8105f4a's first Android attempt timed out before gateway startup,
+  with an emulator graphics-buffer error and Godot `_start_success` cleanup error. The
+  identical game code passed the complete native gate at 40fcfa7. The isolated Android rerun
+  passed all native gates (run 34435465708, attempt 2), without changing game code or tests.
+  The underlying startup cause remains unverified. Full system logcat and a final frame
+  are now retained on test exit to help diagnose another occurrence. Do not weaken startup,
+  error-log, visible-frame or touch gates to hide a failure. Failed runs publish no ARM64 APK.
+
+- The 9b66c0a native run caught a stale gateway screenshot used as the exploration baseline.
+  Folio close worked; the baseline capture was early. The check now requires the visible
+  player plaque/thumb control in exploration frames as well as landscape/terrain. Existing
+  comparison thresholds are unchanged; the captured failing frame is rejected by the new
+  predicate and captured exploration/resume frames are accepted. Full CI passes at d0c6048
+  (run 34437004626); the new exploration baseline and native Folio/resume frames were inspected.
+
+- M1.3 run34439273721's first Android attempt reached VT_GATEWAY_READY but failed the
+  visible-gateway gate. Retained artifact10137449675 shows Android's “Pixel Launcher
+  isn't responding” modal dimming the rendered game. Godot's filtered log has no engine
+  error. The identical Android-only rerun cleared startup; the underlying launcher/runner
+  cause remains unverified. No ARM64 artifact was published from that failed attempt.
+  Keep this evidence and the unchanged assertions; do not dismiss errors to claim a pass.
+
+- That M1.3 rerun exposed a real panel lifecycle error on Bag→vendor touch navigation:
+  synchronous remove_child detached the pressed control before Godot finished input
+  dispatch (can_process: !is_inside_tree). Native movement/resume completed, but the
+  unchanged engine-error assertion correctly failed; artifact10137587989 retains evidence.
+  GameHUD now hides retiring controls and queue_free defers their removal until the frame
+  ends. GUI-dispatched mouse clicks supplement smoke coverage; native adb touch remains
+  the regression for this Android path. All Godot gates now reject engine ERROR messages,
+  not only SCRIPT ERROR. Fresh full CI passes atde9d7a3/run34440512749, including the
+  same native touch path and visible resume; screenshots inspected. No assertions weakened.
+
+- M1.4 candidate b5b90a5/run34478939955 passed backend/Godot/API/render but failed the
+  native resume image comparison (19.35% changed, limit15%). Artifact10152976777 shows
+  a small camera/position advance with no engine errors, plus a separate kit-transform
+  import defect that tilted trees/well. Corrections pass at d9293fa/run34480660769: retain authored
+  transforms, clear motion on application pause, and settle the pre-background capture.
+  Keep the failed evidence and all movement/resume thresholds; no ARM64 was published.
+
+- Intermediate f4ef6ec/run34480293814 failed the new geometry check because transforming
+  an enclosing AABB overestimates rotated extents. It now checks transformed vertices;
+  export also bakes canonical upright orientation. d9293fa passes all full gates.
+  Its visual review found canopy/cast-camera occlusion. The bounded cleanup uses camera-only
+  foliage and clear two-actor framing, with no movement/protocol changes. It passes full
+  validation at 365993ce/run34483308643; overview/cast/native frames were inspected.
+  Art acceptance and physical-device gates remain open independently.
+
+## M1.7 surface checkpoint limits / asset candidates
+
+Surface parity and ray collision do not prove capsule movement safety. At the historical surface-only checkpoint slopes, riser
+crossings, tangential motion and protocol2 were not implemented. Activation now exists;
+its limitations are listed below. Initial fixture checks exposed/repaired Godot top-face winding and
+trailing-newline key acceptance; no live movement was enabled during those failures.
+Fal candidates are not shipped: lantern textures are three2K maps without emissive glow;
+sounds need listening/loop/mix acceptance. Physical phone and art-direction acceptance
+remain open. See CONTENT_GUIDE and candidate README for records and next checks.
+
+## Current terrain activation limits
+
+- Automated activation gates pass atcd6df1d/run34669362714; retained0.2.6/code8 artifact10290647152
+  has verified download/manifest/architecture/signing-report evidence. This is debug-signed.
+- Physical-phone Device R, adverse-latency feel and camera/terrain walkthrough remain unverified.
+- Conservative square footprint/whole-cell slopes can block some geometrically clear corners.
+  Automatic .3m steps use discrete feet altitude; camera smoothing is not final animation polish.
+- No jumping, falling, stacked floors or arbitrary terrain expansion. Existing interactions stay flat.
+- Android CI validates native startup/touch/flat locomotion/resume; the new ramp/stair route is
+  exercised by the Godot/API test and second socket observer, not a physical Android walkthrough.
+- New client requires world2/revision2/digest and paired backend; public backend not deployed.
+- Fal candidates remain excluded from APKs, awaiting technical and artistic acceptance.
+
+- At3f2d81c the revised terrace frame clears the avatar silhouette. The label remains large
+  over the steps and the view still does not show the whole ramp/stair route. Improve this
+  in the next terrain presentation review. Edge posts/path paint remain candidate dressing.
+
+## Delayed-snapshot continuation
+
+Resting .55m discrepancy reproduced and corrected;36 impairment cases and full CI pass
+at3f2d81c/run34763944468. Revised frames and verified ARM640.2.7/code9 artifact10320225025
+are inspected/retained. Frame schedule is60Hz and uses fixed
+one-way delays; real transport jitter, variable frame rates and physical-phone feel remain
+unverified. The >2m emergency reset still snaps during large divergence; long outages need
+additional acceptance work. See PROJECT_STATE for exact evidence and physical limitations.
+
+## M1.8 first animation increment
+
+Horizontal-only remote cadence and frame-rate-independent walk/idle sampling are corrected
+at5972031/run34764740003 with real-engine tests and all three CI jobs passing. Verified
+ARM640.2.8/code10 is retained (PROJECT_STATE). The same three clips
+remain; fast travel still speeds the Walk clip rather than playing a newly authored Run.
+Foot planting/IK, turn/hit/recovery clips, crowded-rig profiling and
+owner/phone motion acceptance remain unfinished. No cosmetic family or rig was replaced.
+
+## M1.8 creator preview continuation
+
+Creator/world appearance parity using current assets/IDs passes all CI gates at
+74070f3/run34769922414, including actual render review and native0.2.9 creator validation.
+The gateway touch-scroll issue and native test keyboard-navigation issue below are
+corrected; failed evidence remains preserved. Dedicated run/turn/hit/recovery clips,
+foot planting, crowded-rig measurements and physical/owner acceptance
+remain unfinished. Synthetic side insets and emulator rendering do not certify a
+physical phone cutout, touch feel, thermal behavior or color calibration.
+
+The retained native creator world-entry frame is captured before camera/network
+readiness and shows transitional geometry plus Connecting. HTTP world entry and
+WebSocket acceptance are logged, but this is not a settled online world visual review.
+Creator colors/rotation/saved preview are inspected; full world/material/presence tests
+pass separately in Godot/API. Next native evidence refinement: wait for online readiness
+and a settled camera before taking the world frame. Physical online acceptance stays open.
+
+### Creator native validation correction (2026-09-13)
+
+Initial code9ed2a71/run34766994707 passes214 backend tests/30 subtests, PostgreSQL,
+full Godot/API/authoring/terrain/network, render and walkthrough gates. Creator75,
+town71 and terrain52 draw calls pass. Inspected coral/tablet/wide/selection frames.
+Native existing movement/Folio/Bag/resume passes, then new creator QA times out revealing
+Server connection after a swipe. No ARM64 artifact was published; retained native
+10320098524 and render10320063696 preserve the failed attempt.
+Gateway buttons use the engine's STOP mouse filter, blocking emulated touch-drag input
+from reaching the ScrollContainer. The correction uses PASS only for gateway buttons;
+the existing scroll container owns scrolling and cancels the press on drag. A GUI-input
+regression requires propagation and no accidental offline entry. Native QA additionally
+waits for a focused, stable window after its deliberate restart and captures failures
+before cleanup changes the screen. Existing thresholds are preserved. Fresh CI required.
+### Native creator text-entry harness correction (2026-09-13)
+
+Codef04a8e6/run34767828121 passes backend, Godot/API, render and walkthrough gates;
+the emulator confirms the scroll correction reaches Server connection. The new creator
+harness then sends Back while the hardware-keyboard emulator has no visible IME,
+returning to the launcher before login. This is a harness navigation failure, not a
+creator render failure. Native10321285952/render10320904717 retain that failed attempt;
+no ARM64 artifact was published. Text entry now selects/replaces prefilled values and
+sends Back only when API35 reports the IME visible. Nine local Android harness tests
+pass, including hidden/visible keyboard cases. Full native validation is still required.
+### Native creator menu-focus correction (2026-09-13)
+
+Code3ae529b/run34768581707 passes backend, Godot/API, render and walkthrough gates.
+Native checks now successfully scroll, replace the server URL, log in and display the
+creator. The color-menu test stops because a touch-opened Godot PopupMenu has no
+keyboard-focused item: one Down then Enter reselects the first item. Native10321610947
+and render10321895459 retain the failed attempt; no APK was published. The harness
+now sends two Down presses before Enter. A real-engine regression opens the actual
+OptionButton, confirms focus=-1, delivers those keys through the root window and
+requires the second item and visible appearance callback. Corrected local smoke and
+nine Android harness tests pass. Full native validation is still required.
+### Native creator HTTP-response correction (2026-09-13)
+
+Codeeed92ed/run34769314494 passes backend, Godot/API, render and walkthrough gates.
+Native creator color changes, touch rotation, Front reset, name entry, creation and
+saved-character preview now succeed; inspected colors/saved frames are readable. The
+last Python persistence check incorrectly expects Godot ApiClient's internal data
+wrapper from the direct HTTP response, whose documented route returns a raw list.
+Native10322040539/render10321960606 retain the failed attempt; no APK was published.
+The harness now indexes the actual list. A local isolated real-API check confirms
+creation, raw-list reload, coral/deep persistence and world entry; nine harness tests
+also pass. Final complete native validation remains required.
